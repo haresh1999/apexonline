@@ -2,8 +2,10 @@
 
 function setting($pg, $key)
 {
-    $env = config('services.env');
+    $currentUrl = url()->current();
 
+    $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
+    
     return config("services.{$pg}.{$env}.{$key}");
 }
 

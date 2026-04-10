@@ -20,7 +20,6 @@ class TokenMiddleware
         $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
 
         $clientId = $request->header('client-id');
-
         $clientSecret = $request->header('client-secret');
 
         $user = User::when($env == 'sandbox', function ($query) use ($clientId, $clientSecret) {
@@ -37,8 +36,7 @@ class TokenMiddleware
             ], 401);
         }
 
-        config(['services.user' => $user->toArray()]);
-        config('services.env', $env);
+        config(['services.user' => $user->toArray(), 'services.env' => $env]);
 
         return $next($request);
     }

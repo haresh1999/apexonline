@@ -61,7 +61,8 @@ class TransactionController extends Controller
 
         $input = $validator->validated();
 
-        $gateway = $user['default_gateway'] ?? getPaymentGateway($input['amount']);
+        // $gateway = $user['default_gateway'] ?? getPaymentGateway($input['amount']);
+        $gateway = 'ccavenue';
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],
@@ -77,10 +78,10 @@ class TransactionController extends Controller
 
         if ($env == 'sandbox') {
 
-            $url = "{$gateway}/{$env}/order-pay?reference_id={$tnx->uuid}&key=wc_order_{$tnx->id}";
+            $url = "{$gateway}/{$env}/request?reference_id={$tnx->reference_id}&key=wc_order_{$tnx->id}";
         } else {
 
-            $url = "{$gateway}/order-pay?reference_id={$tnx->uuid}&key=wc_order_{$tnx->id}";
+            $url = "{$gateway}/request?reference_id={$tnx->reference_id}&key=wc_order_{$tnx->id}";
         }
 
         return redirect()->to($url);
@@ -240,5 +241,31 @@ class TransactionController extends Controller
         $this->webhook($callback_url, $callback_secret, $sendData);
 
         return redirect()->to($transaction->redirect_url . '?status=' . $transaction->status);
+    }
+
+    public function signatureGenerate(Request $request)
+    {
+        $currentUrl = url()->current();
+
+        $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
+
+        $secret = config("services.signature_key.{$env}");
+
+        $payload = [
+            "amount" => $request->amount,
+            "order_id" => $request->order_id,
+            "payer_email" => $request->payer_email,
+            "payer_mobile" => $request->payer_mobile,
+            "payer_name" => $request->payer_name,
+            "refresh_token" => $request->refresh_token,
+        ];
+
+        ksort($payload);
+
+        $payloadQueryString = http_build_query($payload);
+
+        $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
+
+        dd($calculatedSignature);
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('payer_email');
             $table->string('payer_mobile');
             $table->enum('status', ['pending', 'processing', 'completed', 'failed', 'refunded'])->default('pending');
-            $table->enum('gateway', ['phonepe', 'razorpay', 'cashfree', 'payu', 'easebuzz', 'paytm', 'zaaakapay']);
+            $table->enum('gateway', ['phonepe', 'razorpay', 'cashfree', 'payu', 'easebuzz', 'paytm', 'zaaakapay', 'ccavenue', 'zoho']);
             $table->enum('env', ['production', 'sandbox']);
             $table->decimal('amount', 10, 2);
             $table->json('payment_response')->nullable();

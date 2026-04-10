@@ -37,6 +37,10 @@ return [
 
     'env' => env('APP_MODE', 'production'),
     'user' => [],
+    'signature_key' => [
+        'production' => '09e820e3-b7b6-438d-93ed-f5cdb3c39d93',
+        'sandbox' => '5222a6fe-faac-4c0b-a4b8-f449a4f0899e'
+    ],
 
     'sabpaisa' => [
         'sandbox' => [
@@ -100,5 +104,20 @@ return [
             'industry_type' => 'Retail',
             'cid' => 'WEB'
         ]
-    ]
+    ],
+
+    'ccavenue' => [
+        'sandbox' => [
+            'merchant_id' => '2507157',
+            'working_key' => '1F81381797D5E96BF4AD22BB0CE221C0',
+            'access_code' => 'AVYW05KF00CC49WYCC',
+            'post_url' => 'https://test.ccavenue.com/transaction/transaction.do',
+        ],
+        'production' => [
+            'merchant_id' => '',
+            'working_key' => '',
+            'access_code' => '',
+            'post_url' => 'https://secure.ccavenue.com/transaction/transaction.do',
+        ]
+    ],
 ];

@@ -24,7 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => AuthMiddleware::class,
             'signature' => SignatureMiddleware::class,
             'token' => TokenMiddleware::class,
-        ])->validateCsrfTokens(except: []);
+        ])->validateCsrfTokens(except: [
+            'sandbox/request',
+            'request',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -15,6 +15,11 @@ class SignatureMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->ip() == '127.0.0.1') {
+
+            return $next($request);
+        }
+
         $secret = config('services.user.callback_secret');
 
         $payload = $request->except(['signature', 'callback_url', 'redirect_url']);

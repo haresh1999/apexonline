@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sabpaisa Payment Request</title>
+    <title>Razorpay Payment Request</title>
 </head>
+
 <body>
-
     <h1>Sandbox Payment</h1>
-
-    <form action="{{ url('/sabpaisa/sandbox/request') }}" method="post">
-        <input type="text" name="client_id" value="edutrade">
-        <input type="text" name="client_secret" value="1890b383-345a-42d3-88c7-6e80efd08460">
+    <form action="{{ url('/sandbox/request') }}" method="post">
+        <input type="text" name="refresh_token" value="de797d79-e71d-405d-8396-5f613cd1a7d6-1" placeholder="refresh token">
+        <input type="text" name="signature" value="" placeholder="signature">
         <input type="text" name="payer_name" value="Haresh">
         <input type="text" name="payer_email" value="hareshc1999@gmail.com">
         <input type="text" name="payer_mobile" value="9106029220">
-        <input type="text" name="amount" value="1">
-        <input type="text" name="order_id" value="{{ Str::random(10) }}">
+        <input type="text" name="amount" value="1000">
+        <input type="text" name="order_id" value="{{ Str::random(6) }}">
+        <input type="text" name="callback_url" value="http://apexonline.dv/sandbox/ccavanue/callback">
+        <input type="text" name="redirect_url" value="http://apexonline.dv/sandbox/ccavanue/callback">
         <input type="submit" value="Paynow">
     </form>
 
@@ -25,9 +27,9 @@
 
     <h1>Live Payment</h1>
 
-    <form action="{{ url('/sabpaisa/request') }}" method="post">
-        <input type="text" name="client_id" value="edutrade">
-        <input type="text" name="client_secret" value="c73ba053-bf3f-4c9e-88ae-9e49fd4534e4">
+    <form action="{{ url('/razorpay/request') }}" method="post">
+        <input type="text" name="refresh_token" value="" placeholder="refresh token">
+        <input type="text" name="signature" value="" placeholder="signature">
         <input type="text" name="payer_name" value="Haresh">
         <input type="text" name="payer_email" value="hareshc1999@gmail.com">
         <input type="text" name="payer_mobile" value="9106029220">
@@ -36,4 +38,5 @@
         <input type="submit" value="Paynow">
     </form>
 </body>
+
 </html>

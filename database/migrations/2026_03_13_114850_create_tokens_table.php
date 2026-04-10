@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tokens', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->uuid('token');
+            $table->string('token');
             $table->enum('env', ['production', 'sandbox']);
             $table->ipAddress();
             $table->softDeletes();
