@@ -27,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ])->validateCsrfTokens(except: [
             'sandbox/request',
             'request',
+            'hdfc/sandbox/callback',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

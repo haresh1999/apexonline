@@ -3,6 +3,8 @@
 use App\Http\Controllers\{
     CcavenueController,
     CcavenueSandboxController,
+    HdfcController,
+    HdfcSandboxController,
     PhonepeController,
     PhonepeSandboxController,
     RazorpayController,
@@ -84,6 +86,17 @@ Route::prefix('ccavenue')->group(function () {
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [CcavenueSandboxController::class, 'request']);
         Route::any('callback', [CcavenueSandboxController::class, 'callback']);
+    });
+});
+
+// HDFC
+Route::prefix('hdfc')->group(function () {
+    Route::get('request', [HdfcController::class, 'request']);
+    Route::any('callback', [HdfcController::class, 'callback']);
+
+    Route::prefix('sandbox')->group(function () {
+        Route::get('request', [HdfcSandboxController::class, 'request']);
+        Route::any('callback', [HdfcSandboxController::class, 'callback']);
     });
 });
 
