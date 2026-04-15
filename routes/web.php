@@ -14,6 +14,8 @@ use App\Http\Controllers\{
     PaytmController,
     PaytmSandboxController,
     TransactionController,
+    ZohoController,
+    ZohoSandboxController,
 };
 
 use Illuminate\Support\Facades\Route;
@@ -97,6 +99,17 @@ Route::prefix('hdfc')->group(function () {
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [HdfcSandboxController::class, 'request']);
         Route::any('callback', [HdfcSandboxController::class, 'callback']);
+    });
+});
+
+// ZOHO
+Route::prefix('zoho')->group(function () {
+    Route::get('request', [ZohoController::class, 'request']);
+    Route::any('callback', [ZohoController::class, 'callback']);
+
+    Route::prefix('sandbox')->group(function () {
+        Route::get('request', [ZohoSandboxController::class, 'request']);
+        Route::any('callback', [ZohoSandboxController::class, 'callback']);
     });
 });
 

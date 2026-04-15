@@ -20,7 +20,7 @@ class HdfcSandboxController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->to(env('APP_URL'));
+            return response()->json($validator->errors());
         }
 
         $input = $validator->validated();
@@ -39,8 +39,49 @@ class HdfcSandboxController extends Controller
         return redirect($response['data']->paymentLinks["web"]);
     }
 
-    public function callback(Request $request)
+    public function callback(Request $request, HdfcPayment $service)
     {
-        dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'razorpay_payment_id' => ['required'],
+            'razorpay_signature' => ['required'],
+            'razorpay_order_id' => ['required'],
+            'reference_id' => ['required', Rule::exists('transactions')->where('status', 'pending')->where('env', 'sandbox')]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $input = $validator->validated();
+
+        $transaction = Transaction::where('reference_id', $input['reference_id'])->first();
+
+        $response = $service->orderStatus($transaction->order_id, $request->get('customer_id'));
+
+        if (!$response['success']) {
+            return response()->json($response);
+        }
+
+        $order = $response['data'];
+
+        $update['request_response'] = json_encode($response);
+
+        if ($order->status === "CHARGED") {
+
+            $update['status'] = 'completed';
+            $transaction->update($update);
+        }
+
+        if ($order->status === "PENDING") {
+
+            $update['status'] = 'pending';
+            $transaction->update($update);
+        }
+
+        $update['status'] = 'failed';
+
+        $transaction->update($update);
+
+        return redirect()->route('sandbox/redirect');
     }
 }
