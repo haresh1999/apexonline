@@ -120,4 +120,15 @@ return [
             'post_url' => 'https://secure.ccavenue.com/transaction/transaction.do',
         ]
     ],
+
+    'zoho' => [
+        'sandbox' => [
+            'api_key' => '1003.cd4be6050fd2f1923bfe1fec83e4ca92.8c029a083c31cd9b95cda03041145198',
+            'signing_key' => 'd5439670e4af85a519da1187a370a73f790e4691382c2e9a9948ced64d184a077704442ad5450e5e5494273e4a67c8df', //connector key
+        ],
+        'production' => [
+            'api_key' => '1003.cd4be6050fd2f1923bfe1fec83e4ca92.8c029a083c31cd9b95cda03041145198',
+            'signing_key' => 'd5439670e4af85a519da1187a370a73f790e4691382c2e9a9948ced64d184a077704442ad5450e5e5494273e4a67c8df',
+        ]
+    ]
 ];
