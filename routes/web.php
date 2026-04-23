@@ -13,6 +13,8 @@ use App\Http\Controllers\{
     SabpaisaSandboxController,
     PaytmController,
     PaytmSandboxController,
+    PayuController,
+    PayuSandboxController,
     TransactionController,
     ZohoController,
     ZohoSandboxController,
@@ -110,6 +112,16 @@ Route::prefix('zoho')->group(function () {
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [ZohoSandboxController::class, 'request']);
         Route::any('callback', [ZohoSandboxController::class, 'callback']);
+    });
+});
+
+Route::prefix('payu')->group(function () {
+    Route::get('request', [PayuController::class, 'request']);
+    Route::any('callback', [PayuController::class, 'callback']);
+
+    Route::prefix('sandbox')->group(function () {
+        Route::get('request', [PayuSandboxController::class, 'request']);
+        Route::any('callback', [PayuSandboxController::class, 'callback']);
     });
 });
 
