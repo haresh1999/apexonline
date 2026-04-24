@@ -117,7 +117,8 @@ Route::prefix('zoho')->group(function () {
 
 Route::prefix('payu')->group(function () {
     Route::get('request', [PayuController::class, 'request']);
-    Route::any('callback', [PayuController::class, 'callback']);
+    Route::post('success', [PayuSandboxController::class, 'success']);
+    Route::post('failed', [PayuSandboxController::class, 'failed']);
 
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [PayuSandboxController::class, 'request']);
