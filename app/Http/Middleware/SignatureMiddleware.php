@@ -20,7 +20,13 @@ class SignatureMiddleware
             return $next($request);
         }
 
-        $secret = config('services.user.callback_secret');
+        $currentUrl = url()->current();
+
+        $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
+
+        $secret = config("services.signature_key.{$env}");
+
+        // $secret = config('services.user.callback_secret');
 
         $payload = $request->except(['signature', 'callback_url', 'redirect_url']);
 
