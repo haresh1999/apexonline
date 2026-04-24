@@ -62,7 +62,8 @@ class TransactionController extends Controller
         $input = $validator->validated();
 
         // $gateway = $user['default_gateway'] ?? getPaymentGateway($input['amount']);
-        $gateway = 'ccavenue';
+        // $gateway = 'ccavenue';
+        $gateway = 'payu';
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],

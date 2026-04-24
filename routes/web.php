@@ -23,7 +23,7 @@ use App\Http\Controllers\{
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('{env?}')->group(function () {
-    Route::get('token', [TransactionController::class, 'getToken'])->middleware('token');
+    Route::post('token', [TransactionController::class, 'getToken'])->middleware('token');
     Route::post('request', [TransactionController::class, 'request'])->middleware(['throttle:600,10', 'auth', 'signature']);
     Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
@@ -121,7 +121,8 @@ Route::prefix('payu')->group(function () {
 
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [PayuSandboxController::class, 'request']);
-        Route::any('callback', [PayuSandboxController::class, 'callback']);
+        Route::post('success', [PayuSandboxController::class, 'success']);
+        Route::post('failed', [PayuSandboxController::class, 'failed']);
     });
 });
 

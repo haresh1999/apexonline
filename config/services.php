@@ -134,12 +134,14 @@ return [
 
     'payu' => [
         'sandbox' => [
-            'api_key' => '',
-            'signing_key' => '',
+            'payu_key' => '',
+            'payu_salt' => '',
+            'payu_url' => 'https://test.payu.in/_payment',
         ],
         'production' => [
-            'api_key' => '',
-            'signing_key' => '',
+            'payu_key' => '',
+            'payu_salt' => '',
+            'payu_url' => 'https://secure.payu.in/_payment',
         ]
     ]
 ];
