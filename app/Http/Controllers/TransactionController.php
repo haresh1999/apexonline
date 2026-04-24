@@ -221,7 +221,7 @@ class TransactionController extends Controller
 
         $transaction = Transaction::where('reference_id', $input['reference_id'])->first();
 
-        $callback_secret = User::where('id', $transaction->user_id)->value();
+        $callback_secret = User::where('id', $transaction->user_id)->value('callback_secret');
 
         $sendData = [
             'transaction_id' => $transaction->id,

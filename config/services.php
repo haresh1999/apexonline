@@ -134,13 +134,13 @@ return [
 
     'payu' => [
         'sandbox' => [
-            'payu_key' => '',
-            'payu_salt' => '',
+            'payu_key' => 'yo3nGZ',
+            'payu_salt' => 'yimnU1fcAwBksPg5E9lRZMV3aUWpqfir',
             'payu_url' => 'https://test.payu.in/_payment',
         ],
         'production' => [
-            'payu_key' => '',
-            'payu_salt' => '',
+            'payu_key' => 'wOOafB',
+            'payu_salt' => 'jiRpXWBYy43PWCBtprIPgFZ6HDOXdoWx',
             'payu_url' => 'https://secure.payu.in/_payment',
         ]
     ]

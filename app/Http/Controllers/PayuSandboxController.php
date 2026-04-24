@@ -30,26 +30,71 @@ class PayuSandboxController extends Controller
             'key' => setting('payu', 'payu_key'),
             'txnid' => $transaction->order_id,
             'amount' => number_format($transaction->amount, 2, '.', ''),
-            'productinfo' => "#Order Id:{$transaction->id} Payment",
+            'productinfo' => "Order Payment {$transaction->id}",
             'firstname' => $transaction->payer_name,
             'email' => $transaction->payer_email,
             'phone' => $transaction->payer_mobile,
-            'surl' => url('payu.sandbox.success'),
-            'furl' => url('payu.sandbox.failed'),
+            'surl' => url('payu/sandbox/success'),
+            'furl' => url('payu/sandbox/failed'),
+            'udf1' => $transaction->reference_id
         ];
 
-        $hash = $payu->generateHash($data);
+        $salt = setting('payu', 'payu_salt');
 
-        return view('payu', compact('data', 'hash'));
+        $hash = $payu->generateHash($data, $salt);
+
+        return view('payu.request', compact('data', 'hash'));
     }
 
-    public function success(Request $request)
+    public function success(Request $request, PayuPayment $payu)
     {
-        $request;
+        $input = $request->all();
+
+        $salt = setting('payu', 'payu_salt');
+
+        $isValidHash = $payu->verifyPayuResponse($input, $salt);
+
+        if (!$isValidHash) {
+            return redirect()->to(env('APP_URL'));
+        }
+
+        $transaction = Transaction::where('reference_id', $input['udf1'])->first();
+
+        if ($input['status'] === 'success') {
+
+            $transaction->update([
+                'request_response' => json_encode($input),
+                'status' => 'completed',
+            ]);
+        } else {
+            $transaction->update([
+                'request_response' => json_encode($input),
+                'status' => 'failed'
+            ]);
+        }
+
+        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
     }
 
-    public function failed(Request $request)
+    public function failed(Request $request, PayuPayment $payu)
     {
-        $request;
+        $input = $request->all();
+
+        $salt = setting('payu', 'payu_salt');
+
+        $isValidHash = $payu->verifyPayuResponse($input, $salt);
+
+        if (!$isValidHash) {
+            return redirect()->to(env('APP_URL'));
+        }
+
+        $transaction = Transaction::where('reference_id', $input['udf1'])->first();
+
+        $transaction->update([
+            'request_response' => json_encode($input),
+            'status' => 'failed'
+        ]);
+
+        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
     }
 }

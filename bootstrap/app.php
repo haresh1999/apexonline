@@ -29,7 +29,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'sandbox/token',
             'request',
             'sandbox/request',
+            'hdfc/callback',
             'hdfc/sandbox/callback',
+            'payu/success',
+            'payu/sandbox/success',
+            'payu/failed',
+            'payu/sandbox/failed',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
