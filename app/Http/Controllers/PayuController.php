@@ -73,7 +73,7 @@ class PayuController extends Controller
             ]);
         }
 
-        return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        return redirect()->to('production/redirect?reference_id=' . $transaction->reference_id);
     }
 
     public function failed(Request $request, PayuPayment $payu)
@@ -95,6 +95,6 @@ class PayuController extends Controller
             'status' => 'failed'
         ]);
 
-        return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        return redirect()->to('production/redirect?reference_id=' . $transaction->reference_id);
     }
 }

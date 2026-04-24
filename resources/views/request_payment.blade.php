@@ -27,7 +27,7 @@
 
     <h1>Live Payment</h1>
 
-    <form action="{{ url('/razorpay/request') }}" method="post">
+    <form action="{{ url('/production/request') }}" method="post">
         <input type="text" name="refresh_token" value="" placeholder="refresh token">
         <input type="text" name="signature" value="" placeholder="signature">
         <input type="text" name="payer_name" value="Haresh">
