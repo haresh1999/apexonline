@@ -43,7 +43,7 @@ class TransactionController extends Controller
                         ->where('env', $env);
                 }),
             ],
-            'amount' => ['required', 'numeric', 'min:1000'],
+            'amount' => ['required', 'numeric', 'min:1'],
             'payer_name' => ['required', 'string', 'max:255'],
             'payer_email' => ['required', 'email', 'max:255'],
             'payer_mobile' => ['required', 'digits:10'],
