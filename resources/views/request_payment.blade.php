@@ -31,11 +31,7 @@
         <input type="text" name="signature" value="" placeholder="signature">
         <input type="text" name="payer_name" value="Haresh">
         <input type="text" name="payer_email" value="hareshc1999@gmail.com">
-        <input type="text" name="payer_mobile" value="9106029220">
         <input type="text" name="amount" value="1">
-        <input type="text" name="order_id" value="{{ Str::random(10) }}">
-        <input type="text" name="callback_url" value="https://apexonline.in">
-        <input type="text" name="redirect_url" value="https://apexonline.in">
         <input type="submit" value="Paynow">
     </form>
 </body>

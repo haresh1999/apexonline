@@ -5,7 +5,7 @@ function setting($pg, $key)
     $currentUrl = url()->current();
 
     $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
-
+    
     return config("services.{$pg}.{$env}.{$key}");
 }
 
