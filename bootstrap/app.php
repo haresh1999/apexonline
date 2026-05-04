@@ -1,0 +1,43 @@
+<?php
+
+use App\Http\Middleware\{
+    AuthMiddleware,
+    SignatureMiddleware,
+    TokenMiddleware,
+};
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\{
+    Exceptions,
+    Middleware
+};
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        api: __DIR__ . '/../routes/api.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'auth' => AuthMiddleware::class,
+            'signature' => SignatureMiddleware::class,
+            'token' => TokenMiddleware::class,
+        ])->validateCsrfTokens(except: [
+            'production/token',
+            'sandbox/token',
+            'production/request',
+            'sandbox/request',
+
+            'hdfc/callback',
+            'hdfc/sandbox/callback',
+            'payu/success',
+            'payu/sandbox/success',
+            'payu/failed',
+            'payu/sandbox/failed',
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        //
+    })->create();
