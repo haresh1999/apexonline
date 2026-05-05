@@ -64,7 +64,8 @@ class TransactionController extends Controller
         // $gateway = $user['default_gateway'] ?? getPaymentGateway($input['amount']);
         // $gateway = 'ccavenue';
         // $gateway = 'payu';
-        $gateway = 'cashfree';
+        // $gateway = 'cashfree';
+        $gateway = 'instamojo';
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],

@@ -151,4 +151,21 @@ return [
             'secret_key' => 'cfsk_ma_prod_38202580bd53f4df239d20d888c29655_335f2cd4',
         ],
     ],
+
+    'instamojo' => [
+        'sandbox' => [
+            'client_id' => 'rRdQhtNsJVGSmTc9XwXcJQgLkM4i8JjQafQuOK6i',
+            'client_secret' => 'Z8AZPYDEHDsUDJdD4d6bVJL9DPpIYmhnLKdj8685fWOTkhlB2oqIc7AaACh7mt4pGgpeyFiEj0VgY7ogRSvZYqgGD8NGHECOKysIv6L0O56hgN5C3Xxqn9qN02O6XUJV',
+            'api_key' => 'bf938fc9d7a21289e6fcbee40c8135d2',
+            'auto_token' => '2095a8ddfd9b00ccfae26fcb73370792',
+            'salt_key' => '261453ec87d44daabb7bfbc852aef2a0'
+        ],
+        'production' => [
+            'client_id' => 'rRdQhtNsJVGSmTc9XwXcJQgLkM4i8JjQafQuOK6i',
+            'client_secret' => 'Z8AZPYDEHDsUDJdD4d6bVJL9DPpIYmhnLKdj8685fWOTkhlB2oqIc7AaACh7mt4pGgpeyFiEj0VgY7ogRSvZYqgGD8NGHECOKysIv6L0O56hgN5C3Xxqn9qN02O6XUJV',
+            'api_key' => 'bf938fc9d7a21289e6fcbee40c8135d2',
+            'auto_token' => '2095a8ddfd9b00ccfae26fcb73370792',
+            'salt_key' => '261453ec87d44daabb7bfbc852aef2a0'
+        ]
+    ]
 ];

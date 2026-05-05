@@ -143,21 +143,21 @@ Route::prefix('payu')->group(function () {
 
 Route::prefix('cashfree')->group(function () {
     Route::get('request', [CashfreeController::class, 'request']);
-    Route::get('success', [CashfreeController::class, 'callback']);
+    Route::any('success', [CashfreeController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [CashfreeSandboxController::class, 'request']);
-        Route::get('callback', [CashfreeSandboxController::class, 'callback']);
+        Route::any('callback', [CashfreeSandboxController::class, 'callback']);
     });
 });
 
 Route::prefix('instamojo')->group(function () {
     Route::get('request', [InstaMojoController::class, 'request']);
-    Route::get('success', [InstaMojoController::class, 'callback']);
+    Route::any('callback', [InstaMojoController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [InstaMojoSandboxController::class, 'request']);
-        Route::get('callback', [InstaMojoSandboxController::class, 'callback']);
+        Route::any('callback', [InstaMojoSandboxController::class, 'callback']);
     });
 });
 
