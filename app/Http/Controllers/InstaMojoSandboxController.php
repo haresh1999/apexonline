@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -113,6 +114,70 @@ class InstaMojoSandboxController extends Controller
 
     public function callback(Request $request)
     {
-        dd($request->all());
+        $paymentId = $request->input('payment_id');
+
+        if (!$paymentId) {
+            return response()->json(['error' => 'Payment ID missing'], 400);
+        }
+
+        $token = $this->getAccessToken();
+
+        if (!$token) {
+            return response()->json(['message' => 'Unable to get access token'], 500);
+        }
+
+        $transaction = Transaction::where('reference_id', $request->ref_id)
+            ->where('env', 'sandbox')
+            ->first();
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        if ($transaction->status === 'completed') {
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        }
+
+        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $token, 'accept' => 'application/json'])
+            ->get("https://api.instamojo.com/v2/payments/{$paymentId}");
+
+        if (!$response->successful()) {
+
+            $transaction->update([
+                'status' => 'failed',
+                'response' => json_encode($response->body())
+            ]);
+
+            return response()->json(['error' => 'API failed'], 500);
+        }
+
+        $data = $response->json();
+        $status = $data['status'] ?? null;
+
+        if (($data['order_info']['order_id'] ?? null) != $transaction->reference_id) {
+            abort(403, 'Order mismatch');
+        }
+
+        if ($status === true) {
+
+            $transaction->update([
+                'status' => 'completed',
+                'response' => json_encode($data)
+            ]);
+        } elseif ($status === false) {
+
+            $transaction->update([
+                'status' => 'failed',
+                'response' => json_encode($data)
+            ]);
+        } else {
+
+            $transaction->update([
+                'status' => 'pending',
+                'response' => json_encode($data)
+            ]);
+        }
+
+        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
     }
 }
