@@ -19,7 +19,7 @@ class InstaMojoSandboxController extends Controller
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/oauth2/token/');
+        curl_setopt($ch, CURLOPT_URL, 'https://test.instamojo.com/oauth2/token/');
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
@@ -84,7 +84,7 @@ class InstaMojoSandboxController extends Controller
         ];
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, 'https://api.instamojo.com/v2/payment_requests/');
+        curl_setopt($curl, CURLOPT_URL, 'https://test.instamojo.com/v2/payment_requests/');
         curl_setopt($curl, CURLOPT_HEADER, FALSE);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
@@ -109,7 +109,7 @@ class InstaMojoSandboxController extends Controller
             return redirect()->to($result['longurl']);
         }
 
-        return response()->json('Payment request failed. Try again.', $httpCode);
+        return response()->json(json_decode($response, true), $httpCode);
     }
 
     public function callback(Request $request)
