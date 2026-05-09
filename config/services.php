@@ -68,19 +68,19 @@ return [
 
     'phonepe' => [
         'sandbox' => [
-            'merchant' => 'EDU TRADE',
-            'merchant_id' => 'M23PMXE558QOM',
-            'client_id' => 'TEST-M23PMXE558QOM_25101',
+            'merchant' => 'APEX ONLINE',
+            'merchant_id' => 'M22PWSTHY7KC4',
+            'client_id' => 'M22PWSTHY7KC4_2605051809',
             'client_version' => 1,
-            'client_secret' => 'NDQ5ODdhMDYtN2YzOC00ZTQzLWE5NGYtODQxYTRjM2E1YWJi',
+            'client_secret' => 'NTU5MjIyMjktYjI2Yy00MDRmLWE3YTktMDQ3NGU4NzMwMjc4',
             'grant_type' => 'client_credentials',
         ],
         'production' => [
-            'merchant' => 'EDU TRADE',
-            'merchant_id' => 'M23PMXE558QOM',
-            'client_id' => 'SU2509231940115728161187',
+            'merchant' => 'APEX ONLINE',
+            'merchant_id' => 'M22PWSTHY7KC4',
+            'client_id' => 'SU2605051733192705903672',
             'client_version' => 1,
-            'client_secret' => 'ef6c3f40-db7b-4839-b97d-cc114df6d895',
+            'client_secret' => 'dd4d5212-193b-4461-9abc-b67fd368a0bf',
             'grant_type' => 'client_credentials',
         ],
     ],

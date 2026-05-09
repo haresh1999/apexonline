@@ -2,41 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PhonepeSandboxOrder;
-use App\Models\PhonepeUser;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class PhonepeSandboxController extends Controller
 {
-    public function create(Request $request)
-    {
-        $userId = config('services.phonepe.user.id');
-
-        $input = $request->validate([
-            'order_id' => ['required', 'string', Rule::unique('phonepe_sandbox_orders', 'order_id')->where('user_id', $userId)],
-            'amount' => ['required', 'numeric', 'min:1'],
-            'payer_name' => ['required', 'string', 'max:255'],
-            'payer_email' => ['required', 'email', 'max:255'],
-            'payer_mobile' => ['required', 'digits_between:9,11'],
-        ]);
-
-        $actionUrl = env('APP_URL') . '/phonepe/sandbox/request';
-
-        return view('phonepe.request', compact('actionUrl', 'input', 'userId'));
-    }
-
     private function getAccessToken()
     {
         $url = 'https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token';
 
         $fields = [
-            'client_id' => setting('client_id'),
-            'client_version' => setting('client_version'),
-            'client_secret' => setting('client_secret'),
-            'grant_type' => setting('grant_type')
+            'client_id' => setting('phonepe', 'client_id'),
+            'client_version' => setting('phonepe', 'client_version'),
+            'client_secret' => setting('phonepe', 'client_secret'),
+            'grant_type' => setting('phonepe', 'grant_type')
         ];
 
         $headers = [
@@ -49,7 +30,7 @@ class PhonepeSandboxController extends Controller
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($fields), // encodes as form data
+            CURLOPT_POSTFIELDS => http_build_query($fields),
             CURLOPT_HTTPHEADER => $headers,
         ]);
 
@@ -64,25 +45,45 @@ class PhonepeSandboxController extends Controller
 
     public function request(Request $request)
     {
-        $userId = $request->user_id;
-
-        $input = $request->validate([
-            'order_id' => ['required', 'string', Rule::unique('phonepe_sandbox_orders', 'order_id')->where('user_id', $userId)],
-            'amount' => ['required', 'numeric', 'min:1'],
-            'payer_name' => ['required', 'string', 'max:255'],
-            'payer_email' => ['required', 'email', 'max:255'],
-            'payer_mobile' => ['required', 'digits_between:9,11'],
-            'user_id' => ['required', 'integer', 'exists:phonepe_users,id'],
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+                $q->where('status', 'pending')->where('env', 'sandbox');
+            })]
         ]);
 
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->first());
+        }
+
+        $transaction = Transaction::where('reference_id', $request->reference_id)->first();
+
+        $actionUrl = url('phonepe/sandbox/redirect');
+
+        return view('phonepe.request', compact('actionUrl', 'transaction'));
+    }
+
+    public function redirect(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+                $q->where('status', 'pending')->where('env', 'sandbox');
+            })]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->first());
+        }
+
+        $transaction = Transaction::where('reference_id', $request->reference_id)->first();
+
         $payload = [
-            'merchantOrderId' => $input['order_id'],
-            'amount' => ($input['amount'] * 100),
+            'merchantOrderId' => $transaction->order_id,
+            'amount' => ($transaction->amount * 100),
             'paymentFlow' => [
                 'type' => 'PG_CHECKOUT',
                 'message' => 'Proceed to complete the payment',
                 'merchantUrls' => [
-                    'redirectUrl' => env('PHONEPE_SANDBOX_REDIRECT_URL') . "?order_id={$input['order_id']}",
+                    'redirectUrl' => url('phonepe/sandbox/callback') . "?ref_id={$transaction->reference_id}",
                 ],
             ],
         ];
@@ -109,28 +110,12 @@ class PhonepeSandboxController extends Controller
 
         $redirectUrl = json_decode($response, true);
 
-        $create['user_id'] = $userId;
-        $create['order_id'] = $input['order_id'];
-        $create['amount'] = $input['amount'];
-        $create['payer_name'] = $input['payer_name'];
-        $create['payer_email'] = $input['payer_email'];
-        $create['payer_mobile'] = $input['payer_mobile'];
-        $create['payment_response'] = $response;
-
         if (isset($redirectUrl['redirectUrl'])) {
 
             $redirectTo = $redirectUrl['redirectUrl'];
 
-            $create['status'] = 'pending';
-
-            PhonepeSandboxOrder::create($create);
-
             return redirect()->to($redirectTo);
         }
-
-        $create['status'] = 'failed';
-
-        PhonepeSandboxOrder::create($create);
 
         return response()->json([
             'status' => 'error',
@@ -141,103 +126,88 @@ class PhonepeSandboxController extends Controller
 
     public function callback(Request $request)
     {
-        $order = PhonepeSandboxOrder::with('user')
-            ->where('order_id', $request->order_id)
+        $request->validate([
+            'ref_id' => 'required',
+        ]);
+
+        $transaction = Transaction::where('reference_id', $request->ref_id)
+            ->where('gateway', 'phonepe')
+            ->where('env', 'sandbox')
             ->first();
 
-        abort_if(is_null($order), 404);
+        if (!$transaction) {
+            return response()->json([
+                'error' => 'Transaction not found'
+            ], 404);
+        }
 
-        if ($request->has('order_id')) {
+        // already processed
+        if ($transaction->status == 'completed') {
+            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+        }
 
-            $orderId = $request->order_id;
+        $url = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/order/{$transaction->order_id}/status";
 
-            $url = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/order/{$orderId}/status";
+        $accessToken = $this->getAccessToken();
 
-            $accessToken = $this->getAccessToken();
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: O-Bearer ' . $accessToken,
+        ];
 
-            $headers = [
-                'Content-Type: application/json',
-                'Authorization: O-Bearer ' . $accessToken,
-            ];
+        $ch = curl_init();
 
-            $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPGET => true,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_TIMEOUT => 30,
+        ]);
 
-            curl_setopt_array($ch, [
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPGET => true,
-                CURLOPT_HTTPHEADER => $headers,
+        $response = curl_exec($ch);
+        $curlError = curl_error($ch);
+
+        curl_close($ch);
+
+        // curl failed
+        if ($curlError) {
+
+            $transaction->update([
+                'status' => 'failed',
+                'payment_response' => $curlError,
             ]);
 
-            $response = curl_exec($ch);
-
-            $res = json_decode($response);
-
-            if (curl_errno($ch)) {
-
-                curl_close($ch);
-
-                $redirectUrl = $order->user->redirect_url;
-
-                $callbackUrl = $order->user->callback_url;
-
-                $order->update([
-                    'status' => 'failed',
-                    'payment_response' => $response,
-                ]);
-
-                $this->clientCallback($callbackUrl, $order);
-
-                return redirect()->to($redirectUrl);
-            } else {
-
-                curl_close($ch);
-
-                if (strtolower($res->state) == 'completed') {
-
-                    $redirectUrl = $order->user->redirect_url;
-
-                    $callbackUrl = $order->user->callback_url;
-
-                    $order->update([
-                        'status' => 'completed',
-                        'payment_response' => $response,
-                    ]);
-
-                    $this->clientCallback($callbackUrl, $order);
-
-                    return redirect()->to($redirectUrl);
-                }
-
-                if (strtolower($res->state) == 'pending') {
-
-                    $redirectUrl = $order->user->redirect_url;
-
-                    $callbackUrl = $order->user->callback_url;
-
-                    $order->update([
-                        'status' => 'pending',
-                        'payment_response' => $response,
-                    ]);
-
-                    $this->clientCallback($callbackUrl, $order);
-
-                    return redirect()->to($redirectUrl);
-                }
-
-                $redirectUrl = $order->user->redirect_url;
-
-                $callbackUrl = $order->user->callback_url;
-
-                $order->update([
-                    'status' => 'failed',
-                    'payment_response' => $response,
-                ]);
-
-                $this->clientCallback($callbackUrl, $order);
-
-                return redirect()->to($redirectUrl);
-            }
+            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
         }
+
+        $result = json_decode($response, true);
+
+        if (!$result) {
+
+            $transaction->update([
+                'status' => 'failed',
+                'payment_response' => $response,
+            ]);
+
+            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+        }
+
+        $state = strtolower(
+            $result['state'] ?? 'failed'
+        );
+
+        $paymentStatus = match ($state) {
+            'completed' => 'completed',
+            'pending' => 'pending',
+            default => 'failed',
+        };
+
+        $transaction->update([
+            'status' => $paymentStatus,
+            'payment_response' => json_encode($result),
+        ]);
+
+        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
     }
 }

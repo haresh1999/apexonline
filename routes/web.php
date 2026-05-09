@@ -61,37 +61,37 @@ Route::prefix('razorpay/sandbox')->group(function () {
 
 // SABPAISA
 Route::prefix('sabpaisa')->group(function () {
-    Route::post('request', [SabpaisaController::class, 'request'])->middleware('sabpaisa');
+    Route::post('request', [SabpaisaController::class, 'request']);
     Route::any('callback', [SabpaisaController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::post('request', [SabpaisaSandboxController::class, 'request'])->middleware('sabpaisa');
+        Route::post('request', [SabpaisaSandboxController::class, 'request']);
         Route::any('callback', [SabpaisaSandboxController::class, 'callback']);
     });
 });
 
 // PHONEPE
 Route::prefix('phonepe')->group(function () {
-    Route::post('create', [PhonepeController::class, 'create'])->middleware('phonepe');
-    Route::post('request', [PhonepeController::class, 'request']);
+    Route::get('request', [PhonepeController::class, 'request']);
+    Route::post('redirect', [PhonepeController::class, 'redirect']);
     Route::any('callback', [PhonepeController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::post('create', [PhonepeSandboxController::class, 'create'])->middleware('phonepe');
-        Route::post('request', [PhonepeSandboxController::class, 'request']);
+        Route::get('request', [PhonepeSandboxController::class, 'request']);
+        Route::post('redirect', [PhonepeSandboxController::class, 'redirect']);
         Route::any('callback', [PhonepeSandboxController::class, 'callback']);
     });
 });
 
 // PAYTM
 Route::prefix('paytm')->group(function () {
-    Route::post('create', [PaytmController::class, 'create'])->middleware('paytm');
-    Route::post('request', [PaytmController::class, 'request'])->middleware('paytm');
+    Route::post('create', [PaytmController::class, 'create']);
+    Route::post('request', [PaytmController::class, 'request']);
     Route::any('callback', [PaytmController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::post('create', [PaytmSandboxController::class, 'create'])->middleware('paytm');
-        Route::post('request', [PaytmSandboxController::class, 'request'])->middleware('paytm');
+        Route::post('create', [PaytmSandboxController::class, 'create']);
+        Route::post('request', [PaytmSandboxController::class, 'request']);
         Route::any('callback', [PaytmSandboxController::class, 'callback']);
     });
 });
@@ -142,12 +142,14 @@ Route::prefix('payu')->group(function () {
 });
 
 Route::prefix('cashfree')->group(function () {
+    Route::get('create', [CashfreeController::class, 'create']);
     Route::get('request', [CashfreeController::class, 'request']);
-    Route::any('success', [CashfreeController::class, 'callback']);
+    Route::post('callback', [CashfreeController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
+        Route::get('create', [CashfreeSandboxController::class, 'create']);
         Route::get('request', [CashfreeSandboxController::class, 'request']);
-        Route::any('callback', [CashfreeSandboxController::class, 'callback']);
+        Route::post('callback', [CashfreeSandboxController::class, 'callback']);
     });
 });
 
