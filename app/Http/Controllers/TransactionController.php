@@ -63,14 +63,13 @@ class TransactionController extends Controller
 
         $pgGateway = Transaction::latest()->value('gateway');
 
-        // $gateway = match ($pgGateway) {
-        //     'payu' => 'instamojo',
-        //     'instamojo' => 'cashfree',
-        //     'cashfree' => 'payu',
-        //     default => 'payu'
-        // };
-
-        $gateway = 'phonepe';
+        $gateway = match ($pgGateway) {
+            'payu' => 'instamojo',
+            'instamojo' => 'cashfree',
+            'cashfree' => 'phonepe',
+            'phonepe' => 'payu',
+            default => 'payu'
+        };
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],
