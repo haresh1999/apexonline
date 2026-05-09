@@ -77,7 +77,7 @@ class InstaMojoSandboxController extends Controller
         $payload = [
             'purpose' => 'Order Payment ' . $transaction->order_id,
             'amount' => $transaction->amount,
-            'redirect_url' => url('instamojo/sandbox/callback'),
+            'redirect_url' => url('instamojo/callback?reference_id=' . $transaction->reference_id),
             'buyer_name' => $transaction->payer_name,
             'email' => $transaction->payer_email,
             'phone' => $transaction->payer_mobile,
