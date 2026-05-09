@@ -25,9 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'signature' => SignatureMiddleware::class,
             'token' => TokenMiddleware::class,
         ])->validateCsrfTokens(except: [
-            'production/token',
+            'token',
             'sandbox/token',
-            'production/request',
+            'request',
             'sandbox/request',
 
             'hdfc/callback',
