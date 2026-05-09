@@ -168,5 +168,5 @@ Route::any('response', function (Request $request) {
 });
 
 Route::post('callback', function (Request $request) {
-    file_put_contents('response.json', json_encode($request->all()));
+    file_put_contents(public_path('response.json'), json_encode($request->all()));
 });
