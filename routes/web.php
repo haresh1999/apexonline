@@ -23,7 +23,7 @@ use App\Http\Controllers\{
     ZohoController,
     ZohoSandboxController,
 };
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('sandbox')->group(function () {
@@ -162,3 +162,11 @@ Route::prefix('instamojo')->group(function () {
 });
 
 Route::view('test-payment', 'request_payment');
+
+Route::any('response', function (Request $request) {
+    dd($request->all());
+});
+
+Route::post('callback', function (Request $request) {
+    file_put_contents('response.json', json_encode($request->all()));
+});
