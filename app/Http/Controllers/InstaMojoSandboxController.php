@@ -134,7 +134,7 @@ class InstaMojoSandboxController extends Controller
             return response()->json(['error' => 'Transaction not found'], 404);
         }
 
-        if ($transaction->status === 'completed') {
+        if ($transaction->status == 'completed') {
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
@@ -154,17 +154,13 @@ class InstaMojoSandboxController extends Controller
         $data = $response->json();
         $status = $data['status'] ?? null;
 
-        if (($data['order_info']['order_id'] ?? null) != $transaction->reference_id) {
-            abort(403, 'Order mismatch');
-        }
-
-        if ($status === true) {
+        if ($status == true) {
 
             $transaction->update([
                 'status' => 'completed',
                 'response' => json_encode($data)
             ]);
-        } elseif ($status === false) {
+        } elseif ($status == false) {
 
             $transaction->update([
                 'status' => 'failed',
