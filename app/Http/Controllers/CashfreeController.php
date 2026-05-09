@@ -14,7 +14,7 @@ class CashfreeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
-                $q->where('status', 'pending')->where('env', 'sandbox');
+                $q->where('status', 'pending')->where('env', 'production');
             })]
         ]);
 
@@ -137,7 +137,7 @@ class CashfreeController extends Controller
                 'response' => json_encode($response)
             ]);
 
-            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $result = json_decode($response, true);
@@ -149,7 +149,7 @@ class CashfreeController extends Controller
                 'response' => json_encode($response)
             ]);
 
-            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $orders = $result[0] ?? [];
@@ -161,7 +161,7 @@ class CashfreeController extends Controller
                 'response' => json_encode($response)
             ]);
 
-            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $status = strtolower($orders['order_status'] ?? '');
@@ -175,7 +175,7 @@ class CashfreeController extends Controller
         }
 
         if ($transaction->status == 'completed') {
-            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $transaction->update([
@@ -183,6 +183,6 @@ class CashfreeController extends Controller
             'response' => json_encode($result)
         ]);
 
-        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+        return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
     }
 }
