@@ -86,7 +86,7 @@ class SabpaisaSandboxController extends Controller
 
             SabpaisaSandboxOrder::where('order_id', $clientTxnId)->update([
                 'status' => in_array(strtolower($status), ['success', 'paid']) ? 'completed' : 'failed',
-                'request_response' => $response,
+                'payment_response' => $response,
             ]);
 
             $order = SabpaisaSandboxOrder::with('user')->where('order_id', $clientTxnId)->first();

@@ -115,7 +115,7 @@ class PhonepeSandboxController extends Controller
         $create['payer_name'] = $input['payer_name'];
         $create['payer_email'] = $input['payer_email'];
         $create['payer_mobile'] = $input['payer_mobile'];
-        $create['request_response'] = $response;
+        $create['payment_response'] = $response;
 
         if (isset($redirectUrl['redirectUrl'])) {
 
@@ -183,7 +183,7 @@ class PhonepeSandboxController extends Controller
 
                 $order->update([
                     'status' => 'failed',
-                    'request_response' => $response,
+                    'payment_response' => $response,
                 ]);
 
                 $this->clientCallback($callbackUrl, $order);
@@ -201,7 +201,7 @@ class PhonepeSandboxController extends Controller
 
                     $order->update([
                         'status' => 'completed',
-                        'request_response' => $response,
+                        'payment_response' => $response,
                     ]);
 
                     $this->clientCallback($callbackUrl, $order);
@@ -217,7 +217,7 @@ class PhonepeSandboxController extends Controller
 
                     $order->update([
                         'status' => 'pending',
-                        'request_response' => $response,
+                        'payment_response' => $response,
                     ]);
 
                     $this->clientCallback($callbackUrl, $order);
@@ -231,7 +231,7 @@ class PhonepeSandboxController extends Controller
 
                 $order->update([
                     'status' => 'failed',
-                    'request_response' => $response,
+                    'payment_response' => $response,
                 ]);
 
                 $this->clientCallback($callbackUrl, $order);

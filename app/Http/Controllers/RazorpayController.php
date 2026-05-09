@@ -70,7 +70,7 @@ class RazorpayController extends Controller
 
         $result = json_decode($response, true);
 
-        $transaction->update(['request_response' => json_encode($result)]);
+        $transaction->update(['payment_response' => json_encode($result)]);
 
         if ($httpCode === 200 && isset($result['id'])) {
             return  response()->json($result['id']);
@@ -155,18 +155,18 @@ class RazorpayController extends Controller
             if ($status === 'captured') {
 
                 $transaction->update([
-                    'request_response' => json_encode($result),
+                    'payment_response' => json_encode($result),
                     'status' => 'completed',
                 ]);
             } else {
                 $transaction->update([
-                    'request_response' => json_encode($result),
+                    'payment_response' => json_encode($result),
                     'status' => 'failed'
                 ]);
             }
         } else {
             $transaction->update([
-                'request_response' => json_encode($result),
+                'payment_response' => json_encode($result),
                 'status' => 'failed'
             ]);
         }

@@ -63,12 +63,12 @@ class PayuSandboxController extends Controller
         if ($input['status'] === 'success') {
 
             $transaction->update([
-                'request_response' => json_encode($input),
+                'payment_response' => json_encode($input),
                 'status' => 'completed',
             ]);
         } else {
             $transaction->update([
-                'request_response' => json_encode($input),
+                'payment_response' => json_encode($input),
                 'status' => 'failed'
             ]);
         }
@@ -91,7 +91,7 @@ class PayuSandboxController extends Controller
         $transaction = Transaction::where('reference_id', $input['udf1'])->first();
 
         $transaction->update([
-            'request_response' => json_encode($input),
+            'payment_response' => json_encode($input),
             'status' => 'failed'
         ]);
 

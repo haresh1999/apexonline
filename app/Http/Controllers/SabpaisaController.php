@@ -81,7 +81,7 @@ class SabpaisaController extends Controller
 
             SabpaisaOrder::where('order_id', $clientTxnId)->update([
                 'status' => in_array(strtolower($status), ['success', 'paid']) ? 'completed' : 'failed',
-                'request_response' => $decText,
+                'payment_response' => $decText,
             ]);
 
             $order = SabpaisaOrder::with('user')->where('order_id', $clientTxnId)->first();
