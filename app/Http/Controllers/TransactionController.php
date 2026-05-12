@@ -61,7 +61,7 @@ class TransactionController extends Controller
 
         $input = $validator->validated();
 
-        $pgGateway = Transaction::latest()->value('gateway');
+        $pgGateway = Transaction::where('status', 'completed')->latest('id')->value('gateway');
 
         $gateway = match ($pgGateway) {
             'payu' => 'instamojo',
