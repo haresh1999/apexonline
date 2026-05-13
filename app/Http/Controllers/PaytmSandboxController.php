@@ -66,7 +66,7 @@ class PaytmSandboxController extends Controller
             ]
         );
 
-        $transaction->update(['payment_response' => json_encode($request->josn())]);
+        $transaction->update(['payment_response' => json_encode($request->json())]);
 
         if ($response->successful()) {
 

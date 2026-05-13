@@ -33,16 +33,16 @@ class PaytmController extends Controller
         $merchantKey = setting('paytm', 'mkey');
         $website = setting('paytm', 'website');
 
-        $orderId = 'ORD_' . $transaction->order_id;
-        $amount = $transaction->amount;
-        $custId = "CUST_" . $transaction->reference_id;
+        $orderId = strtoupper('ORD_' . $transaction->order_id);
+        $amount = number_format($transaction->amount, 2, '.', '');
+        $custId = "CUST_" . rand(11111, 99999);
 
         $body = [
             "requestType" => "Payment",
             "mid" => $mid,
             "websiteName" => $website,
             "orderId" => $orderId,
-            "callbackUrl" => url('paytm/callback?ref_id=' . $transaction->reference_id),
+            "callbackUrl" => url('paytm/callback'),
             "txnAmount" => [
                 "value" => $amount,
                 "currency" => "INR"
@@ -52,21 +52,28 @@ class PaytmController extends Controller
             ]
         ];
 
-        $checksum = PaytmChecksum::generateSignature(json_encode($body), $merchantKey);
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json'
-        ])->post(
-            "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=$mid&orderId=$orderId",
-            [
-                "body" => $body,
-                "head" => [
-                    "signature" => $checksum
-                ]
-            ]
+        $checksum = PaytmChecksum::generateSignature(
+            json_encode($body, JSON_UNESCAPED_SLASHES),
+            $merchantKey
         );
 
-        $transaction->update(['payment_response' => json_encode($request->josn())]);
+        $response = Http::asJson()
+            ->withHeaders([
+                'Content-Type' => 'application/json'
+            ])
+            ->post(
+                "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=$mid&orderId=$orderId",
+                [
+                    "body" => $body,
+                    "head" => [
+                        "signature" => $checksum
+                    ]
+                ]
+            );
+
+        // dd($response->json());
+
+        $transaction->update(['payment_response' => json_encode($request->json())]);
 
         if ($response->successful()) {
 
