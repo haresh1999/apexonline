@@ -94,8 +94,8 @@ return [
             'cid' => 'WEB'
         ],
         'production' => [
-            'mid' => 'RsTmrE01629973240425',
-            'mkey' => 'bOuZxyutTrfL1DKV',
+            'mid' => 'Zxxphk24061617821448',
+            'mkey' => 'kAUX7qdEW2eA1Rk9',
             'website' => 'DEFAULT',
             'industry_type' => 'Retail',
             'cid' => 'WEB'
