@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classes\PaytmChecksum;
-use App\Models\PaytmSandboxOrder;
-use App\Models\PaytmUser;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -14,234 +13,169 @@ class PaytmSandboxController extends Controller
 {
     public function create(Request $request)
     {
-        $userId = config('services.paytm.user.id');
-
-        $input = $request->validate([
-            'order_id' => ['required', 'string', Rule::unique('paytm_sandbox_orders', 'order_id')->where('user_id', $userId)],
-            'amount' => ['required', 'numeric', 'min:1'],
-            'payer_name' => ['required', 'string', 'max:255'],
-            'payer_email' => ['required', 'email', 'max:255'],
-            'payer_mobile' => ['required', 'digits_between:9,11'],
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where('status', 'pending')->where('env', 'sandbox')]
         ]);
 
-        $actionUrl = env('APP_URL') . '/paytm/sandbox/request';
+        if ($validator->fails()) {
 
-        $token = str()->random(100);
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
 
-        PaytmUser::where('id', $userId)->update(['refresh_token' => $token]);
+        $input = $validator->validated();
 
-        return view('paytm.request', compact('actionUrl', 'input', 'userId', 'token'));
+        $transaction = Transaction::where('reference_id', $input['reference_id'])->first();
+
+        $mid = setting('paytm', 'mid');
+        $merchantKey = setting('paytm', 'mkey');
+        $website = setting('paytm', 'website');
+
+        $orderId = 'ORD_' . $transaction->order_id;
+        $amount = $transaction->amount;
+        $custId = "CUST_" . $transaction->reference_id;
+
+        $body = [
+            "requestType" => "Payment",
+            "mid" => $mid,
+            "websiteName" => $website,
+            "orderId" => $orderId,
+            "callbackUrl" => url('paytm/sandbox/callback?ref_id=' . $transaction->reference_id),
+            "txnAmount" => [
+                "value" => $amount,
+                "currency" => "INR"
+            ],
+            "userInfo" => [
+                "custId" => $custId
+            ]
+        ];
+
+        $checksum = PaytmChecksum::generateSignature(json_encode($body), $merchantKey);
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json'
+        ])->post(
+            "https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=$mid&orderId=$orderId",
+            [
+                "body" => $body,
+                "head" => [
+                    "signature" => $checksum
+                ]
+            ]
+        );
+
+        $transaction->update(['payment_response' => json_encode($request->josn())]);
+
+        if ($response->successful()) {
+
+            $responseBody = $response->json();
+
+            if (isset($responseBody['body']['txnToken']) && $responseBody['body']['resultInfo']['resultStatus'] === 'S') {
+
+                return response()->json([
+                    'status' => true,
+                    'orderId' => $orderId,
+                    'txnToken' => $responseBody['body']['txnToken'],
+                    'amount' => $transaction->amount
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $responseBody['body']['resultInfo']['resultMsg'] ?? 'Paytm error'
+            ], 400);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Failed to create payment',
+        ], 401);
     }
 
     public function request(Request $request)
     {
-        $userId = $request->user_id;
-
-        $input = $request->validate([
-            'order_id' => ['required', 'string', Rule::unique('paytm_sandbox_orders', 'order_id')->where('user_id', $userId)],
-            'amount' => ['required', 'numeric', 'min:1'],
-            'payer_name' => ['required', 'string', 'max:255'],
-            'payer_email' => ['required', 'email', 'max:255'],
-            'payer_mobile' => ['required', 'digits_between:9,11'],
-            'user_id' => ['required', 'integer', 'exists:paytm_users,id'],
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+                $q->where('status', 'pending')->where('env', 'sandbox');
+            })]
         ]);
 
-        $linkName = preg_replace('/[^A-Za-z0-9 _-]/', '', $input['payer_name']);
-
-        $linkName = trim($linkName);
-
-        $body = [
-            'mid' => setting('mid'),
-            'linkType' => 'FIXED',
-            'linkDescription' => 'Test Payment',
-            'linkName' => $linkName,
-            'amount' => (string)$input['amount'],
-            'customerContact' => [
-                'customerName' => $input['payer_name'],
-                'customerEmail' => $input['payer_email'],
-                'customerMobile' => $input['payer_mobile']
-            ],
-            'linkOrderId' => $input['order_id'],
-            'singleTransactionOnly' => true,
-            'redirectionUrlSuccess' => env('PAYTM_SANDBOX_REDIRECT_URL') . "?order_id={$input['order_id']}",
-            'redirectionUrlFailure' => env('PAYTM_SANDBOX_REDIRECT_URL') . "?order_id={$input['order_id']}"
-        ];
-
-        $signature = PaytmChecksum::generateSignature(
-            json_encode($body, JSON_UNESCAPED_SLASHES),
-            setting('mkey')
-        );
-
-        $payload = [
-            "head" => [
-                "version" => "v2",
-                "timestamp" => round(microtime(true) * 1000),
-                "channelId" => "WEB",
-                "tokenType" => "AES",
-                "clientId" => setting('cid'),
-                "signature" => $signature
-            ],
-            "body" => $body
-        ];
-
-        $payloadJson = json_encode($payload, JSON_UNESCAPED_SLASHES);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://securestage.paytmpayments.com/link/create",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $payloadJson,
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json"
-            ]
-        ]);
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-        $res = json_decode($response, true);
-
-        $create['user_id'] = $userId;
-        $create['order_id'] = $input['order_id'];
-        $create['amount'] = $input['amount'];
-        $create['payer_name'] = $input['payer_name'];
-        $create['payer_email'] = $input['payer_email'];
-        $create['payer_mobile'] = $input['payer_mobile'];
-        $create['payment_response'] = $response;
-
-        if (isset($res['body']['shortUrl'])) {
-
-            $redirectTo = $res['body']['shortUrl'];
-
-            $create['status'] = 'pending';
-
-            PaytmSandboxOrder::create($create);
-
-            return redirect()->to($redirectTo);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->first());
         }
 
-        $create['status'] = 'failed';
+        $transaction = Transaction::where('reference_id', $request->reference_id)->first();
 
-        PaytmSandboxOrder::create($create);
+        $createOrderUrl = url('paytm/sandbox/create?reference_id=' . $transaction->reference_id);
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to create payment link',
-            'details' => $response
-        ], 401);
+        return view('paytm.request', compact('createOrderUrl', 'transaction'));
     }
-  
+
     public function callback(Request $request)
     {
-        $order = PaytmSandboxOrder::with('user')
-            ->where('order_id', $request->order_id)
+        $request->validate([
+            'ref_id' => 'required'
+        ]);
+
+        $transaction = Transaction::where('reference_id', $request->ref_id)
+            ->where('gateway', 'paytm')
+            ->where('env', 'sandbox')
             ->first();
 
-        abort_if(is_null($order), 404);
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
 
-        if ($request->has('order_id')) {
+        if ($transaction->status == 'completed') {
+            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+        }
 
-            $body = [
-                "mid" => setting('mid'),
-                "orderId" => $order->order_id
-            ];
+        $mid = setting('paytm', 'mid');
+        $merchantKey = setting('paytm', 'mkey');
 
-            $signature = PaytmChecksum::generateSignature(
-                json_encode($body, JSON_UNESCAPED_SLASHES),
-                setting('mkey')
-            );
+        $orderId = $request->ORDERID;
 
-            $payload = [
+        $body = [
+            "mid" => $mid,
+            "orderId" => $orderId
+        ];
+
+        $checksum = PaytmChecksum::generateSignature(
+            json_encode($body),
+            $merchantKey
+        );
+
+        $response = Http::withHeaders(['Content-Type' => 'application/json'])->post(
+            "https://securegw-stage.paytm.in/v3/order/status",
+            [
                 "body" => $body,
                 "head" => [
-                    "tokenType" => "AES",
-                    "signature" => $signature
-                ],
-            ];
+                    "signature" => $checksum
+                ]
+            ]
+        );
 
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => "https://securestage.paytmpayments.com/v3/order/status",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST => true,
-                CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
-                CURLOPT_POSTFIELDS => json_encode($payload)
+        $responseBody = $response->json();
+
+        if (isset($responseBody['body']['resultInfo']['resultStatus']) && $responseBody['body']['resultInfo']['resultStatus'] === 'TXN_SUCCESS') {
+
+            $orderId = str_replace('ORD_', '', $orderId);
+
+            $transaction->update([
+                'status' => 'completed',
+                'payment_response' => json_encode($responseBody)
             ]);
 
-            $response = curl_exec($curl);
-
-            $res = json_decode($response);
-
-            if (curl_errno($curl)) {
-
-                curl_close($curl);
-
-                $redirectUrl = $order->user->redirect_url;
-
-                $callbackUrl = $order->user->callback_url;
-
-                $order->update([
-                    'status' => 'failed',
-                    'payment_response' => $response,
-                ]);
-
-                $this->clientCallback($callbackUrl, $order);
-
-                return redirect()->to($redirectUrl);
-            } else {
-
-                curl_close($curl);
-
-                $status = $res->body->resultInfo->resultStatus;
-
-                if (strtolower($status) == 'txn_success') {
-
-                    $redirectUrl = $order->user->redirect_url;
-
-                    $callbackUrl = $order->user->callback_url;
-
-                    $order->update([
-                        'status' => 'completed',
-                        'payment_response' => $response,
-                    ]);
-
-                    $this->clientCallback($callbackUrl, $order);
-
-                    return redirect()->to($redirectUrl);
-                }
-
-                if (strtolower($status) == 'pending') {
-
-                    $redirectUrl = $order->user->redirect_url;
-
-                    $callbackUrl = $order->user->callback_url;
-
-                    $order->update([
-                        'status' => 'pending',
-                        'payment_response' => $response,
-                    ]);
-
-                    $this->clientCallback($callbackUrl, $order);
-
-                    return redirect()->to($redirectUrl);
-                }
-
-                $redirectUrl = $order->user->redirect_url;
-
-                $callbackUrl = $order->user->callback_url;
-
-                $order->update([
-                    'status' => 'failed',
-                    'payment_response' => $response,
-                ]);
-
-                $this->clientCallback($callbackUrl, $order);
-
-                return redirect()->to($redirectUrl);
-            }
+            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
         }
+
+        $transaction->update([
+            'status' => 'failed',
+            'payment_response' => json_encode($responseBody)
+        ]);
+
+        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
     }
 }

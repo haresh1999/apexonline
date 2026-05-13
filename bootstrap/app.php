@@ -36,6 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'payu/sandbox/success',
             'payu/failed',
             'payu/sandbox/failed',
+            'paytm/callback',
+            'paytm/sandbox/callback',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -85,13 +85,13 @@ Route::prefix('phonepe')->group(function () {
 
 // PAYTM
 Route::prefix('paytm')->group(function () {
-    Route::post('create', [PaytmController::class, 'create']);
-    Route::post('request', [PaytmController::class, 'request']);
+    Route::get('request', [PaytmController::class, 'request']);
+    Route::get('create', [PaytmController::class, 'create']);
     Route::any('callback', [PaytmController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::post('create', [PaytmSandboxController::class, 'create']);
-        Route::post('request', [PaytmSandboxController::class, 'request']);
+        Route::get('request', [PaytmSandboxController::class, 'request']);
+        Route::get('create', [PaytmSandboxController::class, 'create']);
         Route::any('callback', [PaytmSandboxController::class, 'callback']);
     });
 });
