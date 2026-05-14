@@ -33,72 +33,78 @@ class PaytmController extends Controller
         $merchantKey = setting('paytm', 'mkey');
         $website = setting('paytm', 'website');
 
-        $orderId = strtoupper('ORD_' . $transaction->order_id);
+        $orderId = 'ORD_' . strtoupper($transaction->order_id);
         $amount = number_format($transaction->amount, 2, '.', '');
         $custId = "CUST_" . rand(11111, 99999);
 
-        $body = [
-            "requestType" => "Payment",
-            "mid" => $mid,
-            "websiteName" => $website,
-            "orderId" => $orderId,
-            "callbackUrl" => url('paytm/callback'),
-            "txnAmount" => [
-                "value" => $amount,
-                "currency" => "INR"
-            ],
-            "userInfo" => [
-                "custId" => $custId
-            ]
-        ];
+        $paytmParams = array();
 
-        $checksum = PaytmChecksum::generateSignature(
-            json_encode($body, JSON_UNESCAPED_SLASHES),
-            $merchantKey
+        $paytmParams["body"] = array(
+            "requestType"  => "Payment",
+            "mid"      => $mid,
+            "websiteName"  => $website,
+            "orderId"    => $orderId,
+            "callbackUrl"  => url('paytm/callback'),
+            "txnAmount"   => array(
+                "value"   => $amount,
+                "currency" => "INR",
+            ),
+            "userInfo"   => array(
+                "custId"  => $custId,
+            ),
         );
 
-        $response = Http::asJson()
-            ->withHeaders([
-                'Content-Type' => 'application/json'
-            ])
-            ->post(
-                "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=$mid&orderId=$orderId",
-                [
-                    "body" => $body,
-                    "head" => [
-                        "signature" => $checksum
-                    ]
-                ]
-            );
+        $checksum = PaytmChecksum::generateSignature(json_encode($paytmParams["body"], JSON_UNESCAPED_SLASHES), $merchantKey);
 
-        // dd($response->json());
+        $paytmParams["head"] = array(
+            "signature" => $checksum
+        );
 
-        $transaction->update(['payment_response' => json_encode($request->json())]);
+        $post_data = json_encode($paytmParams, JSON_UNESCAPED_SLASHES);
 
-        if ($response->successful()) {
+        $url = "https://secure.paytmpayments.com/theia/api/v1/initiateTransaction?mid=$mid&orderId=$orderId";
 
-            $responseBody = $response->json();
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 
-            if (isset($responseBody['body']['txnToken']) && $responseBody['body']['resultInfo']['resultStatus'] === 'S') {
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
 
-                return response()->json([
-                    'status' => true,
-                    'orderId' => $orderId,
-                    'txnToken' => $responseBody['body']['txnToken'],
-                    'amount' => $transaction->amount
-                ]);
-            }
+        curl_close($ch);
 
+        if ($curlError) {
             return response()->json([
                 'status' => false,
-                'message' => $responseBody['body']['resultInfo']['resultMsg'] ?? 'Paytm error'
-            ], 400);
+                'message' => $curlError
+            ], 500);
+        }
+
+        $responseBody = json_decode($response, true);
+
+        $transaction->update([
+            'payment_response' => json_encode($responseBody)
+        ]);
+
+        if ($httpCode == 200 && isset($responseBody['body']['txnToken']) && $responseBody['body']['resultInfo']['resultStatus'] === 'S') {
+
+            return response()->json([
+                'status' => true,
+                'orderId' => $orderId,
+                'txnToken' => $responseBody['body']['txnToken'],
+                'amount' => $transaction->amount
+            ]);
         }
 
         return response()->json([
             'status' => false,
-            'message' => 'Failed to create payment',
-        ], 401);
+            'message' => $responseBody['body']['resultInfo']['resultMsg']
+                ?? 'Paytm transaction failed',
+            'response' => $responseBody
+        ], 400);
     }
 
     public function request(Request $request)
@@ -138,37 +144,43 @@ class PaytmController extends Controller
         if ($transaction->status == 'completed') {
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
-
         $mid = setting('paytm', 'mid');
         $merchantKey = setting('paytm', 'mkey');
 
-        $orderId = $request->ORDERID;
-
         $body = [
             "mid" => $mid,
-            "orderId" => $orderId
+            "orderId" => 'ORD_' . strtoupper($transaction->order_id),
         ];
 
+        // Generate checksum from BODY only
         $checksum = PaytmChecksum::generateSignature(
-            json_encode($body),
+            json_encode($body, JSON_UNESCAPED_SLASHES),
             $merchantKey
         );
 
-        $response = Http::withHeaders(['Content-Type' => 'application/json'])->post(
-            "https://securegw.paytm.in/v3/order/status",
-            [
-                "body" => $body,
-                "head" => [
-                    "signature" => $checksum
-                ]
+        $paytmParams = [
+            "body" => $body,
+            "head" => [
+                "signature" => $checksum
             ]
-        );
+        ];
+
+        // Correct Production URL
+        $url = "https://secure.paytmpayments.com/order/status";
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json'
+        ])
+            ->withOptions([
+                'verify' => false
+            ])
+            ->send('POST', $url, [
+                'body' => json_encode($paytmParams, JSON_UNESCAPED_SLASHES)
+            ]);
 
         $responseBody = $response->json();
 
         if (isset($responseBody['body']['resultInfo']['resultStatus']) && $responseBody['body']['resultInfo']['resultStatus'] === 'TXN_SUCCESS') {
-
-            $orderId = str_replace('ORD_', '', $orderId);
 
             $transaction->update([
                 'status' => 'completed',
