@@ -71,7 +71,7 @@ class TransactionController extends Controller
             default => 'payu'
         };
 
-        // $gateway = 'paytm';
+        $gateway = 'paytm';
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],

@@ -11,24 +11,8 @@ use Illuminate\Validation\Rule;
 
 class PaytmController extends Controller
 {
-    public function create(Request $request)
+    private function createOrder($transaction)
     {
-        $validator = Validator::make($request->all(), [
-            'reference_id' => ['required', Rule::exists('transactions')->where('status', 'pending')->where('env', 'production')]
-        ]);
-
-        if ($validator->fails()) {
-
-            return response()->json([
-                'status' => false,
-                'message' => $validator->errors()->first()
-            ], 422);
-        }
-
-        $input = $validator->validated();
-
-        $transaction = Transaction::where('reference_id', $input['reference_id'])->first();
-
         $mid = setting('paytm', 'mid');
         $merchantKey = setting('paytm', 'mkey');
         $website = setting('paytm', 'website');
@@ -44,7 +28,7 @@ class PaytmController extends Controller
             "mid"      => $mid,
             "websiteName"  => $website,
             "orderId"    => $orderId,
-            "callbackUrl"  => url('paytm/callback'),
+            "callbackUrl"  => url('paytm/callback?ref_id=' . $transaction->reference_id),
             "txnAmount"   => array(
                 "value"   => $amount,
                 "currency" => "INR",
@@ -77,10 +61,10 @@ class PaytmController extends Controller
         curl_close($ch);
 
         if ($curlError) {
-            return response()->json([
+            return [
                 'status' => false,
                 'message' => $curlError
-            ], 500);
+            ];
         }
 
         $responseBody = json_decode($response, true);
@@ -91,20 +75,19 @@ class PaytmController extends Controller
 
         if ($httpCode == 200 && isset($responseBody['body']['txnToken']) && $responseBody['body']['resultInfo']['resultStatus'] === 'S') {
 
-            return response()->json([
+            return [
                 'status' => true,
                 'orderId' => $orderId,
                 'txnToken' => $responseBody['body']['txnToken'],
-                'amount' => $transaction->amount
-            ]);
+                'amount' => $amount
+            ];
         }
 
-        return response()->json([
+        return [
             'status' => false,
-            'message' => $responseBody['body']['resultInfo']['resultMsg']
-                ?? 'Paytm transaction failed',
+            'message' => $responseBody['body']['resultInfo']['resultMsg'] ?? 'Paytm transaction failed',
             'response' => $responseBody
-        ], 400);
+        ];
     }
 
     public function request(Request $request)
@@ -121,9 +104,13 @@ class PaytmController extends Controller
 
         $transaction = Transaction::where('reference_id', $request->reference_id)->first();
 
-        $createOrderUrl = url('paytm/create?reference_id=' . $transaction->reference_id);
+        $token = $this->createOrder($transaction);
 
-        return view('paytm.request', compact('createOrderUrl', 'transaction'));
+        if (! $token['status']) {
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        }
+
+        return view('paytm.request', compact('transaction', 'token'));
     }
 
     public function callback(Request $request)
@@ -144,43 +131,29 @@ class PaytmController extends Controller
         if ($transaction->status == 'completed') {
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
+
         $mid = setting('paytm', 'mid');
         $merchantKey = setting('paytm', 'mkey');
 
-        $body = [
-            "mid" => $mid,
-            "orderId" => 'ORD_' . strtoupper($transaction->order_id),
-        ];
+        $paytmParams = array();
 
-        // Generate checksum from BODY only
-        $checksum = PaytmChecksum::generateSignature(
-            json_encode($body, JSON_UNESCAPED_SLASHES),
-            $merchantKey
+        $paytmParams = array(
+            "MID" => $mid,
+            "ORDERID" => 'ORD_' . strtoupper($transaction->order_id),
         );
 
-        $paytmParams = [
-            "body" => $body,
-            "head" => [
-                "signature" => $checksum
-            ]
-        ];
+        $paytmParams['CHECKSUMHASH'] = PaytmChecksum::generateSignature(json_encode($paytmParams, JSON_UNESCAPED_SLASHES), $merchantKey);
 
         // Correct Production URL
         $url = "https://secure.paytmpayments.com/order/status";
 
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json'
-        ])
-            ->withOptions([
-                'verify' => false
-            ])
-            ->send('POST', $url, [
-                'body' => json_encode($paytmParams, JSON_UNESCAPED_SLASHES)
-            ]);
+        $response = Http::withHeaders(['Content-Type' => 'application/json'])
+            ->withOptions(['verify' => false])
+            ->send('POST', $url, ['body' => json_encode($paytmParams, JSON_UNESCAPED_SLASHES)]);
 
         $responseBody = $response->json();
 
-        if (isset($responseBody['body']['resultInfo']['resultStatus']) && $responseBody['body']['resultInfo']['resultStatus'] === 'TXN_SUCCESS') {
+        if (isset($responseBody['STATUS']) == 'TXN_SUCCESS') {
 
             $transaction->update([
                 'status' => 'completed',
