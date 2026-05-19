@@ -61,11 +61,11 @@ Route::prefix('razorpay/sandbox')->group(function () {
 
 // SABPAISA
 Route::prefix('sabpaisa')->group(function () {
-    Route::post('request', [SabpaisaController::class, 'request']);
+    Route::get('request', [SabpaisaController::class, 'request']);
     Route::any('callback', [SabpaisaController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::post('request', [SabpaisaSandboxController::class, 'request']);
+        Route::get('request', [SabpaisaSandboxController::class, 'request']);
         Route::any('callback', [SabpaisaSandboxController::class, 'callback']);
     });
 });

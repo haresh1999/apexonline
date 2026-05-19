@@ -41,17 +41,13 @@ return [
     'sabpaisa' => [
         'sandbox' => [
             'client_code' => env('SABPAISA_SANDBOX_CLIENT_CODE'),
-            'username' => env('SABPAISA_SANDBOX_USERNAME'),
-            'password' => env('SABPAISA_SANDBOX_PASSWORD'),
-            'auth_key' => env('SABPAISA_SANDBOX_AUTH_KEY'),
-            'auth_iv' => env('SABPAISA_SANDBOX_AUTH_IV'),
+            'api_key' => env('SABPAISA_SANDBOX_API_KEY'),
+            'secret' => env('SABPAISA_SANDBOX_SECRET'),
         ],
         'production' => [
             'client_code' => env('SABPAISA_CLIENT_CODE'),
-            'username' => env('SABPAISA_CLIENT_USERNAME'),
-            'password' => env('SABPAISA_CLIENT_PASSWORD'),
-            'auth_key' => env('SABPAISA_CLIENT_AUTH_KEY'),
-            'auth_iv' => env('SABPAISA_CLIENT_AUTH_IV'),
+            'api_key' => env('SABPAISA_API_KEY'),
+            'secret' => env('SABPAISA_SECRET'),
         ],
     ],
 

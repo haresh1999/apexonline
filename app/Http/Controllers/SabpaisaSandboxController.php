@@ -31,8 +31,8 @@ class SabpaisaSandboxController extends Controller
             $timestamp = time();
             $merchantTxnId = 'TESTING' . $orderId . $timestamp;
 
-            $merchantId = setting('sabpaisa', 'merchant_id');
-            $secretKey = setting('sabpaisa', 'secret_key');
+            $merchantId = setting('sabpaisa', 'client_code');
+            $secretKey = setting('sabpaisa', 'secret');
             $apiKey = setting('sabpaisa', 'api_key');
 
             $apiUrl = 'https://staging-sb-merchant-api.sabpaisa.in/api/v2/payments';
@@ -65,6 +65,10 @@ class SabpaisaSandboxController extends Controller
 
             $body = $response->json();
 
+            $transaction->update([
+                'payment_response' => json_encode($body)
+            ]);
+
             if ($response->status() == 201 && isset($body['checkoutUrl']) && isset($body['clientSecret'])) {
 
                 $redirectUrl = $body['checkoutUrl'] . '?clientSecret=' . $body['clientSecret'];
@@ -90,10 +94,9 @@ class SabpaisaSandboxController extends Controller
     public function callback(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ref_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+            'ref_id' => ['required', Rule::exists('transactions', 'reference_id')->where(function ($q) {
                 $q->where('status', 'pending')->where('env', 'sandbox');
             })],
-            'order_id' => 'required',
             'status' => 'required',
         ]);
 

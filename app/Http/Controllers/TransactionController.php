@@ -72,6 +72,8 @@ class TransactionController extends Controller
             default => 'paytm'
         };
 
+        $gateway = 'sabpaisa';
+
         $tnx = Transaction::create([
             'user_id' => $user['id'],
             'order_id' => $input['order_id'],
