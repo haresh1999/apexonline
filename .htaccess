@@ -5,6 +5,26 @@
 
     RewriteEngine On
 
+    # ==========================
+    # SECURITY BLOCKS
+    # ==========================
+
+    # Allow SSL verification folder
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
+
+    # Block all hidden dot files/folders (.env, .git, etc.)
+    RewriteRule "(^|/)\." - [F,L]
+
+    # Block sensitive Laravel / system files
+    RewriteRule ^(artisan|server\.php|composer\.(json|lock)|package(-lock)?\.json|vite\.config\.(js|ts)|webpack\.mix\.js|phpunit\.xml|README\.md|readme\.md)$ - [F,L,NC]
+
+    # Block framework/internal folders
+    RewriteRule ^(storage|vendor|bootstrap/cache|tests)/ - [F,L,NC]
+
+    # ==========================
+    # KEEP OLD LARAVEL LOGIC
+    # ==========================
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -13,47 +33,30 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # Redirect Trailing Slashes If Not A Folder...
+    # Redirect Trailing Slashes If Not A Folder
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Send Requests To Front Controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
 
+# Disable Directory Listing
+Options -Indexes
+
 # BEGIN cPanel-generated php ini directives, do not edit
-# Manual editing of this file may result in unexpected behavior.
-# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
-# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
 <IfModule php8_module>
-
 </IfModule>
+
 <IfModule lsapi_module>
-
 </IfModule>
-# END cPanel-generated php ini directives, do not edit
+# END cPanel-generated php ini directives
 
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “alt-php82” package as the default “PHP” programming language.
 <IfModule mime_module>
   AddHandler application/x-httpd-alt-php82 .php .php8 .phtml
 </IfModule>
-# php -- END cPanel-generated handler, do not edit
-
-# Disable Directory listing
-Options -Indexes
-
-# block files which needs to be hidden // in here specify .example extension of the file
-<Files ~ "\.(env|config.js|md|gitignore|gitattributes|lock|example)$">
-    Order allow,deny
-    Deny from all
-</Files>
-
-# in here specify full file name sperator '|'
-<Files ~ "(artisan)$">
-    Order allow,deny
-    Deny from all
-</Files>
+# php -- END cPanel-generated handler

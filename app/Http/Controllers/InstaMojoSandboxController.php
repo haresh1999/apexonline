@@ -42,7 +42,10 @@ class InstaMojoSandboxController extends Controller
         $result = json_decode($response, true);
 
         if (isset($result['access_token'])) {
-            return $result['access_token'];
+            return [
+                'status' => true,
+                'token' => $result['access_token']
+            ];
         };
 
         return [
@@ -67,7 +70,7 @@ class InstaMojoSandboxController extends Controller
 
         $token = $this->getAccessToken();
 
-        if (! $token) {
+        if ($token['status'] == false) {
 
             return response()->json(['message' => $token['message']]);
         }
@@ -88,7 +91,7 @@ class InstaMojoSandboxController extends Controller
         curl_setopt($curl, CURLOPT_HEADER, FALSE);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $token));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $token['token']));
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
 
@@ -122,7 +125,7 @@ class InstaMojoSandboxController extends Controller
 
         $token = $this->getAccessToken();
 
-        if (!$token) {
+        if ($token['status'] == false) {
             return response()->json(['message' => 'Unable to get access token'], 500);
         }
 
@@ -138,7 +141,7 @@ class InstaMojoSandboxController extends Controller
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
-        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $token, 'accept' => 'application/json'])
+        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $token['token'], 'accept' => 'application/json'])
             ->get("https://api.instamojo.com/v2/payments/{$paymentId}");
 
         if (!$response->successful()) {
