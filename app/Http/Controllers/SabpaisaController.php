@@ -52,6 +52,7 @@ class SabpaisaController extends Controller
                 'returnUrl' => url('sabpaisa/callback?ref_id=' . $transaction->reference_id),
                 'description' => 'Order #' . $orderId,
                 'checksum' => $checksum,
+                'paymentMode' => 'UPI_QR',
                 'timestamp' => $timestamp
             ];
 
