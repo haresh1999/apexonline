@@ -40,91 +40,91 @@ return [
 
     'sabpaisa' => [
         'sandbox' => [
-            'client_code' => 'DCRBP',
-            'username' => 'userph.jha_3036',
-            'password' => 'DBOI1_SP3036',
-            'auth_key' => '0jeOYcu3UnfmWyLC',
-            'auth_iv' => 'C28LAmGxXTqmK0QJ',
+            'client_code' => env('SABPAISA_SANDBOX_CLIENT_CODE'),
+            'username' => env('SABPAISA_SANDBOX_USERNAME'),
+            'password' => env('SABPAISA_SANDBOX_PASSWORD'),
+            'auth_key' => env('SABPAISA_SANDBOX_AUTH_KEY'),
+            'auth_iv' => env('SABPAISA_SANDBOX_AUTH_IV'),
         ],
         'production' => [
-            'client_code' => 'SHA9I6',
-            'username' => 'ikondubai@gmail.com',
-            'password' => 'SHA9I6_SP23560',
-            'auth_key' => 'HT3sbrw8jrzKBmZqt0Wr7iFWZaq9mWy5j8d/Yu7WQxE=',
-            'auth_iv' => '0Op4vCNftDe4i0OwdOfP99BW2qz8KCfOzyXz66VWL4L2q50/uzB2ygpF6Xq+2Vea',
+            'client_code' => env('SABPAISA_CLIENT_CODE'),
+            'username' => env('SABPAISA_CLIENT_USERNAME'),
+            'password' => env('SABPAISA_CLIENT_PASSWORD'),
+            'auth_key' => env('SABPAISA_CLIENT_AUTH_KEY'),
+            'auth_iv' => env('SABPAISA_CLIENT_AUTH_IV'),
         ],
     ],
 
     'razorpay' => [
         'sandbox' => [
-            'key_id' => 'rzp_test_RXE0uWen59xOZ0',
-            'key_secret' => 'PRq5jSWVM7VvKc5fqEdaqhWn',
+            'key_id' => env('RAZORPAY_SANDBOX_KEY_ID'),
+            'key_secret' => env('RAZORPAY_SANDBOX_KEY_SECRET'),
         ],
         'production' => [
-            'key_id' => 'rzp_live_RTIzeZS7Q22shx',
-            'key_secret' => 'nca3Agw8XlpW95Hfmp4et4al',
+            'key_id' => env('RAZORPAY_KEY_ID'),
+            'key_secret' => env('RAZORPAY_KEY_SECRET'),
         ],
     ],
 
     'phonepe' => [
         'sandbox' => [
-            'merchant' => 'APEX ONLINE',
-            'merchant_id' => 'M22PWSTHY7KC4',
-            'client_id' => 'M22PWSTHY7KC4_2605051809',
-            'client_version' => 1,
-            'client_secret' => 'NTU5MjIyMjktYjI2Yy00MDRmLWE3YTktMDQ3NGU4NzMwMjc4',
-            'grant_type' => 'client_credentials',
+            'merchant' => env('PHONEPE_SANDBOX_MERCHANT'),
+            'merchant_id' => env('PHONEPE_SANDBOX_MERCHANT_ID'),
+            'client_id' => env('PHONEPE_SANDBOX_CLIENT_ID'),
+            'client_version' => env('PHONEPE_SANDBOX_CLIENT_VERSION'),
+            'client_secret' => env('PHONEPE_SANDBOX_CLIENT_SECRET'),
+            'grant_type' => env('PHONEPE_SANDBOX_GRANT_TYPE'),
         ],
         'production' => [
-            'merchant' => 'APEX ONLINE',
-            'merchant_id' => 'M22PWSTHY7KC4',
-            'client_id' => 'SU2605051733192705903672',
-            'client_version' => 1,
-            'client_secret' => 'dd4d5212-193b-4461-9abc-b67fd368a0bf',
-            'grant_type' => 'client_credentials',
+            'merchant' => env('PHONEPE_MERCHANT'),
+            'merchant_id' => env('PHONEPE_MERCHANT_ID'),
+            'client_id' => env('PHONEPE_CLIENT_ID'),
+            'client_version' => env('PHONEPE_CLIENT_VERSION'),
+            'client_secret' => env('PHONEPE_CLIENT_SECRET'),
+            'grant_type' => env('PHONEPE_GRANT_TYPE'),
         ],
     ],
 
     'paytm' => [
         'sandbox' => [
-            'mid' => 'Resell00448805757124',
-            'mkey' => 'KXHUJH&Ywq9pUkkr',
-            'website' => 'WEBSTAGING',
-            'industry_type' => 'Retail',
-            'cid' => 'WEB'
+            'mid' => env('PAYTM_SANDBOX_MID'),
+            'mkey' => env('PAYTM_SANDBOX_MKEY'),
+            'website' => env('PAYTM_SANDBOX_WEBSITE'),
+            'industry_type' => env('PAYTM_SANDBOX_INDUSTRY_TYPE'),
+            'cid' => env('PAYTM_SANDBOX_CID')
         ],
         'production' => [
-            'mid' => 'Zxxphk24061617821448',
-            'mkey' => 'kAUX7qdEW2eA1Rk9',
-            'website' => 'DEFAULT',
-            'industry_type' => 'Retail',
-            'cid' => 'WEB'
+            'mid' => env('PAYTM_MID'),
+            'mkey' => env('PAYTM_MKEY'),
+            'website' => env('PAYTM_WEBSITE'),
+            'industry_type' => env('PAYTM_INDUSTRY_TYPE'),
+            'cid' => env('PAYTM_CID')
         ]
     ],
 
     'ccavenue' => [
         'sandbox' => [
-            'merchant_id' => '2507157',
-            'working_key' => '1F81381797D5E96BF4AD22BB0CE221C0',
-            'access_code' => 'AVYW05KF00CC49WYCC',
-            'post_url' => 'https://test.ccavenue.com/transaction/transaction.do',
+            'merchant_id' => env('CCAVENUE_SANDBOX_MERCHANT_ID'),
+            'working_key' => env('CCAVENUE_SANDBOX_WORKING_KEY'),
+            'access_code' => env('CCAVENUE_SANDBOX_ACCESS_CODE'),
+            'post_url' => env('CCAVENUE_SANDBOX_POST_URL'),
         ],
         'production' => [
-            'merchant_id' => '',
-            'working_key' => '',
-            'access_code' => '',
-            'post_url' => 'https://secure.ccavenue.com/transaction/transaction.do',
+            'merchant_id' => env('CCAVENUE_MERCHANT_ID'),
+            'working_key' => env('CCAVENUE_WORKING_KEY'),
+            'access_code' => env('CCAVENUE_ACCESS_CODE'),
+            'post_url' => env('CCAVENUE_POST_URL'),
         ]
     ],
 
     'zoho' => [
         'sandbox' => [
-            'api_key' => '1003.cd4be6050fd2f1923bfe1fec83e4ca92.8c029a083c31cd9b95cda03041145198',
-            'signing_key' => 'd5439670e4af85a519da1187a370a73f790e4691382c2e9a9948ced64d184a077704442ad5450e5e5494273e4a67c8df', //connector key
+            'api_key' => env('ZOHO_SANDBOX_API_KEY'),
+            'signing_key' => env('ZOHO_SANDBOX_SIGNING_KEY'),
         ],
         'production' => [
-            'api_key' => '1003.cd4be6050fd2f1923bfe1fec83e4ca92.8c029a083c31cd9b95cda03041145198',
-            'signing_key' => 'd5439670e4af85a519da1187a370a73f790e4691382c2e9a9948ced64d184a077704442ad5450e5e5494273e4a67c8df',
+            'api_key' => env('ZOHO_API_KEY'),
+            'signing_key' => env('ZOHO_SIGNING_KEY'),
         ]
     ],
 
