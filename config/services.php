@@ -130,42 +130,42 @@ return [
 
     'payu' => [
         'sandbox' => [
-            'payu_key' => 'yo3nGZ',
-            'payu_salt' => 'yimnU1fcAwBksPg5E9lRZMV3aUWpqfir',
-            'payu_url' => 'https://test.payu.in/_payment',
+            'payu_key' => env('PAYU_SANDBOX_PAYU_KEY'),
+            'payu_salt' => env('PAYU_SANDBOX_PAYU_SALT'),
+            'payu_url' => env('PAYU_SANDBOX_PAYU_URL'),
         ],
         'production' => [
-            'payu_key' => 'wOOafB',
-            'payu_salt' => 'jiRpXWBYy43PWCBtprIPgFZ6HDOXdoWx',
-            'payu_url' => 'https://secure.payu.in/_payment',
+            'payu_key' => env('PAYU_PAYU_KEY'),
+            'payu_salt' => env('PAYU_PAYU_SALT'),
+            'payu_url' => env('PAYU_PAYU_URL'),
         ]
     ],
 
     'cashfree' => [
         'sandbox' => [
-            'app_id' => 'TEST110644981a62d5c8802b8e52988e89446011',
-            'secret_key' => 'cfsk_ma_test_4a3109d6e6b430e9e18e899b42ade1a6_78a2a110',
+            'app_id' => env('CASHFREE_SANDBOX_APP_ID'),
+            'secret_key' => env('CASHFREE_SANDBOX_SECRET_KEY'),
         ],
         'production' => [
-            'app_id' => '1271994a405421dd4a1f029c99f4991721',
-            'secret_key' => 'cfsk_ma_prod_38202580bd53f4df239d20d888c29655_335f2cd4',
+            'app_id' => env('CASHFREE_APP_ID'),
+            'secret_key' => env('CASHFREE_SECRET_KEY'),
         ],
     ],
 
     'instamojo' => [
         'sandbox' => [
-            'client_id' => 'rRdQhtNsJVGSmTc9XwXcJQgLkM4i8JjQafQuOK6i',
-            'client_secret' => 'Z8AZPYDEHDsUDJdD4d6bVJL9DPpIYmhnLKdj8685fWOTkhlB2oqIc7AaACh7mt4pGgpeyFiEj0VgY7ogRSvZYqgGD8NGHECOKysIv6L0O56hgN5C3Xxqn9qN02O6XUJV',
-            'api_key' => 'bf938fc9d7a21289e6fcbee40c8135d2',
-            'auto_token' => '2095a8ddfd9b00ccfae26fcb73370792',
-            'salt_key' => '261453ec87d44daabb7bfbc852aef2a0'
+            'client_id' => env('INSTAMOJO_SANDBOX_CLIENT_ID'),
+            'client_secret' => env('INSTAMOJO_SANDBOX_CLIENT_SECRET'),
+            'api_key' => env('INSTAMOJO_SANDBOX_API_KEY'),
+            'auto_token' => env('INSTAMOJO_SANDBOX_AUTO_TOKEN'),
+            'salt_key' => env('INSTAMOJO_SANDBOX_SALT_KEY'),
         ],
         'production' => [
-            'client_id' => 'rRdQhtNsJVGSmTc9XwXcJQgLkM4i8JjQafQuOK6i',
-            'client_secret' => 'Z8AZPYDEHDsUDJdD4d6bVJL9DPpIYmhnLKdj8685fWOTkhlB2oqIc7AaACh7mt4pGgpeyFiEj0VgY7ogRSvZYqgGD8NGHECOKysIv6L0O56hgN5C3Xxqn9qN02O6XUJV',
-            'api_key' => 'bf938fc9d7a21289e6fcbee40c8135d2',
-            'auto_token' => '2095a8ddfd9b00ccfae26fcb73370792',
-            'salt_key' => '261453ec87d44daabb7bfbc852aef2a0'
+            'client_id' => env('INSTAMOJO_CLIENT_ID'),
+            'client_secret' => env('INSTAMOJO_CLIENT_SECRET'),
+            'api_key' => env('INSTAMOJO_API_KEY'),
+            'auto_token' => env('INSTAMOJO_AUTO_TOKEN'),
+            'salt_key' => env('INSTAMOJO_SALT_KEY'),
         ]
     ]
 ];
