@@ -124,7 +124,6 @@ Route::prefix('zoho')->group(function () {
     Route::any('callback', [ZohoController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::get('test', [ZohoSandboxController::class, 'zohoTest']);
         Route::get('request', [ZohoSandboxController::class, 'request']);
         Route::any('callback', [ZohoSandboxController::class, 'callback']);
     });

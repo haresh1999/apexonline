@@ -64,16 +64,17 @@ class TransactionController extends Controller
         $pgGateway = Transaction::where('status', 'completed')->latest('id')->value('gateway');
 
         $gateway = match ($pgGateway) {
-            'sabpaisa' => 'instamojo',
+            'zoho' => 'instamojo',
             'instamojo' => 'cashfree',
             'cashfree' => 'phonepe',
             'phonepe' => 'payu',
             'payu' => 'paytm',
             'paytm' => 'sabpaisa',
-            default => 'sabpaisa'
+            'sabpaisa' => 'zoho',
+            default => 'zoho'
         };
 
-        $gateway = 'sabpaisa';
+        $gateway = 'zoho';
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],
