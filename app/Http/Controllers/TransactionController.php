@@ -63,7 +63,7 @@ class TransactionController extends Controller
 
         $env = getAppEnv();
 
-        if ($env == 'sandbox') {
+        if ($env == 'production') {
 
             $pgGateway = Transaction::where('status', 'completed')
                 ->latest('id')
