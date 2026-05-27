@@ -19,14 +19,9 @@ function getPaymentGateway($amount)
     };
 }
 
-function getAppEnv($env = null)
+function getAppEnv()
 {
     $currentUrl = url()->current();
 
-    if (is_null($env)) {
-
-        return str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
-    }
-
-    return str_contains($currentUrl, $env);
+    return str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
 }

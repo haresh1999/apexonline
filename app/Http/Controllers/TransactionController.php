@@ -61,7 +61,9 @@ class TransactionController extends Controller
 
         $input = $validator->validated();
 
-        if (getAppEnv('production')) {
+        $env = getAppEnv();
+
+        if ($env == 'sandbox') {
 
             $pgGateway = Transaction::where('status', 'completed')
                 ->latest('id')
