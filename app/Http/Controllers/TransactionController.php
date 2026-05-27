@@ -61,14 +61,11 @@ class TransactionController extends Controller
 
         $input = $validator->validated();
 
-        $currentUrl = url()->current();
+        if (getAppEnv('production')) {
 
-        if (str_contains($currentUrl, 'sandbox')) {
-
-            $gateway = 'cashfree';
-        } else {
-
-            $pgGateway = Transaction::where('status', 'completed')->latest('id')->value('gateway');
+            $pgGateway = Transaction::where('status', 'completed')
+                ->latest('id')
+                ->value('gateway');
 
             $gateway = match ($pgGateway) {
                 'zoho' => 'instamojo',
@@ -80,6 +77,9 @@ class TransactionController extends Controller
                 'sabpaisa' => 'zoho',
                 default => 'zoho'
             };
+        } else {
+
+            $gateway = 'cashfree';
         }
 
         $tnx = Transaction::create([

@@ -16,9 +16,7 @@ class TokenMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $currentUrl = url()->current();
-        $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
-
+        $env = getAppEnv();
         $clientId = $request->header('client-id');
         $clientSecret = $request->header('client-secret');
 

@@ -2,10 +2,8 @@
 
 function setting($pg, $key)
 {
-    $currentUrl = url()->current();
+    $env = getAppEnv();
 
-    $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
-    
     return config("services.{$pg}.{$env}.{$key}");
 }
 
@@ -19,4 +17,16 @@ function getPaymentGateway($amount)
         $amount >= 25000 && $amount <= 50000 => 'razorpay',
         default => 'not_available',
     };
+}
+
+function getAppEnv($env = null)
+{
+    $currentUrl = url()->current();
+
+    if (is_null($env)) {
+
+        return str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
+    }
+
+    return str_contains($currentUrl, $env);
 }

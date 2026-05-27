@@ -18,9 +18,7 @@ class AuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $currentUrl = url()->current();
-
-        $env = str_contains($currentUrl, 'sandbox') ? 'sandbox' : 'production';
+        $env = getAppEnv();
 
         $refreshToken = $request->get('refresh_token');
 
