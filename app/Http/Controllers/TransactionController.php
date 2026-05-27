@@ -61,18 +61,26 @@ class TransactionController extends Controller
 
         $input = $validator->validated();
 
-        $pgGateway = Transaction::where('status', 'completed')->latest('id')->value('gateway');
+        $currentUrl = url()->current();
 
-        $gateway = match ($pgGateway) {
-            'zoho' => 'instamojo',
-            'instamojo' => 'cashfree',
-            'cashfree' => 'phonepe',
-            'phonepe' => 'payu',
-            'payu' => 'paytm',
-            'paytm' => 'sabpaisa',
-            'sabpaisa' => 'zoho',
-            default => 'zoho'
-        };
+        if (str_contains($currentUrl, 'sandbox')) {
+
+            $gateway = 'cashfree';
+        } else {
+
+            $pgGateway = Transaction::where('status', 'completed')->latest('id')->value('gateway');
+
+            $gateway = match ($pgGateway) {
+                'zoho' => 'instamojo',
+                'instamojo' => 'cashfree',
+                'cashfree' => 'phonepe',
+                'phonepe' => 'payu',
+                'payu' => 'paytm',
+                'paytm' => 'sabpaisa',
+                'sabpaisa' => 'zoho',
+                default => 'zoho'
+            };
+        }
 
         $tnx = Transaction::create([
             'user_id' => $user['id'],
