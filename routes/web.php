@@ -23,6 +23,13 @@ use App\Http\Controllers\{
     ZohoController,
     ZohoSandboxController,
 };
+
+use App\Http\Controllers\Admin\{
+    LoginController,
+    CommonController,
+    DashboardController,
+};
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -162,6 +169,19 @@ Route::prefix('instamojo')->group(function () {
         Route::any('callback', [InstaMojoSandboxController::class, 'callback']);
     });
 });
+
+Route::get('login', [LoginController::class, 'login'])->name('login');
+Route::post('login', [LoginController::class, 'loginSubmit'])->name('login.submit');
+
+Route::middleware('admin.auth')->group(function () {
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('logout', [DashboardController::class, 'logout'])->name('logout');
+});
+
+// FALLBACK HANDLER
+Route::fallback([CommonController::class, 'pageNotFound']);
+Route::get('page-non-found', [CommonController::class, 'pageNotFound'])->name('not.found');
+Route::get('internal-server-error', [CommonController::class, 'serverError'])->name('server.error');
 
 Route::view('test-payment', 'request_payment');
 

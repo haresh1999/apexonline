@@ -21,6 +21,7 @@ class User extends Authenticatable
         'default_gateway',
         'callback_secret',
         'password',
+        'status'
     ];
 
     protected $hidden = [

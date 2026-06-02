@@ -6,6 +6,7 @@ use App\Http\Middleware\{
     TokenMiddleware,
 };
 
+use App\Http\Middleware\Admin\AuthMiddleware as AdminAuthMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\{
     Exceptions,
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'admin.auth' => AdminAuthMiddleware::class,
             'auth' => AuthMiddleware::class,
             'signature' => SignatureMiddleware::class,
             'token' => TokenMiddleware::class,
