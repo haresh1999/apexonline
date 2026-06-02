@@ -22,3 +22,9 @@
         userLinkRTL.setAttribute('disabled', true);
       }
 </script>
+<style>
+  .required:after {
+    content: " *";
+    color: red;
+  }
+</style>

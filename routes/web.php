@@ -27,7 +27,9 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Admin\{
     LoginController,
     CommonController,
+    CompanyController,
     DashboardController,
+    TransactionController as SalesController,
 };
 
 use Illuminate\Http\Request;
@@ -174,7 +176,18 @@ Route::get('login', [LoginController::class, 'login'])->name('login');
 Route::post('login', [LoginController::class, 'loginSubmit'])->name('login.submit');
 
 Route::middleware('admin.auth')->group(function () {
+
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('company', [CompanyController::class, 'index'])->name('company.index');
+    Route::get('company/create', [CompanyController::class, 'create'])->name('company.create');
+    Route::post('company/store', [CompanyController::class, 'store'])->name('company.store');
+    Route::get('company/{id}/edit', [CompanyController::class, 'edit'])->name('company.edit');
+    Route::put('company/update/{id}', [CompanyController::class, 'update'])->name('company.update');
+    Route::delete('company/destroy/{id}', [CompanyController::class, 'destroy'])->name('company.destroy');
+
+    Route::get('transaction', [SalesController::class, 'index'])->name('tnx.index');
+
     Route::get('logout', [DashboardController::class, 'logout'])->name('logout');
 });
 
