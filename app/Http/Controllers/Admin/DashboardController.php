@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
-            ->where('status', 'pencing')
+            ->where('status', 'pending')
             ->sum('amount');
 
         $processingTotal = Transaction::authTnx()
@@ -69,7 +69,7 @@ class DashboardController extends Controller
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
-            ->where('status', 'pencing')
+            ->where('status', 'pending')
             ->count();
 
         $processingCount = Transaction::authTnx()

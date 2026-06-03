@@ -48,7 +48,7 @@ class TransactionController extends Controller
             ->paginate(20);
 
         $total = Transaction::authTnx()->count();
-        $pendingTotal = Transaction::authTnx()->where('status', 'pencing')->count();
+        $pendingTotal = Transaction::authTnx()->where('status', 'pending')->count();
         $processingTotal = Transaction::authTnx()->where('status', 'processing')->count();
         $completedTotal = Transaction::authTnx()->where('status', 'completed')->count();
         $failedTotal = Transaction::authTnx()->where('status', 'failed')->count();
