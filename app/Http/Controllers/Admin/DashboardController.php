@@ -11,12 +11,14 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
         $total = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
             ->sum('amount');
 
         $pendingTotal = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -24,6 +26,7 @@ class DashboardController extends Controller
             ->sum('amount');
 
         $processingTotal = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -31,6 +34,7 @@ class DashboardController extends Controller
             ->sum('amount');
 
         $completedTotal = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -38,6 +42,7 @@ class DashboardController extends Controller
             ->sum('amount');
 
         $failedTotal = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -45,6 +50,7 @@ class DashboardController extends Controller
             ->sum('amount');
 
         $refundedTotal = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -52,12 +58,14 @@ class DashboardController extends Controller
             ->sum('amount');
 
         $count = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
             ->count();
 
         $pendingCount = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -65,6 +73,7 @@ class DashboardController extends Controller
             ->count();
 
         $processingCount = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -72,6 +81,7 @@ class DashboardController extends Controller
             ->count();
 
         $completedCount = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -79,6 +89,7 @@ class DashboardController extends Controller
             ->count();
 
         $failedCount = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
@@ -86,6 +97,7 @@ class DashboardController extends Controller
             ->count();
 
         $refundedCount = Transaction::authTnx()
+            ->when('env', 'production')
             ->when($request->filled('date'), function ($q) {
                 $q->whereDate('created_at', request('date'));
             })
