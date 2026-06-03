@@ -3,13 +3,142 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        return view('admin.starter');
-        // return view('admin.dashboard');
+        $total = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->sum('amount');
+
+        $pendingTotal = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'pencing')
+            ->sum('amount');
+
+        $processingTotal = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'processing')
+            ->sum('amount');
+
+        $completedTotal = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        $failedTotal = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'failed')
+            ->sum('amount');
+
+        $refundedTotal = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'refunded')
+            ->sum('amount');
+
+        $count = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->count();
+
+        $pendingCount = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'pencing')
+            ->count();
+
+        $processingCount = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'processing')
+            ->count();
+
+        $completedCount = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'completed')
+            ->count();
+
+        $failedCount = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'failed')
+            ->count();
+
+        $refundedCount = Transaction::authTnx()
+            ->when($request->filled('date'), function ($q) {
+                $q->whereDate('created_at', request('date'));
+            })
+            ->where('status', 'refunded')
+            ->count();
+
+        return view('admin.starter', compact(
+            'total',
+            'pendingTotal',
+            'processingTotal',
+            'completedTotal',
+            'failedTotal',
+            'refundedTotal',
+            'count',
+            'pendingCount',
+            'processingCount',
+            'completedCount',
+            'failedCount',
+            'refundedCount',
+        ));
+    }
+
+    public function profile(Request $request)
+    {
+        if ($request->isMethod('get')) {
+
+            $user = auth()->user();
+
+            return view('admin.profile', compact('user'));
+        }
+
+        $input = $request->validate([
+            'name' => ['required', 'max:150'],
+            'email' => ['required', 'email', 'unique:users,email,' . auth()->id()],
+            'mobile' => ['required', 'digits_between:9,12'],
+            'password' => ['nullable', 'min:6'],
+            'confirm_password' => ['nullable', 'same:password'],
+        ]);
+
+        $user = auth()->user();
+
+        if (isset($input['password'])) {
+
+            $user->password = bcrypt($input['password']);
+        }
+
+        $user->name = $input['name'];
+        $user->email = $input['email'];
+        $user->mobile = $input['mobile'];
+        $user->save();
+
+        return redirect()
+            ->back()
+            ->with('res.success', 'Profile updated successfully');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Transaction extends Model
 {
@@ -35,6 +36,15 @@ class Transaction extends Model
             $model->env = config('services.env');
             $model->reference_id = str()->uuid()->toString();
         });
+    }
+
+    public function scopeAuthTnx($q)
+    {
+        if (Auth::id() != 1) {
+            return $q->where('user_id', Auth::id());
+        }
+
+        return $q;
     }
 
     public function user()

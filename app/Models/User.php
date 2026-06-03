@@ -37,6 +37,14 @@ class User extends Authenticatable
         ];
     }
 
+    public function getWhitelistIpAttribute(string $value)
+    {
+        if ($value) {
+            return implode(', ', json_decode($value));
+        }
+        return null;
+    }
+
     public function transaction()
     {
         return $this->hasMany(Transaction::class);

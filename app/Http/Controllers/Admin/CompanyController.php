@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\Admin\PermissionMiddleware;
+use App\Http\Requests\Admin\CompanyRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -39,5 +41,75 @@ class CompanyController extends Controller
     public function create()
     {
         return view('admin.user.create');
+    }
+
+    public function store(CompanyRequest $request)
+    {
+        $input = $request->validated();
+
+        if (isset($input['password'])) {
+
+            $input['password'] = bcrypt($input['password']);
+        }
+
+        if (isset($input['whitelist_ip'])) {
+
+            $input['whitelist_ip'] = json_encode(explode(', ', $input['whitelist_ip']));
+        }
+
+        User::create($input);
+
+        return redirect()
+            ->route('company.index')
+            ->with('res.success', 'New company created successful.');
+    }
+
+    public function edit(int $id)
+    {
+        $user = User::where('id', $id)->first();
+
+        return view('admin.user.edit', compact('user'));
+    }
+
+    public function update(CompanyRequest $request, int $id)
+    {
+        $input = $request->validated();
+
+        if (filled($request->password)) {
+            $input['password'] = bcrypt($request->password);
+        } else {
+            unset($input['password']);
+        }
+
+        if (isset($input['whitelist_ip'])) {
+            $input['whitelist_ip'] = json_encode(explode(', ', $input['whitelist_ip']));
+        }
+
+        User::where('id', $id)->update($input);
+
+        return redirect()
+            ->route('company.index')
+            ->with('res.success', 'Company info updated successful.');
+    }
+
+    public function destroy(int $id)
+    {
+        $user = User::where('id', $id)->withTrashed()->first();
+
+        if ($user->trashed()) {
+
+            $user->restore();
+
+            return redirect()
+                ->route('company.index')
+                ->with('res.success', 'Record successfully restored...!');
+        } else {
+
+            $user->delete();
+
+            return redirect()
+                ->route('company.index')
+                ->with('res.error', 'Record Deleted Successfully...!');
+        }
     }
 }

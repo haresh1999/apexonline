@@ -27,20 +27,20 @@
                                     <div class="bg-holder" style="background-image:url({{ asset('public/admin/assets/img/bg/38.png') }});"></div>
                                     <!--/.bg-holder-->
                                     <div class="position-relative px-4 px-lg-7 pt-7 pb-7 pb-sm-5 text-center text-md-start pb-lg-7 pb-md-7">
-                                        <h3 class="mb-3 text-body-emphasis fs-7">Phoenix Authentication</h3>
-                                        <p class="text-body-tertiary">Give yourself some hassle-free development process with the uniqueness of Phoenix!</p>
+                                        <h3 class="mb-3 text-body-emphasis fs-7">{{ env('APP_NAME') }}</h3>
+                                        <p class="text-body-tertiary">Learning platform that offers professional training programs, webinars, workshops</p>
                                         <ul class="list-unstyled mb-0 w-max-content w-md-auto">
                                             <li class="d-flex align-items-center">
                                                 <span class="uil uil-check-circle text-success me-2"></span>
-                                                <span class="text-body-tertiary fw-semibold">Fast</span>
+                                                <span class="text-body-tertiary fw-semibold">Knowledge</span>
                                             </li>
                                             <li class="d-flex align-items-center">
                                                 <span class="uil uil-check-circle text-success me-2"></span>
-                                                <span class="text-body-tertiary fw-semibold">Simple</span>
+                                                <span class="text-body-tertiary fw-semibold">Skills</span>
                                             </li>
                                             <li class="d-flex align-items-center">
                                                 <span class="uil uil-check-circle text-success me-2"></span>
-                                                <span class="text-body-tertiary fw-semibold">Responsive</span>
+                                                <span class="text-body-tertiary fw-semibold">Experience</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -54,7 +54,7 @@
                                         <div class="text-center mb-7">
                                             <a class="d-flex flex-center text-decoration-none mb-4" href="{{ config('app.url') }}">
                                                 <div class="d-flex align-items-center fw-bolder fs-3 d-inline-block">
-                                                    <img src="{{ asset('public/admin/assets/img/icons/logo.png') }}" alt="phoenix" width="58" />
+                                                    <img src="{{ asset('public/admin/assets/img/logo.jpeg') }}" alt="phoenix" width="100%" />
                                                 </div>
                                             </a>
                                             <h3 class="text-body-highlight">Sign In</h3>
@@ -86,15 +86,12 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="row flex-between-center mb-7">
+                                            <div class="row flex-between-center mb-4">
                                                 <div class="col-auto">
                                                     <div class="form-check mb-0">
                                                         <input class="form-check-input" id="basic-checkbox" type="checkbox" checked="checked" value="1" name="is_remember" />
                                                         <label class="form-check-label mb-0" for="basic-checkbox">Remember me</label>
                                                     </div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a class="fs-9 fw-semibold" href="forgot-password.html">Forgot Password?</a>
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-primary w-100 mb-3">Sign In</button>

@@ -18,6 +18,7 @@
                     </div>
                 </li>
 
+                @if(auth()->id() == 1)
                 <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Company & Users</b></p>
                     <hr class="navbar-vertical-line" />
@@ -58,13 +59,14 @@
                         </div>
                     </div>
                 </li>
+                @endif
 
                 <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Transactions & Sales</b></p>
                     <hr class="navbar-vertical-line" />
 
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1" href="#nv-sales" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-sales">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-sales" role="button" data-bs-toggle="collapse" aria-expanded="{{ navbar('transaction') ? 'true' : 'false' }}" aria-controls="nv-sales">
                             <div class="d-flex align-items-center">
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-caret-right dropdown-indicator-icon"></span>
@@ -76,11 +78,11 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-sales">
+                            <ul class="nav collapse parent {{ navbar('transaction') ? 'show' : '' }}" data-bs-parent="#navbarVerticalCollapse" id="nv-sales">
                                 <li class="collapsed-nav-item-title d-none">Transactions</li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar('tnx') }}" href="{{ route('tnx.index') }}">
+                                    <a class="nav-link {{ navbar('transaction') && ! request()->has('date') ? 'active' : '' }}" href="{{ route('tnx.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">All</span>
                                         </div>
@@ -88,7 +90,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar('tnx') && request('date') == 'today' }}" href="{{ route('tnx.index',['date' => 'today']) }}">
+                                    <a class="nav-link {{ navbar('transaction') && request('date') == date('Y-m-d') ? 'active' : '' }}" href="{{ route('tnx.index',['date' => date('Y-m-d')]) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Today</span>
                                         </div>
@@ -96,7 +98,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar('tnx') && request('date') == 'yesterday' }}" href="{{ route('tnx.index',['date' => 'yesterday']) }}">
+                                    <a class="nav-link {{ navbar('transaction') && request('date') == date('Y-m-d', strtotime('-1 day')) ? 'active' : '' }}" href="{{ route('tnx.index',['date' => date('Y-m-d', strtotime('-1 day'))]) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Yesterday</span>
                                         </div>
