@@ -37,7 +37,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function getWhitelistIpAttribute(string $value)
+    public function getWhitelistIpAttribute($value)
     {
         if ($value) {
             return implode(', ', json_decode($value));
