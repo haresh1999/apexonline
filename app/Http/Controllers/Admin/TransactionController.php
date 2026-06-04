@@ -25,7 +25,7 @@ class TransactionController extends Controller
                         ->orWhere('redirect_url', 'like', "%{$search}%")
                         ->orWhere('callback_url', 'like', "%{$search}%")
                         ->orWhere('reference_id', 'like', "%{$search}%")
-                        ->orWhere('order_id', 'like', "%{$search}%");
+                        ->orWhere('mr_order_id', 'like', "%{$search}%");
                 });
             })
             ->when($request->filled('status'), function ($q) use ($request) {

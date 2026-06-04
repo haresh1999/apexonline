@@ -151,7 +151,7 @@
                                 </td>
 
                                 <td class="align-middle white-space-nowrap py-3">
-                                    <h6 class="mb-0">{{ $tnx->order_id }}</h6>
+                                    <h6 class="mb-0">{{ $tnx->mr_order_id }}</h6>
                                 </td>
 
                                 <td class="align-middle white-space-nowrap py-3">

@@ -84,9 +84,12 @@ class TransactionController extends Controller
             $gateway = 'cashfree';
         }
 
+        $lastId = Transaction::latest('id')->value('id');
+
         $tnx = Transaction::create([
             'user_id' => $user['id'],
-            'order_id' => $input['order_id'],
+            'order_id' => 'WC_ORDER_' . ($lastId + 1),
+            'mr_order_id' =>   $input['order_id'],
             'amount' => $input['amount'],
             'payer_name' => $input['payer_name'],
             'payer_email' => $input['payer_email'],
@@ -128,7 +131,7 @@ class TransactionController extends Controller
         $env = config('services.env');
 
         $validator = Validator::make($request->all(), [
-            'order_id' => ['required', 'string',   Rule::unique('transactions', 'order_id')->where(function ($query) use ($userId, $env) {
+            'order_id' => ['required', 'string',   Rule::exists('transactions', 'mr_order_id')->where(function ($query) use ($userId, $env) {
                 return $query->where('user_id', $userId)->where('env', $env);
             }),],
         ]);
@@ -144,13 +147,13 @@ class TransactionController extends Controller
         $input = $validator->validated();
 
         $transaction = Transaction::where('user_id', $userId)
-            ->where('order_id', $input['order_id'])
+            ->where('mr_order_id', $input['order_id'])
             ->where('env', $env)
             ->first();
 
         return response()->json([
             'transaction_id' => $transaction->id,
-            'order_id' => $transaction->order_id,
+            'order_id' => $transaction->mr_order_id,
             'reference_id' => $transaction->reference_id,
             'amount' => $transaction->amount,
             'refund_amount' => $transaction->refund_amount,
@@ -189,7 +192,7 @@ class TransactionController extends Controller
         $input = $request->validate([
             'order_id' => [
                 'required',
-                Rule::exists('transactions', 'order_id')->where(function ($query) use ($user) {
+                Rule::exists('transactions', 'mr_order_id')->where(function ($query) use ($user) {
                     $query->where('env', $user->env)->where('status', 'pending');
                 }),
             ],
@@ -197,7 +200,7 @@ class TransactionController extends Controller
             'password' => ['required']
         ]);
 
-        $transaction = Transaction::where('order_id', $input['order_id'])
+        $transaction = Transaction::where('mr_order_id', $input['order_id'])
             ->where('user_id', $user->id)
             ->where('env', $user->env)
             ->first();
@@ -212,7 +215,7 @@ class TransactionController extends Controller
         $callback_url = $transaction->callback_url;
 
         $sendData = [
-            'order_id' => $transaction->order_id,
+            'order_id' => $transaction->mr_order_id,
             'tnx_id' => $transaction->id,
             'amount' => $transaction->amount,
             'status' => $input['status']
@@ -244,7 +247,7 @@ class TransactionController extends Controller
 
         $sendData = [
             'transaction_id' => $transaction->id,
-            'order_id' => $transaction->order_id,
+            'order_id' => $transaction->mr_order_id,
             'reference_id' => $transaction->reference_id,
             'amount' => $transaction->amount,
             'refund_amount' => $transaction->refund_amount,
@@ -269,7 +272,7 @@ class TransactionController extends Controller
 
         $payload = [
             "amount" => $request->amount,
-            "order_id" => $request->order_id,
+            "order_id" => $request->mr_order_id,
             "payer_email" => $request->payer_email,
             "payer_mobile" => $request->payer_mobile,
             "payer_name" => $request->payer_name,

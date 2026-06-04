@@ -25,7 +25,8 @@ class Transaction extends Model
         'refund_response',
         'redirect_url',
         'callback_url',
-        'reference_id'
+        'reference_id',
+        'mr_order_id'
     ];
 
     protected static function boot()
