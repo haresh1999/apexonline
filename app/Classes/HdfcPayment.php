@@ -13,7 +13,7 @@ class HdfcPayment
 {
     public function __construct()
     {
-        $config = config('hdfc');
+        $config = config('hdfc.' . getAppEnv());
 
         $privateKey = file_get_contents($config['private_key_path']);
         $publicKey  = file_get_contents($config['public_key_path']);
