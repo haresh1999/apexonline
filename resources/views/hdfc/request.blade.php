@@ -11,6 +11,7 @@
 <body>
     <p>Please wait while we are opening the payment screen.</p>
     <form id="hdfcForm" method="post" action="{{ $url }}">
+        @csrf
         <input type="hidden" name="reference_id" value="{{ $reference_id }}">
     </form>
     <script>

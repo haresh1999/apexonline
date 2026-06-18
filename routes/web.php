@@ -118,13 +118,13 @@ Route::prefix('ccavenue')->group(function () {
 
 // HDFC
 Route::prefix('hdfc')->group(function () {
-    Route::post('create', [HdfcController::class, 'create']);
-    Route::get('request', [HdfcController::class, 'request']);
+    Route::get('create', [HdfcController::class, 'create']);
+    Route::post('request', [HdfcController::class, 'request']);
     Route::any('callback', [HdfcController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
-        Route::post('create', [HdfcSandboxController::class, 'create']);
-        Route::get('request', [HdfcSandboxController::class, 'request']);
+        Route::get('create', [HdfcSandboxController::class, 'create']);
+        Route::post('request', [HdfcSandboxController::class, 'request']);
         Route::any('callback', [HdfcSandboxController::class, 'callback']);
     });
 });
