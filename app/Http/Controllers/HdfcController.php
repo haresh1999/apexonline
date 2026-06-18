@@ -25,7 +25,7 @@ class HdfcController extends Controller
         $input = $validator->validated();
 
         $reference_id = $input['reference_id'];
-        $url = url('hdfc/request');
+        $url = url('hdfc/create');
 
         return view('hdfc.request', compact('reference_id', 'url'));
     }
