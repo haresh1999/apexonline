@@ -42,23 +42,28 @@ class HdfcSandboxController extends Controller
     {
         $data = $request->all();
 
-        if (!isset($data['order_id'], $data['customer_id'])) {
+        if (!isset($data['order_id'])) {
             return response()->json('Invalid response');
         }
 
-        $response = $service->orderStatus($data['order_id'], $data['customer_id']);
+        $transaction = Transaction::where([
+            'env' => 'sandbox',
+            'gateway' => 'hdfc',
+            'order_id' => $data['order_id']
+        ])->first();
+
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        $response = $service->orderStatus($transaction->order_id, $transaction->reference_id);
 
         if (!$response['success']) {
             return response()->json('Payment verification failed');
         }
 
         $order = $response['data'];
-
-        $transaction = Transaction::where('order_id', $data['order_id'])->where('env', 'sandbox')->first();
-
-        if (!$transaction) {
-            return response()->json('Transaction not found');
-        }
 
         $status = strtolower($order->status);
 

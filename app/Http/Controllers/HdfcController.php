@@ -42,23 +42,27 @@ class HdfcController extends Controller
     {
         $data = $request->all();
 
-        if (!isset($data['order_id'], $data['customer_id'])) {
+        if (!isset($data['order_id'])) {
             return response()->json('Invalid response');
         }
 
-        $response = $service->orderStatus($data['order_id'], $data['customer_id']);
+        $transaction = Transaction::where([
+            'env' => 'production',
+            'gateway' => 'hdfc',
+            'order_id' => $data['order_id']
+        ])->first();
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        $response = $service->orderStatus($transaction->order_id, $transaction->reference_id);
 
         if (!$response['success']) {
             return response()->json('Payment verification failed');
         }
 
         $order = $response['data'];
-
-        $transaction = Transaction::where('order_id', $data['order_id'])->where('env', 'production')->first();
-
-        if (!$transaction) {
-            return response()->json('Transaction not found');
-        }
 
         $status = strtolower($order->status);
 
@@ -71,7 +75,7 @@ class HdfcController extends Controller
         }
 
         if ($transaction->status == 'completed') {
-            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $transaction->update([
@@ -79,6 +83,6 @@ class HdfcController extends Controller
             'response' => json_encode($order)
         ]);
 
-        return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
+        return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
     }
 }
