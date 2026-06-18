@@ -10,7 +10,27 @@ use Illuminate\Validation\Rule;
 
 class HdfcController extends Controller
 {
-    public function request(Request $request, HdfcPayment $service)
+    public function request(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+                $q->where('status', 'pending')->where('env', 'production');
+            })]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $input = $validator->validated();
+
+        $reference_id = $input['reference_id'];
+        $url = url('hdfc/request');
+
+        return view('hdfc.request', compact('reference_id', 'url'));
+    }
+
+    public function create(Request $request, HdfcPayment $service)
     {
         $validator = Validator::make($request->all(), [
             'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
