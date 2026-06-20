@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classes\HdfcPayment;
+use App\Classes\HdfcService;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class HdfcController extends Controller
 {
-    public function request(Request $request)
+    public function request(Request $request, HdfcService $hdfcService)
     {
         $validator = Validator::make($request->all(), [
             'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
@@ -24,10 +25,45 @@ class HdfcController extends Controller
 
         $input = $validator->validated();
 
-        $reference_id = $input['reference_id'];
-        $url = url('hdfc/create');
+        $transaction = Transaction::where('reference_id', $input['reference_id'])->first();
 
-        return view('hdfc.request', compact('reference_id', 'url'));
+        $response = $hdfcService->createOrderSession([
+            'order_id'       => $transaction->orderId,
+            'amount'         => $transaction->amount * 100, // 100.00 INR in paise
+            'customer_id'    => 'CUST_' . $transaction->id,
+            'customer_email' => $transaction->payer_email,
+            'customer_phone' => $transaction->payer_mobile,
+            'return_url'     => url('hdfc/create'),
+            'description'    => 'ORDER PAYMENT OF ORDER ID ' . $transaction->orderId,
+            'first_name'     => $transaction->payer_name,
+        ]);
+
+        if (!$response['success']) {
+            return response()->json([
+                'message' => 'Payment session failed',
+                'response' => $response
+            ], 500);
+        }
+
+        // Usually payment link is inside response data
+        $paymentUrl =
+            $response['data']['payment_links']['web'] ??
+            $response['data']['paymentLinks']['web'] ??
+            null;
+
+        if (!$paymentUrl) {
+            return response()->json([
+                'message' => 'Payment URL not found',
+                'response' => $response
+            ], 500);
+        }
+
+        return redirect()->away($paymentUrl);
+
+        // $reference_id = $input['reference_id'];
+        // $url = url('hdfc/create');
+
+        // return view('hdfc.request', compact('reference_id', 'url'));
     }
 
     public function create(Request $request, HdfcPayment $service)

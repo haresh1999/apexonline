@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Classes\HdfcPayment;
+use App\Classes\HdfcSandboxService;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 
 class HdfcSandboxController extends Controller
 {
-    public function request(Request $request, HdfcPayment $service)
+    public function request(Request $request, HdfcSandboxService $service)
     {
         $validator = Validator::make($request->all(), [
             'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
@@ -38,7 +38,7 @@ class HdfcSandboxController extends Controller
         return redirect($response['data']->paymentLinks["web"]);
     }
 
-    public function callback(Request $request, HdfcPayment $service)
+    public function callback(Request $request, HdfcSandboxService $service)
     {
         $data = $request->all();
 
