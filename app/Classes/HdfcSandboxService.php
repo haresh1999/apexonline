@@ -9,7 +9,7 @@ use Juspay\Model\OrderSession;
 use Juspay\RequestOptions;
 use Juspay\Exception\JuspayException;
 
-class HdfcPayment
+class HdfcSandboxService
 {
     public function __construct()
     {
