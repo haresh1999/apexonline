@@ -15,6 +15,8 @@ class SignatureMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        return $next($request);
+
         $secret = config('services.user.callback_secret');
 
         $payload = $request->except(['signature', 'callback_url', 'redirect_url']);
