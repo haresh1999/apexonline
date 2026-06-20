@@ -14,11 +14,11 @@ class HdfcService
 
     public function __construct()
     {
-        $this->baseUrl             = rtrim('https://smartgateway.hdfc.bank.in', '/');
-        $this->apiKey              = 'FD481115A844B0D8B815D40E49849A';
-        $this->merchantId          = 69103;
-        $this->paymentPageClientId = 69103;
-        $this->apiVersion          = config('hdfc.api_version', '2024-02-01');
+        $this->baseUrl = rtrim(env('HDFC_BASE_URL'), '/');
+        $this->apiKey = env('HDFC_API_KEY');
+        $this->merchantId = env('HDFC_MERCHANT_ID');
+        $this->paymentPageClientId = env('HDFC_CLIENT_ID');
+        $this->apiVersion = env('HDFC_VERSION');
     }
 
     /**
