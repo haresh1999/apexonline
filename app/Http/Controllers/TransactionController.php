@@ -69,19 +69,18 @@ class TransactionController extends Controller
                 ->latest('id')
                 ->value('gateway');
 
-            $gateway = 'hdfc';
-
-            // $gateway = match ($pgGateway) {
-            //     'hdfc' => 'instamojo',
-            //     'instamojo' => 'cashfree',
-            //     'cashfree' => 'phonepe',
-            //     'phonepe' => 'payu',
-            //     'payu' => 'paytm',
-            //     'paytm' => 'sabpaisa',
-            //     'sabpaisa' => 'zoho',
-            //     'zoho' => 'hdfc',
-            //     default => 'hdfc'
-            // };
+            // $gateway = 'hdfc';
+            $gateway = match ($pgGateway) {
+                'hdfc' => 'instamojo',
+                'instamojo' => 'cashfree',
+                'cashfree' => 'phonepe',
+                'phonepe' => 'payu',
+                'payu' => 'paytm',
+                'paytm' => 'sabpaisa',
+                'sabpaisa' => 'zoho',
+                'zoho' => 'hdfc',
+                default => 'hdfc'
+            };
         } else {
 
             $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
