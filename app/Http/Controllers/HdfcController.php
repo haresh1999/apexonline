@@ -76,13 +76,13 @@ class HdfcController extends Controller
 
         $response = $hdfcService->orderStatus($transaction->order_id);
 
-        if (!$response['success']) {
+        if (!isset($response['data'])) {
             return response()->json('Payment verification failed');
         }
 
         $order = $response['data'];
 
-        $status = strtolower($order->status);
+        $status = strtolower($order['status']);
 
         if ($status == 'charged') {
             $paymentStatus = 'completed';
