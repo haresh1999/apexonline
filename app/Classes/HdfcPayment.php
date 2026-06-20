@@ -40,7 +40,7 @@ class HdfcPayment
                 "order_id" => $orderId,
                 "amount" => $amount,
                 "customer_id" => $customerId,
-                "payment_page_client_id" => config('hdfc.merchant_id'),
+                "payment_page_client_id" => config('hdfc.' . getAppEnv() . '.merchant_id'),
                 "action" => "paymentPage",
                 "return_url" => $redirectUrl,
             ];

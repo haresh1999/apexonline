@@ -11,8 +11,8 @@ return [
     'production' => [
         "merchant_id" => env("HDFC_MERCHANT_ID"),
         "key_uuid" => env("HDFC_KEY_UUID"),
-        "private_key_path" => storage_path("app/private/sandbox_keys/privateKey.pem"),
-        "public_key_path" => storage_path("app/private/sandbox_keys/key_61c5ad5e41da4693a6c68594a8cb5138.pem"),
+        "private_key_path" => storage_path("app/private/keys/privateKey.pem"),
+        "public_key_path" => storage_path("app/private/keys/key_61c5ad5e41da4693a6c68594a8cb5138.pem"),
         "base_url" => env("HDFC_BASE_URL", "https://smartgateway.hdfc.bank.in"),
     ]
 ];
