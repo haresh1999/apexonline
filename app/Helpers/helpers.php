@@ -42,7 +42,7 @@ function navbar($route)
 
 function gatewayList()
 {
-    return [
+    $methods = [
         'phonepe',
         'razorpay',
         'cashfree',
@@ -53,8 +53,13 @@ function gatewayList()
         'ccavenue',
         'zoho',
         'instamojo',
-        'sabpaisa'
+        'sabpaisa',
+        'hdfc'
     ];
+
+    sort($methods);
+
+    return $methods;
 }
 
 function generateStrongPassword($length = 12)
