@@ -78,11 +78,11 @@
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent {{ navbar('transaction') ? 'show' : '' }}" data-bs-parent="#navbarVerticalCollapse" id="nv-sales">
+                            <ul class="nav collapse parent {{ navbar(['transaction','transaction/show/*']) ? 'show' : '' }}" data-bs-parent="#navbarVerticalCollapse" id="nv-sales">
                                 <li class="collapsed-nav-item-title d-none">Transactions</li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar('transaction') && ! request()->has('date') ? 'active' : '' }}" href="{{ route('tnx.index') }}">
+                                    <a class="nav-link {{ navbar(['transaction','transaction/show/*']) && ! request()->has('date') ? 'active' : '' }}" href="{{ route('tnx.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">All</span>
                                         </div>

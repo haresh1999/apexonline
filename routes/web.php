@@ -32,7 +32,6 @@ use App\Http\Controllers\Admin\{
     TransactionController as SalesController,
 };
 use App\Http\Middleware\Admin\PermissionMiddleware;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('sandbox')->group(function () {
@@ -40,8 +39,6 @@ Route::prefix('sandbox')->group(function () {
     Route::post('request', [TransactionController::class, 'request'])->middleware(['throttle:600,10', 'auth']);
     Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
-    Route::get('payment/verify', [TransactionController::class, 'verifyPayment']);
-    Route::post('payment/update', [TransactionController::class, 'paymentUpdate']);
     Route::get('generate-sign', [TransactionController::class, 'signatureGenerate']);
 });
 
@@ -50,8 +47,6 @@ Route::prefix('/')->group(function () {
     Route::post('request', [TransactionController::class, 'request'])->middleware(['throttle:600,10', 'auth', 'signature']);
     Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
-    Route::get('payment/verify', [TransactionController::class, 'verifyPayment']);
-    Route::post('payment/update', [TransactionController::class, 'paymentUpdate']);
     Route::get('generate-sign', [TransactionController::class, 'signatureGenerate']);
 });
 
@@ -191,6 +186,8 @@ Route::middleware('admin.auth')->group(function () {
     });
 
     Route::get('transaction', [SalesController::class, 'index'])->name('tnx.index');
+    Route::get('transaction/show/{id}', [SalesController::class, 'show'])->name('tnx.show');
+    Route::post('transaction/update/{id}', [SalesController::class, 'update'])->name('tnx.update');
 
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 });
@@ -199,13 +196,10 @@ Route::middleware('admin.auth')->group(function () {
 Route::fallback([CommonController::class, 'pageNotFound']);
 Route::get('page-non-found', [CommonController::class, 'pageNotFound'])->name('not.found');
 Route::get('internal-server-error', [CommonController::class, 'serverError'])->name('server.error');
-
 Route::view('test-payment', 'request_payment');
-
-Route::any('response', function (Request $request) {
-    dd($request->all());
-});
-
-Route::post('callback', function (Request $request) {
-    file_put_contents(public_path('response.json'), json_encode($request->all()));
-});
+// Route::any('response', function (Request $request) {
+//     dd($request->all());
+// });
+// Route::post('callback', function (Request $request) {
+//     file_put_contents(public_path('response.json'), json_encode($request->all()));
+// });

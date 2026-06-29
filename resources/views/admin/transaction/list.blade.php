@@ -131,8 +131,8 @@
                                 <th class="white-space-nowrap align-middle py-4 text-start">NAME</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">EMAIL</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">MOBILE</th>
-                                <th class="white-space-nowrap align-middle py-4 text-center">GATEWAY</th>
-                                <th class="white-space-nowrap align-middle py-4 text-center">ENV</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">GATEWAY</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">ENV</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">AMOUNT</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">REDIRECT URL</th>
@@ -151,7 +151,9 @@
                                 </td>
 
                                 <td class="align-middle white-space-nowrap py-3">
-                                    <h6 class="mb-0">{{ $tnx->mr_order_id }}</h6>
+                                    <h6 class="mb-0">
+                                        <a href="{{ route('tnx.show',$tnx->id) }}">{{ $tnx->mr_order_id }}</a>
+                                    </h6>
                                 </td>
 
                                 <td class="align-middle white-space-nowrap py-3">
@@ -170,11 +172,11 @@
                                     {{ $tnx->payer_mobile }}
                                 </td>
 
-                                <td class="align-middle white-space-nowrap py-3 text-center">
+                                <td class="align-middle white-space-nowrap py-3 text-start">
                                     <h6 class="mb-0">{{ strtoupper($tnx->gateway) }}</h6>
                                 </td>
 
-                                <td class="align-middle white-space-nowrap py-3 text-center">
+                                <td class="align-middle white-space-nowrap py-3 text-start">
                                     <h6 class="mb-0">{{ strtoupper($tnx->env) }}</h6>
                                 </td>
 

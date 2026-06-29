@@ -26,7 +26,7 @@ class CompanyRequest extends FormRequest
 
             return [
                 'name' => ['required', 'string', 'max:255'],
-                'mobile' => ['required', 'digits:10', Rule::unique('users', 'mobile')->ignore($this->id)],
+                'mobile' => ['required', 'digits_between:9,12', Rule::unique('users', 'mobile')->ignore($this->id)],
                 'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
                 'client_id' => ['required', Rule::unique('users', 'client_id')->ignore($this->id)],
                 'client_secret' => ['required', 'uuid', Rule::unique('users', 'client_secret')->ignore($this->id)],
@@ -42,7 +42,7 @@ class CompanyRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'mobile' => ['required', 'digits:10', 'unique:users,mobile'],
+            'mobile' => ['required', 'digits_between:9,12', 'unique:users,mobile'],
             'email' => ['required', 'email', 'unique:users,email'],
             'client_id' => ['required', 'unique:users,client_id'],
             'client_secret' => ['required', 'uuid', 'unique:users,client_secret'],

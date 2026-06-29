@@ -20,66 +20,126 @@
             </div>
         </div>
     </div>
-    <div class="px-3 mb-0">
-        <hr>
-        <div class="row justify-content-between">
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-xxl-0 border-bottom-xxl-0 border-end border-bottom pb-4 pb-xxl-0 "><span class="uil fs-5 lh-1 uil-envelope text-primary"></span>
-                <h1 class="fs-5 pt-3">{{ $count }}</h1>
-                <p class="fs-9 mb-0">Total Transactions</p>
+    <div class="px-3">
+
+        <div class="row g-3">
+
+            <!-- Total Transactions -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-envelope fs-4 text-primary"></span>
+                    <h4 class="mt-3 mb-1">{{ $count }}</h4>
+                    <small>Total Transactions</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-md border-end-xxl-0 border-bottom border-bottom-md-0 pb-4 pb-xxl-0 pt-4 pt-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-open text-info"></span>
-                <h1 class="fs-5 pt-3">{{ $completedCount }}</h1>
-                <p class="fs-9 mb-0">Completed Transactions</p>
+
+            <!-- Completed -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-envelope-open fs-4 text-success"></span>
+                    <h4 class="mt-3 mb-1">{{ $completedCount }}</h4>
+                    <small>Completed Transactions</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-xxl-0 border-bottom-xxl-0 border-end-md border-bottom pb-4 pb-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-upload text-info"></span>
-                <h1 class="fs-5 pt-3">{{ $pendingCount }}</h1>
-                <p class="fs-9 mb-0">Pending Transactions</p>
+
+            <!-- Pending -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-envelope-upload fs-4 text-warning"></span>
+                    <h4 class="mt-3 mb-1">{{ $pendingCount }}</h4>
+                    <small>Pending Transactions</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-bottom-xxl-0 border-bottom border-end border-end-md-0 pb-4 pb-xxl-0 pt-4 pt-md-0"><span class="uil fs-5 lh-1 uil-envelopes text-primary"></span>
-                <h1 class="fs-5 pt-3">{{ $processingCount }}</h1>
-                <p class="fs-9 mb-0">Processing Transactions</p>
+
+            <!-- Processing -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-envelopes fs-4 text-info"></span>
+                    <h4 class="mt-3 mb-1">{{ $processingCount }}</h4>
+                    <small>Processing Transactions</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end border-end-xxl-0 pb-md-4 pb-xxl-0 pt-4 pt-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-check text-success"></span>
-                <h1 class="fs-5 pt-3">{{ $failedCount }}</h1>
-                <p class="fs-9 mb-0">Failed Transactions</p>
+
+            <!-- Failed -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-envelope-check fs-4 text-danger"></span>
+                    <h4 class="mt-3 mb-1">{{ $failedCount }}</h4>
+                    <small>Failed Transactions</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-xxl pb-md-4 pb-xxl-0 pt-4 pt-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-block text-danger"></span>
-                <h1 class="fs-5 pt-3">{{ $refundedCount }}</h1>
-                <p class="fs-9 mb-0">Refunded Transactions</p>
+
+            <!-- Refunded -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-envelope-block fs-4 text-secondary"></span>
+                    <h4 class="mt-3 mb-1">{{ $refundedCount }}</h4>
+                    <small>Refunded Transactions</small>
+                </div>
             </div>
+
         </div>
-        <hr>
-        <div class="row justify-content-between mb-3">
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-xxl pb-md-4 pb-xxl-0 pt-4 pt-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-block text-danger"></span>
-                <h1 class="fs-5 pt-3">₹{{ number_format($total) }}</h1>
-                <p class="fs-9 mb-0">Total Amount</p>
+
+        <hr class="my-3">
+
+        <div class="row g-3">
+
+            <!-- Total Amount -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-wallet fs-4 text-primary"></span>
+                    <h4 class="mt-3 mb-1">₹{{ number_format($total) }}</h4>
+                    <small>Total Amount</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-bottom-xxl-0 border-bottom border-end border-end-md-0 pb-4 pb-xxl-0 pt-4 pt-md-0">
-                <span class="uil fs-5 lh-1 uil-envelopes text-primary"></span>
-                <h1 class="fs-5 pt-3">₹{{ number_format($completedTotal) }}
-                </h1>
-                <p class="fs-9 mb-0">Completed Amount</p>
+
+            <!-- Completed Amount -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-check-circle fs-4 text-success"></span>
+                    <h4 class="mt-3 mb-1">₹{{ number_format($completedTotal) }}</h4>
+                    <small>Completed Amount</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-xxl-0 border-bottom-xxl-0 border-end border-bottom pb-4 pb-xxl-0 ">
-                <span class="uil fs-5 lh-1 uil-envelope text-primary"></span>
-                <h1 class="fs-5 pt-3">₹{{ number_format($pendingTotal) }}</h1>
-                <p class="fs-9 mb-0">Pending Amount</p>
+
+            <!-- Pending Amount -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-clock fs-4 text-warning"></span>
+                    <h4 class="mt-3 mb-1">₹{{ number_format($pendingTotal) }}</h4>
+                    <small>Pending Amount</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-xxl-0 border-bottom-xxl-0 border-end-md border-bottom pb-4 pb-xxl-0">
-                <span class="uil fs-5 lh-1 uil-envelope-upload text-info"></span>
-                <h1 class="fs-5 pt-3">₹{{ number_format($processingTotal) }}</h1>
-                <p class="fs-9 mb-0">Processing Amount</p>
+
+            <!-- Processing Amount -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-sync fs-4 text-info"></span>
+                    <h4 class="mt-3 mb-1">₹{{ number_format($processingTotal) }}</h4>
+                    <small>Processing Amount</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end-md border-end-xxl-0 border-bottom border-bottom-md-0 pb-4 pb-xxl-0 pt-4 pt-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-open text-info"></span>
-                <h1 class="fs-5 pt-3">₹{{ number_format($failedTotal) }}</h1>
-                <p class="fs-9 mb-0">Failed Amount</p>
+
+            <!-- Failed Amount -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-times-circle fs-4 text-danger"></span>
+                    <h4 class="mt-3 mb-1">₹{{ number_format($failedTotal) }}</h4>
+                    <small>Failed Amount</small>
+                </div>
             </div>
-            <div class="col-6 col-md-4 col-xxl-2 text-center border-translucent border-start-xxl border-end border-end-xxl-0 pb-md-4 pb-xxl-0 pt-4 pt-xxl-0"><span class="uil fs-5 lh-1 uil-envelope-check text-success"></span>
-                <h1 class="fs-5 pt-3">₹{{ number_format($refundedTotal) }}</h1>
-                <p class="fs-9 mb-0">Refunded Amount</p>
+
+            <!-- Refunded Amount -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="border rounded text-center p-3 h-100">
+                    <span class="uil uil-redo fs-4 text-secondary"></span>
+                    <h4 class="mt-3 mb-1">₹{{ number_format($refundedTotal) }}</h4>
+                    <small>Refunded Amount</small>
+                </div>
             </div>
+
         </div>
-        <hr>
+
     </div>
 </div>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TransactionController as CTransactionController;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -66,5 +67,58 @@ class TransactionController extends Controller
             'refundedTotal',
             'users'
         ));
+    }
+
+    public function show($id)
+    {
+        $tnxs = Transaction::authTnx()->where('id', $id)->first();
+
+        if (! $tnxs) {
+
+            return redirect()->route('tnx.index');
+        }
+
+        return view('admin.transaction.show', compact('tnxs'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'status' => ['required', 'in:completed,failed,refunded,processing,pending'],
+        ]);
+
+        $tnx = Transaction::authTnx()->where('id', $id)->first();
+
+        if (! $tnx) {
+
+            return redirect()->back()->with('message', 'Order not found!');
+        }
+
+        $tnx->update(['status' => $request->status]);
+
+        $callback_url = $tnx->callback_url;
+        $callback_secret = auth()->user()->callback_secret;
+
+        $sendData = [
+            'transaction_id' => $tnx->id,
+            'order_id' => $tnx->mr_order_id,
+            'reference_id' => $tnx->reference_id,
+            'amount' => $tnx->amount,
+            'refund_amount' => $tnx->refund_amount,
+            'status' => $tnx->status,
+            'payer_name' => $tnx->payer_name,
+            'payer_email' => $tnx->payer_email,
+            'payer_mobile' => $tnx->payer_mobile,
+            'redirect_url' => $tnx->redirect_url,
+            'callback_url' => $tnx->callback_url,
+        ];
+
+        $tnxController = new CTransactionController();
+
+        $tnxController->webhook($callback_url, $callback_secret, $sendData);
+
+        return redirect()
+            ->back()
+            ->with('res.success', 'Payment updated successfully');
     }
 }

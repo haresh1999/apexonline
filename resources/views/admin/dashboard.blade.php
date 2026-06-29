@@ -50,7 +50,8 @@
                         <option>Mar 1 - 31, 2022</option>
                         <option>April 1 - 30, 2022</option>
                         <option>May 1 - 31, 2022</option>
-                    </select></div>
+                    </select>
+                </div>
             </div>
             <div class="echart-total-sales-chart" style="min-height:320px;width:100%"></div>
         </div>

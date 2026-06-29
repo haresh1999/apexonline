@@ -6,7 +6,6 @@ use App\Models\Token;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -114,7 +113,7 @@ class TransactionController extends Controller
         return redirect()->to($url);
     }
 
-    protected function webhook($url, $secret, $data)
+    public function webhook($url, $secret, $data)
     {
         ksort($data);
 
@@ -168,68 +167,6 @@ class TransactionController extends Controller
             'redirect_url' => $transaction->redirect_url,
             'callback_url' => $transaction->callback_url,
         ]);
-    }
-
-    public function verifyPayment(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'token' => ['required', 'in:a715da0a-db2a-4f15-8df8-56fa7ff5a2f9'],
-        ]);
-
-        if ($validator->fails()) {
-
-            return redirect()->to('https://apexonline.in');
-        }
-
-        return view('verify_payment');
-    }
-
-    public function paymentUpdate(Request $request)
-    {
-        $user = User::firstWhere('email', $request->email);
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-
-            return redirect()->back()->with('message', 'Invalid credentials');
-        }
-
-        $input = $request->validate([
-            'order_id' => [
-                'required',
-                Rule::exists('transactions', 'mr_order_id')->where(function ($query) use ($user) {
-                    $query->where('env', $user->env)->where('status', 'pending');
-                }),
-            ],
-            'status' => ['required', 'in:completed,failed,refunded,processing,pending'],
-            'password' => ['required']
-        ]);
-
-        $transaction = Transaction::where('mr_order_id', $input['order_id'])
-            ->where('user_id', $user->id)
-            ->where('env', $user->env)
-            ->first();
-
-        if (! $transaction) {
-
-            return redirect()->back()->with('message', 'Order not found!');
-        }
-
-        $transaction->update(['status' => $input['status']]);
-
-        $callback_url = $transaction->callback_url;
-
-        $sendData = [
-            'order_id' => $transaction->mr_order_id,
-            'tnx_id' => $transaction->id,
-            'amount' => $transaction->amount,
-            'status' => $input['status']
-        ];
-
-        $this->webhook($callback_url, $user->callback_secret, $sendData);
-
-        return redirect()
-            ->back()
-            ->with('success', 'Payment updated successfully');
     }
 
     public function redirect(Request $request)
