@@ -43,7 +43,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('tnx.index',['status' => 'pencing']) }}">
+            <a class="nav-link" href="{{ route('tnx.index',['status' => 'pending']) }}">
                 <span>Pending</span>
                 <span class="text-body-tertiary fw-semibold">({{$pendingTotal}})</span>
             </a>
