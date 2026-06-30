@@ -14,6 +14,6 @@ class Gateway extends Model
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'gateway_id')->where('env', 'production');
+        return $this->hasMany(Transaction::class, 'gateway_id')->where('env', 'production')->where('status', 'completed');
     }
 }
