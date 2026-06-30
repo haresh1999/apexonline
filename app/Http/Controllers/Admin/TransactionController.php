@@ -40,7 +40,13 @@ class TransactionController extends Controller
                 $q->where('env', $request->env);
             })
             ->when($request->filled('date'), function ($q) use ($request) {
-                $q->whereDate('created_at', $request->date);
+                $dates = explode(' to ', $request->date);
+                if (count($dates) == 2) {
+                    $q->whereBetween('created_at', [
+                        $dates[0] . ' 00:00:00',
+                        $dates[1] . ' 23:59:59',
+                    ]);
+                }
             })
             ->when($request->filled('user_id'), function ($q) use ($request) {
                 $q->where('user_id', $request->user_id);

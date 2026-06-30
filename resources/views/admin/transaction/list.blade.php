@@ -81,13 +81,13 @@
                         <input class="form-control search-input search" type="search" name="search" placeholder="Search anything..." value="{{ Request::get('search') }}" aria-label="Search" />
                         <span class="fas fa-search search-box-icon"></span>
                     </div>
-                    <div class="scrollbar overflow-hidden-y">
+                    <div>
                         <div class="btn-group position-static gap-2" role="group">
-                            <div class="col-8 col-sm-4">
-                                <input onchange="window.location.href = '{{ route('tnx.index') }}?date='+this.value" class="form-control datetimepicker" id="datepicker" type="text" placeholder="May 1 - 31, 2025" data-options='{"disableMobile":true,"dateFormat":"Y-m-d"}' value="{{ Request::get('date') }}" />
+                            <div class="col-9 col-sm-4">
+                                <input class="form-control datetimepicker" name="date" id="datepicker" type="text" data-options='{"disableMobile":true,"dateFormat":"Y-m-d","mode":"range"}' value="{{ request('date') }}">
                             </div>
                             <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="pg">
+                                <select class="form-select" name="pg" style="min-width: 120px">
                                     <option selected="" value="">Gateway</option>
                                     @foreach ($gateways as $pg)
                                     <option @selected(Request::get('pg')==$pg) value="{{ $pg }}">{{ucfirst($pg)}}</option>
@@ -95,7 +95,17 @@
                                 </select>
                             </div>
                             <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="env">
+                                <select class="form-select" name="status" style="min-width: 120px">
+                                    <option selected="" value="">Status</option>
+                                    <option @selected(Request::get('status')=='pending' ) value="pending">Pending</option>
+                                    <option @selected(Request::get('status')=='processing' ) value="processing">Processing</option>
+                                    <option @selected(Request::get('status')=='completed' ) value="completed">Completed</option>
+                                    <option @selected(Request::get('status')=='failed' ) value="failed">Failed</option>
+                                    <option @selected(Request::get('status')=='refunded' ) value="refunded">Refunded</option>
+                                </select>
+                            </div>
+                            <div class="btn-group position-static text-nowrap">
+                                <select class="form-select" name="env" style="min-width: 120px">
                                     <option selected="" value="">Env</option>
                                     <option @selected(Request::get('env')=='sandbox' ) value="sandbox">Sandbox</option>
                                     <option @selected(Request::get('env')=='production' ) value="production">Production</option>
@@ -103,8 +113,8 @@
                             </div>
                             @if(auth()->id() == 1)
                             <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="user_id">
-                                    <option selected="" value="" selected>All</option>
+                                <select class="form-select" name="user_id" style="min-width: 120px">
+                                    <option selected="" value="" selected>Company</option>
                                     @foreach ($users as $uId => $user)
                                     <option @selected(Request::get('user_id')==$uId ) value="{{$uId}}">{{$user}}</option>
                                     @endforeach
