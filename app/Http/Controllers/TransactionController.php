@@ -69,7 +69,7 @@ class TransactionController extends Controller
                 ->latest('id')
                 ->value('gateway');
 
-            $gateways = Gateway::where('status', 1)->pluck('name')->toArray();
+            $gateways = Gateway::where('status', 1)->pluck('slug')->toArray();
 
             $methods = [];
 
