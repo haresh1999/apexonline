@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\Admin\PermissionMiddleware;
 use App\Http\Requests\Admin\CompanyRequest;
+use App\Models\Gateway;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -40,7 +41,9 @@ class CompanyController extends Controller
 
     public function create()
     {
-        return view('admin.user.create');
+        $gateways = Gateway::where('status', 1)->pluck('name', 'slug');
+
+        return view('admin.user.create', compact('gateways'));
     }
 
     public function store(CompanyRequest $request)
@@ -68,7 +71,9 @@ class CompanyController extends Controller
     {
         $user = User::where('id', $id)->first();
 
-        return view('admin.user.edit', compact('user'));
+        $gateways = Gateway::where('status', 1)->pluck('name', 'slug');
+
+        return view('admin.user.edit', compact('user', 'gateways'));
     }
 
     public function update(CompanyRequest $request, int $id)

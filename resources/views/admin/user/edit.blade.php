@@ -112,7 +112,7 @@
                                 <label class="ps-0 form-label text-body" for="default_gateway">Default Gateway</label>
                                 <select class="form-control" name="default_gateway" id="default_gateway">
                                     <option value="" selected>Select...</option>
-                                    @foreach (gatewayList() as $pg)
+                                    @foreach ($gateways as $pg)
                                     <option @selected(old('default_gateway',$user->default_gateway)==$pg) value="{{$pg}}">{{ucfirst($pg)}}</option>
                                     @endforeach
                                 </select>

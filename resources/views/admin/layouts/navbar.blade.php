@@ -20,6 +20,23 @@
 
                 @if(auth()->id() == 1)
                 <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar(['gateway','gateway/create','gateway/edit/*']) }}" href="{{ route('pg.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="credit-card"></span>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-text">Gateways</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                @endif
+
+                @if(auth()->id() == 1)
+                <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Company & Users</b></p>
                     <hr class="navbar-vertical-line" />
 

@@ -40,28 +40,6 @@ function navbar($route)
     return request()->is("{$route}") ? 'active' : '';
 }
 
-function gatewayList()
-{
-    $methods = [
-        'phonepe',
-        'razorpay',
-        'cashfree',
-        'payu',
-        'easebuzz',
-        'paytm',
-        'zaaakapay',
-        'ccavenue',
-        'zoho',
-        'instamojo',
-        'sabpaisa',
-        'hdfc'
-    ];
-
-    sort($methods);
-
-    return $methods;
-}
-
 function generateStrongPassword($length = 12)
 {
     $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransactionController as CTransactionController;
+use App\Models\Gateway;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -57,6 +58,8 @@ class TransactionController extends Controller
 
         $users = User::pluck('name', 'id');
 
+        $gateways = Gateway::pluck('name', 'slug');
+
         return view('admin.transaction.list', compact(
             'tnxs',
             'total',
@@ -65,7 +68,8 @@ class TransactionController extends Controller
             'completedTotal',
             'failedTotal',
             'refundedTotal',
-            'users'
+            'users',
+            'gateways'
         ));
     }
 

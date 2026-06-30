@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\{
     CommonController,
     CompanyController,
     DashboardController,
+    GatewayController,
     TransactionController as SalesController,
 };
 use App\Http\Middleware\Admin\PermissionMiddleware;
@@ -188,6 +189,14 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('transaction', [SalesController::class, 'index'])->name('tnx.index');
     Route::get('transaction/show/{id}', [SalesController::class, 'show'])->name('tnx.show');
     Route::post('transaction/update/{id}', [SalesController::class, 'update'])->name('tnx.update');
+
+    Route::middleware([PermissionMiddleware::class])->group(function () {
+        Route::get('gateway', [GatewayController::class, 'index'])->name('pg.index');
+        Route::get('gateway/create', [GatewayController::class, 'create'])->name('pg.create');
+        Route::post('gateway/store', [GatewayController::class, 'store'])->name('pg.store');
+        Route::get('gateway/{id}/edit', [GatewayController::class, 'edit'])->name('pg.edit');
+        Route::put('gateway/update/{id}', [GatewayController::class, 'update'])->name('pg.update');
+    });
 
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 });

@@ -89,7 +89,7 @@
                             <div class="btn-group position-static text-nowrap">
                                 <select class="form-select" name="pg">
                                     <option selected="" value="">Gateway</option>
-                                    @foreach (gatewayList() as $pg)
+                                    @foreach ($gateways as $pg)
                                     <option @selected(Request::get('pg')==$pg) value="{{ $pg }}">{{ucfirst($pg)}}</option>
                                     @endforeach
                                 </select>

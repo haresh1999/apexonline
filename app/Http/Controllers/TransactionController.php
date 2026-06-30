@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gateway;
 use App\Models\Token;
 use App\Models\Transaction;
 use App\Models\User;
@@ -68,18 +69,28 @@ class TransactionController extends Controller
                 ->latest('id')
                 ->value('gateway');
 
+            $gateways = Gateway::where('status', 1)->pluck('name')->toArray();
+
+            $methods = [];
+
+            foreach ($gateways as $key => $gateway) {
+                $methods[$gateway] = $gateways[$key + 1] ?? $gateways[0];
+            }
+
+            $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
+
             // $gateway = 'hdfc';
-            $gateway = match ($pgGateway) {
-                'hdfc' => 'instamojo',
-                'instamojo' => 'cashfree',
-                'cashfree' => 'phonepe',
-                'phonepe' => 'payu',
-                'payu' => 'paytm',
-                'paytm' => 'sabpaisa',
-                'sabpaisa' => 'zoho',
-                'zoho' => 'hdfc',
-                default => 'hdfc'
-            };
+            // $gateway = match ($pgGateway) {
+            //     'hdfc' => 'instamojo',
+            //     'instamojo' => 'cashfree',
+            //     'cashfree' => 'phonepe',
+            //     'phonepe' => 'payu',
+            //     'payu' => 'paytm',
+            //     'paytm' => 'sabpaisa',
+            //     'sabpaisa' => 'zoho',
+            //     'zoho' => 'hdfc',
+            //     default => 'hdfc'
+            // };
         } else {
 
             $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
