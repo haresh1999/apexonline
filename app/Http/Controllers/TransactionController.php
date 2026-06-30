@@ -110,7 +110,8 @@ class TransactionController extends Controller
             'payer_mobile' => $input['payer_mobile'],
             'gateway' => $gateway,
             'callback_url' => $input['callback_url'],
-            'redirect_url' => $input['redirect_url']
+            'redirect_url' => $input['redirect_url'],
+            'gateway_id' => Gateway::where('slug', $gateway)->value('id')
         ]);
 
         if ($env == 'sandbox') {
