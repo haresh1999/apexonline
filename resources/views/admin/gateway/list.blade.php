@@ -19,19 +19,19 @@
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="javascript:void(0);">
+            <a class="nav-link active" aria-current="page" href="{{ route('pg-index') }}">
                 <span>All </span>
                 <span class="text-body-tertiary fw-semibold">({{$total}})</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);">
+            <a class="nav-link" href="{{ route('pg.index',['status' => 1]) }}">
                 <span>Active </span>
                 <span class="text-body-tertiary fw-semibold">({{$active}})</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);">
+            <a class="nav-link" href="{{ route('pg.index',['status' => 0]) }}">
                 <span>Inactive </span>
                 <span class="text-body-tertiary fw-semibold">({{$inactive}})</span>
             </a>
