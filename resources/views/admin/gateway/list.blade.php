@@ -19,7 +19,7 @@
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ route('pg-index') }}">
+            <a class="nav-link active" aria-current="page" href="{{ route('pg.index') }}">
                 <span>All </span>
                 <span class="text-body-tertiary fw-semibold">({{$total}})</span>
             </a>
