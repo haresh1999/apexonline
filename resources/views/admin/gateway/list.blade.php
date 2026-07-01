@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
 
+@section('title','Gateway List')
+
 @section('style')
 
 @endsection
