@@ -84,6 +84,7 @@
                             <th class="py-4 text-start">Name</th>
                             <th class="py-4 text-start">Mobile</th>
                             <th class="py-4 text-start">Email</th>
+                            <th class="py-4 text-start">Earning (Rs.)</th>
                             <th class="py-4 text-start">Default Gateway</th>
                             <th class="py-4 text-start">Last Login</th>
                             <th class="p-4">Status</th>
@@ -97,6 +98,7 @@
                             <td class="text-start">{{ $user->name }}</td>
                             <td class="text-start">{{ $user->mobile }}</td>
                             <td class="text-start">{{ $user->email }}</td>
+                            <td class="text-start">{{ number_format($user->earning_sum_amount,2) }}</td>
                             <td class="text-start">{{ ucfirst($user->default_gateway ?? 'N/A') }}</td>
                             <td class="text-start">{{ $user->updated_at }}</td>
                             <td>

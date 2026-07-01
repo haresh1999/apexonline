@@ -16,16 +16,17 @@ class CompanyController extends Controller
     {
         $search = $request->search;
 
-        $users = User::when(isset($request->search), function ($query) use ($search) {
-            $columns = Schema::getColumnListing('users');
-            $query->where(function ($query) use ($columns, $search) {
-                foreach ($columns as $column) {
-                    if (in_array($column, ['id', 'name', 'email', 'mobile', 'timezone', 'device_type', 'device_name'])) {
-                        $query->orWhere($column, 'like', "%{$search}%");
+        $users = User::withSum('earning','amount')
+            ->when(isset($request->search), function ($query) use ($search) {
+                $columns = Schema::getColumnListing('users');
+                $query->where(function ($query) use ($columns, $search) {
+                    foreach ($columns as $column) {
+                        if (in_array($column, ['id', 'name', 'email', 'mobile', 'timezone', 'device_type', 'device_name'])) {
+                            $query->orWhere($column, 'like', "%{$search}%");
+                        }
                     }
-                }
-            });
-        })
+                });
+            })
             ->when(isset($request->status), function ($query) use ($request) {
                 $query->where('status', $request->status);
             })

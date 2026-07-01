@@ -50,6 +50,13 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class);
     }
 
+    public function earning()
+    {
+        return $this->hasMany(Transaction::class, 'user_id', 'id')
+            ->where('env', 'production')
+            ->where('status', 'completed');
+    }
+
     public function token()
     {
         return $this->hasMany(Token::class);
