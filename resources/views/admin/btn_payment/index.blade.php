@@ -40,21 +40,25 @@
                 <table class="table fs-9 mb-0 text-center">
                     <thead>
                         <tr>
-                            <th class="p-4">ID</th>
-                            <th class="p-4">Gateway Name</th>
-                            <th class="p-4">Order#</th>
-                            <th class="p-4">Created At</th>
-                            <th class="p-4">Last Updated</th>
+                            <th class="py-4 text-start">ID</th>
+                            <th class="py-4 text-start">Order#</th>
+                            <th class="py-4 text-start">Gateway Name</th>
+                            <th class="py-4 text-start">Created At</th>
+                            <th class="py-4 text-start">Last Updated</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($payments as $key => $payment)
                         <tr class="align-middle">
-                            <td>{{ $payment->id }}</td>
-                            <td>{{ $payment->gateway }}</td>
-                            <td>{{ $payment->order_id }}</td>
-                            <td>{{ $payment->created_at }}</td>
-                            <td>{{ $payment->updated_at }}</td>
+                            <td class="text-start">{{ $payment->id }}</td>
+                            <td class="text-start">{{ $payment->order_id }}</td>
+                            <td class="white-space-nowrap text-start">
+                                <h6 class="mb-0">
+                                    {{ strtoupper($payment->gateway) }}
+                                </h6>
+                            </td>
+                            <td class="text-start">{{ $payment->created_at }}</td>
+                            <td class="text-start">{{ $payment->updated_at }}</td>
                         </tr>
                         @endforeach
                     </tbody>
