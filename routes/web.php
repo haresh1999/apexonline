@@ -184,19 +184,19 @@ Route::middleware('admin.auth')->group(function () {
         Route::get('company/{id}/edit', [CompanyController::class, 'edit'])->name('company.edit');
         Route::put('company/update/{id}', [CompanyController::class, 'update'])->name('company.update');
         Route::delete('company/destroy/{id}', [CompanyController::class, 'destroy'])->name('company.destroy');
-    });
 
-    Route::get('transaction', [SalesController::class, 'index'])->name('tnx.index');
-    Route::get('transaction/show/{id}', [SalesController::class, 'show'])->name('tnx.show');
-    Route::post('transaction/update/{id}', [SalesController::class, 'update'])->name('tnx.update');
-
-    Route::middleware([PermissionMiddleware::class])->group(function () {
         Route::get('gateway', [GatewayController::class, 'index'])->name('pg.index');
         Route::get('gateway/create', [GatewayController::class, 'create'])->name('pg.create');
         Route::post('gateway/store', [GatewayController::class, 'store'])->name('pg.store');
         Route::get('gateway/{id}/edit', [GatewayController::class, 'edit'])->name('pg.edit');
         Route::put('gateway/update/{id}', [GatewayController::class, 'update'])->name('pg.update');
+
+        Route::get('button-payment', [SalesController::class, 'btnPayment'])->name('btn.payment');
     });
+
+    Route::get('transaction', [SalesController::class, 'index'])->name('tnx.index');
+    Route::get('transaction/show/{id}', [SalesController::class, 'show'])->name('tnx.show');
+    Route::post('transaction/update/{id}', [SalesController::class, 'update'])->name('tnx.update');
 
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 });

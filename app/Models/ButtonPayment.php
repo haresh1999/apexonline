@@ -8,6 +8,6 @@ class ButtonPayment extends Model
 {
     protected $fillable = [
         'gateway',
-        'order_id,'
+        'order_id'
     ];
 }

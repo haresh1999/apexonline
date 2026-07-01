@@ -127,6 +127,24 @@
                     </div>
                 </li>
 
+                @if (auth()->id() == 1)
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar('button-payment') }}" href="{{ route('btn.payment') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="square"></span>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-text">Button Payment</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+
+                @endif
+
             </ul>
         </div>
     </div>
