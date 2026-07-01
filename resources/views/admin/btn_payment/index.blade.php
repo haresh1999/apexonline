@@ -2,8 +2,6 @@
 
 @section('title','Button Payment')
 
-@endsection
-
 @section('style')
 <link href="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
 @endsection
