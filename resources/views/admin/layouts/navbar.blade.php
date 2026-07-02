@@ -99,7 +99,7 @@
                                 <li class="collapsed-nav-item-title d-none">Transactions</li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar(['transaction','transaction/show/*']) && ! request()->has('date') ? 'active' : '' }}" href="{{ route('tnx.index') }}">
+                                    <a class="nav-link {{ navbar(['transaction','transaction/show/*']) }}" href="{{ route('tnx.index') }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">All</span>
                                         </div>
@@ -107,7 +107,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar('transaction') && request('date') == date('Y-m-d') ? 'active' : '' }}" href="{{ route('tnx.index',['date' => date('Y-m-d')]) }}">
+                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'today']) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Today</span>
                                         </div>
@@ -115,9 +115,25 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ navbar('transaction') && request('date') == date('Y-m-d', strtotime('-1 day')) ? 'active' : '' }}" href="{{ route('tnx.index',['date' => date('Y-m-d', strtotime('-1 day'))]) }}">
+                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'yesterday']) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Yesterday</span>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'this-month']) }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">This Month</span>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'last-month']) }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Last Month</span>
                                         </div>
                                     </a>
                                 </li>

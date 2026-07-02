@@ -41,12 +41,28 @@ class TransactionController extends Controller
                 $q->where('env', $request->env);
             })
             ->when($request->filled('date'), function ($q) use ($request) {
-                $dates = explode(' to ', $request->date);
-                if (count($dates) == 2) {
+                if ($request->date == 'today') {
+                    $q->whereDate('created_at', now()->format('Y-m-d'));
+                } elseif ($request->date == 'yesterday') {
+                    $q->whereDate('created_at', now()->subDay()->format('Y-m-d'));
+                } elseif ($request->date == 'this-month') {
                     $q->whereBetween('created_at', [
-                        $dates[0] . ' 00:00:00',
-                        $dates[1] . ' 23:59:59',
+                        now()->startOfMonth()->format('Y-m-d H:i:s'),
+                        now()->endOfMonth()->format('Y-m-d H:i:s')
                     ]);
+                } elseif ($request->date == 'last-month') {
+                    $q->whereBetween('created_at', [
+                        now()->subMonth()->startOfMonth()->format('Y-m-d H:i:s'),
+                        now()->subMonth()->endOfMonth()->format('Y-m-d H:i:s')
+                    ]);
+                } else {
+                    $dates = explode(' to ', $request->date);
+                    if (count($dates) == 2) {
+                        $q->whereBetween('created_at', [
+                            $dates[0] . ' 00:00:00',
+                            $dates[1] . ' 23:59:59',
+                        ]);
+                    }
                 }
             })
             ->when($request->filled('user_id'), function ($q) use ($request) {
