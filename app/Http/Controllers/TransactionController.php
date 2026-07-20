@@ -226,7 +226,7 @@ class TransactionController extends Controller
 
         $payload = [
             "amount" => $request->amount,
-            "order_id" => $request->mr_order_id,
+            "order_id" => $request->order_id,
             "payer_email" => $request->payer_email,
             "payer_mobile" => $request->payer_mobile,
             "payer_name" => $request->payer_name,
