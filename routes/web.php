@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('sandbox')->group(function () {
     Route::post('token', [TransactionController::class, 'getToken'])->middleware('token');
     Route::post('request', [TransactionController::class, 'request'])->middleware(['throttle:600,10', 'auth', 'signature']);
-    Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth']);
+    Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth', 'signature']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
     Route::get('generate-sign', [TransactionController::class, 'signatureGenerate']);
 });
@@ -46,7 +46,7 @@ Route::prefix('sandbox')->group(function () {
 Route::prefix('/')->group(function () {
     Route::post('token', [TransactionController::class, 'getToken'])->middleware('token');
     Route::post('request', [TransactionController::class, 'request'])->middleware(['throttle:600,10', 'auth', 'signature']);
-    Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth']);
+    Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth', 'signature']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
     Route::get('generate-sign', [TransactionController::class, 'signatureGenerate']);
 });
