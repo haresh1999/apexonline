@@ -142,13 +142,13 @@ class TransactionController extends Controller
 
     public function status(Request $request)
     {
-        $userId = config('services.phonepe.user.id');
+        $user = config('services.user');
 
         $env = config('services.env');
 
         $validator = Validator::make($request->all(), [
-            'order_id' => ['required', 'string',   Rule::exists('transactions', 'mr_order_id')->where(function ($query) use ($userId, $env) {
-                return $query->where('user_id', $userId)->where('env', $env);
+            'order_id' => ['required', 'string',   Rule::exists('transactions', 'mr_order_id')->where(function ($query) use ($user, $env) {
+                return $query->where('user_id', $user['id'])->where('env', $env);
             }),],
         ]);
 
@@ -162,24 +162,34 @@ class TransactionController extends Controller
 
         $input = $validator->validated();
 
-        $transaction = Transaction::where('user_id', $userId)
+        $transaction = Transaction::where('user_id', $user['id'])
             ->where('mr_order_id', $input['order_id'])
             ->where('env', $env)
             ->first();
 
-        return response()->json([
-            'transaction_id' => $transaction->id,
-            'order_id' => $transaction->mr_order_id,
-            'reference_id' => $transaction->reference_id,
-            'amount' => $transaction->amount,
-            'refund_amount' => $transaction->refund_amount,
-            'status' => $transaction->status,
-            'payer_name' => $transaction->payer_name,
-            'payer_email' => $transaction->payer_email,
-            'payer_mobile' => $transaction->payer_mobile,
-            'redirect_url' => $transaction->redirect_url,
-            'callback_url' => $transaction->callback_url,
-        ]);
+        $response['transaction_id'] = $transaction->id;
+        $response['order_id'] = $transaction->mr_order_id;
+        $response['reference_id'] = $transaction->reference_id;
+        $response['amount'] = $transaction->amount;
+        $response['refund_amount'] = $transaction->refund_amount;
+        $response['status'] = $transaction->status;
+        $response['payer_name'] = $transaction->payer_name;
+        $response['payer_email'] = $transaction->payer_email;
+        $response['payer_mobile'] = $transaction->payer_mobile;
+        $response['redirect_url'] = $transaction->redirect_url;
+        $response['callback_url'] = $transaction->callback_url;
+
+        ksort($response);
+
+        $payloadQueryString = http_build_query($response);
+
+        $secret = $user['callback_secret'];
+
+        $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
+
+        $response['signature'] = $calculatedSignature;
+
+        return response()->json($response);
     }
 
     public function redirect(Request $request)
@@ -225,12 +235,13 @@ class TransactionController extends Controller
         $secret = '17a89db4-4096-4d02-a3af-29ba3f259096';
 
         $payload = [
-            "amount" => $request->amount,
-            "order_id" => $request->order_id,
-            "payer_email" => $request->payer_email,
-            "payer_mobile" => $request->payer_mobile,
-            "payer_name" => $request->payer_name,
-            "refresh_token" => $request->refresh_token,
+            "refresh_token" => '95eebe25-7e97-4540-8964-5fb2af1b5201-1',
+            "order_id" => '5YhDYz',
+            // "order_id" => $request->order_id,
+            // "payer_email" => $request->payer_email,
+            // "payer_mobile" => $request->payer_mobile,
+            // "payer_name" => $request->payer_name,
+            // "refresh_token" => $request->refresh_token,
         ];
 
         ksort($payload);
