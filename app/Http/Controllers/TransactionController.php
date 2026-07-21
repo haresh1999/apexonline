@@ -179,9 +179,15 @@ class TransactionController extends Controller
         $response['redirect_url'] = $transaction->redirect_url;
         $response['callback_url'] = $transaction->callback_url;
 
-        ksort($response);
+        $signaturePayload = [
+            'amount' => $response['amount'],
+            'order_id' => $response['order_id'],
+            'status' => $response['status']
+        ];
 
-        $payloadQueryString = http_build_query($response);
+        ksort($signaturePayload);
+
+        $payloadQueryString = http_build_query($signaturePayload);
 
         $secret = $user['callback_secret'];
 
