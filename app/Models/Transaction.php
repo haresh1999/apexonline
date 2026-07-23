@@ -43,7 +43,7 @@ class Transaction extends Model
     public function scopeAuthTnx($q)
     {
         if (Auth::id() != 1) {
-            return $q->where('user_id', Auth::id());
+            return $q->where('user_id', getUserId());
         }
 
         return $q;

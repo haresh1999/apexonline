@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title','Company List')
+@section('title','User List')
 
 @section('style')
 
@@ -10,36 +10,36 @@
 <nav class="mb-3" aria-label="breadcrumb">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-        <li class="breadcrumb-item active">Company</li>
+        <li class="breadcrumb-item active">User</li>
     </ol>
 </nav>
 <div class="mb-9">
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <h2 class="mb-0">Companies</h2>
+            <h2 class="mb-0">Users</h2>
         </div>
     </div>
     <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ route('company.index') }}">
+            <a class="nav-link active" aria-current="page" href="{{ route('user.index') }}">
                 <span>All </span>
                 <span class="text-body-tertiary fw-semibold">({{$users->total()}})</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('company.index',['status' => 'active']) }}">
+            <a class="nav-link" href="{{ route('user.index',['status' => 'active']) }}">
                 <span>Active </span>
                 <span class="text-body-tertiary fw-semibold">({{$active}})</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('company.index',['status' => 'inactive']) }}">
+            <a class="nav-link" href="{{ route('user.index',['status' => 'inactive']) }}">
                 <span>Inactive </span>
                 <span class="text-body-tertiary fw-semibold">({{$inactive}})</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('company.index',['status' => 'trashed']) }}">
+            <a class="nav-link" href="{{ route('user.index',['status' => 'trashed']) }}">
                 <span>Trashed </span>
                 <span class="text-body-tertiary fw-semibold">({{$deleted}})</span>
             </a>
@@ -63,13 +63,13 @@
                                 </select>
                             </div>
                             <button type="submit" class="rounded btn btn-info flex-shrink-0">Filter</button>
-                            <a href="{{ route('company.index') }}" class="rounded btn btn-warning flex-shrink-0">Reset</a>
+                            <a href="{{ route('user.index') }}" class="rounded btn btn-warning flex-shrink-0">Reset</a>
                         </div>
                     </div>
                     <div class="ms-xxl-auto">
-                        <a class="btn btn-primary" href="{{ route('company.create') }}">
+                        <a class="btn btn-primary" href="{{ route('user.create') }}">
                             <span class="fas fa-plus me-2"></span>
-                            Add New Company
+                            Add New User
                         </a>
                     </div>
                 </div>
@@ -81,12 +81,10 @@
                     <thead>
                         <tr>
                             <th class="p-4">ID</th>
+                            <th class="py-4 text-start">Company</th>
                             <th class="py-4 text-start">Name</th>
                             <th class="py-4 text-start">Mobile</th>
                             <th class="py-4 text-start">Email</th>
-                            <th class="py-4">Tnx Count</th>
-                            <th class="py-4">Earning (Rs.)</th>
-                            <th class="py-4 text-start">Default Gateway</th>
                             <th class="py-4 text-start">Last Login</th>
                             <th class="p-4">Status</th>
                             <th class="p-4">Action</th>
@@ -96,12 +94,10 @@
                         @foreach ($users as $key => $user)
                         <tr class="align-middle">
                             <td>{{ ++$key }}</td>
+                            <td class="text-start">{{ $user->company->name }}</td>
                             <td class="text-start">{{ $user->name }}</td>
                             <td class="text-start">{{ $user->mobile }}</td>
                             <td class="text-start">{{ $user->email }}</td>
-                            <td>{{ $user->earning_count }}</td>
-                            <td>{{ number_format($user->earning_sum_amount,2) }}</td>
-                            <td class="text-start">{{ ucfirst($user->default_gateway ?? 'N/A') }}</td>
                             <td class="text-start">{{ $user->updated_at }}</td>
                             <td>
                                 @if($user->status == 1)
@@ -112,18 +108,16 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center align-items-center gap-2">
-                                    <form action="{{ route('company.destroy',$user->id) }}" method="post">
+                                    <form onsubmit="return confirm('Are you sure want do this action?')" action="{{ route('user.destroy',$user->id) }}" method="post">
                                         @method('DELETE')
                                         @csrf
                                         @if($user->deleted_at == null)
-                                        <a class="btn btn btn-info btn-sm" href="{{ route('company.edit',$user->id) }}">
+                                        <a class="btn btn btn-info btn-sm" href="{{ route('user.edit',$user->id) }}">
                                             <span class="fas fa-edit"></span>
                                         </a>
-                                        @if (auth()->id() != $user->id)
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             <span class="fas fa-trash-alt"></span>
                                         </button>
-                                        @endif
                                         @else
                                         <button type="submit" class="btn btn-warning btn-sm">
                                             <span class="fas fa-sync-alt"></span>

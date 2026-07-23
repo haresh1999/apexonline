@@ -68,7 +68,8 @@
                             <th class="p-4">ID</th>
                             <th class="p-4">Name</th>
                             <th class="p-4">Slug</th>
-                            <th class="p-4">Count</th>
+                            <th class="p-4">Tnx Count</th>
+                            <th class="p-4">Tnx Total (Rs)</th>
                             <th class="p-4">Status</th>
                             <th class="p-4">Last Updated</th>
                             <th class="p-4">Action</th>
@@ -81,6 +82,7 @@
                             <td>{{ $gateway->name }}</td>
                             <td>{{ $gateway->slug }}</td>
                             <td>{{ $gateway->transactions_count }}</td>
+                            <td>{{ number_format($gateway->transactions_sum_amount,2) }}</td>
                             <td>
                                 @if($gateway->status == 1)
                                 <span class="badge badge-phoenix badge-phoenix-success">Active</span>

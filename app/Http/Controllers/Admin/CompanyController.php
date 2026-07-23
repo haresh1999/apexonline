@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\Admin\PermissionMiddleware;
 use App\Http\Requests\Admin\CompanyRequest;
 use App\Models\Gateway;
 use App\Models\User;
@@ -16,7 +15,8 @@ class CompanyController extends Controller
     {
         $search = $request->search;
 
-        $users = User::withSum('earning','amount')
+        $users = User::withCount('earning')
+            ->withSum('earning', 'amount')
             ->when(isset($request->search), function ($query) use ($search) {
                 $columns = Schema::getColumnListing('users');
                 $query->where(function ($query) use ($columns, $search) {
@@ -30,11 +30,12 @@ class CompanyController extends Controller
             ->when(isset($request->status), function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
+            ->whereNull('user_id')
             ->withTrashed()
             ->paginate(20);
 
-        $inactive = User::where('status', 0)->withTrashed()->count();
-        $active = User::where('status', 1)->withTrashed()->count();
+        $inactive = User::whereNull('user_id')->where('status', 0)->withTrashed()->count();
+        $active = User::whereNull('user_id')->where('status', 1)->withTrashed()->count();
         $deleted = User::onlyTrashed()->count();
 
         return view('admin.user.list', compact('users', 'inactive', 'deleted', 'active'));
@@ -70,7 +71,7 @@ class CompanyController extends Controller
 
     public function edit(int $id)
     {
-        $user = User::where('id', $id)->first();
+        $user = User::whereNull('user_id')->where('id', $id)->first();
 
         $gateways = Gateway::where('status', 1)->pluck('name', 'slug');
 
@@ -91,7 +92,7 @@ class CompanyController extends Controller
             $input['whitelist_ip'] = json_encode(explode(', ', $input['whitelist_ip']));
         }
 
-        User::where('id', $id)->update($input);
+        User::whereNull('user_id')->where('id', $id)->update($input);
 
         return redirect()
             ->route('company.index')
@@ -100,7 +101,10 @@ class CompanyController extends Controller
 
     public function destroy(int $id)
     {
-        $user = User::where('id', $id)->withTrashed()->first();
+        $user = User::whereNull('user_id')
+            ->where('id', $id)
+            ->withTrashed()
+            ->first();
 
         if ($user->trashed()) {
 

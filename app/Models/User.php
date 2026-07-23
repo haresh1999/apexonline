@@ -11,6 +11,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'user_id',
         'email',
         'mobile',
         'client_id',
@@ -45,6 +46,16 @@ class User extends Authenticatable
         return null;
     }
 
+    public function scopeAuthUser($q)
+    {
+        if (auth()->id() != 1) {
+
+            return $q->where('user_id', getUserId());
+        }
+
+        return $q;
+    }
+
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
@@ -60,5 +71,10 @@ class User extends Authenticatable
     public function token()
     {
         return $this->hasMany(Token::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -61,3 +61,14 @@ function generateStrongPassword($length = 12)
 
     return str_shuffle($password);
 }
+
+
+function getUserId()
+{
+    if (auth()->user()->user_id == null) {
+
+        return auth()->id();
+    }
+
+    return auth()->user()->user_id;
+}

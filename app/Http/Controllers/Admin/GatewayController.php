@@ -15,6 +15,7 @@ class GatewayController extends Controller
     public function index(Request $request)
     {
         $gateways = Gateway::withCount('transactions')
+            ->withSum('transactions', 'amount')
             ->when($request->filled('search'), function ($q) {
                 $q->where('name', 'like', "%" . request('search') . "%");
             })
