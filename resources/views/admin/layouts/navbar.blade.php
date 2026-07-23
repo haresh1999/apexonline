@@ -2,7 +2,6 @@
     <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
         <div class="navbar-vertical-content">
             <ul class="navbar-nav flex-column" id="navbarVerticalNav">
-
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
                         <a class="nav-link label-1 {{ navbar('/') }}" href="{{ route('dashboard') }}" role="button" data-bs-toggle="" aria-expanded="false">
@@ -181,6 +180,23 @@
                     </div>
                 </li>
 
+                @if(auth()->user()->user_id == null)
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar(['webhoook']) }}" href="{{ route('webhoook.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="activity"></span>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-text">Webhoook</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                @endif
+
                 @if (auth()->id() == 1)
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
@@ -196,9 +212,7 @@
                         </a>
                     </div>
                 </li>
-
                 @endif
-
             </ul>
         </div>
     </div>

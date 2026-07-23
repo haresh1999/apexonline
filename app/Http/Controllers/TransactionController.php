@@ -6,6 +6,7 @@ use App\Models\Gateway;
 use App\Models\Token;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\WebhookLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -134,10 +135,23 @@ class TransactionController extends Controller
 
         $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
 
-        return Http::withHeaders([
+        $response = Http::withHeaders([
             'X-Provider-Signature' => $calculatedSignature,
             'Content-Type' => 'application/x-www-form-urlencoded'
         ])->post($url, $data);
+
+        $tnx = Transaction::where('id', $data['transaction_id'])->first();
+
+        return WebhookLog::create([
+            'tnx_id'    => $tnx->id,
+            'url'       => $url,
+            'signature' => $calculatedSignature,
+            'payload'   => json_encode($data),
+            'response'  => $response->body(),
+            'status'    => $response->status(),
+            'user_id'   => $tnx?->user_id,
+            'env'       => $tnx?->env,
+        ]);
     }
 
     public function status(Request $request)

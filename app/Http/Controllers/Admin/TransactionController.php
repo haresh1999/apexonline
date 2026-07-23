@@ -8,6 +8,7 @@ use App\Models\ButtonPayment;
 use App\Models\Gateway;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\WebhookLog;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -167,5 +168,33 @@ class TransactionController extends Controller
             ->paginate(20);
 
         return view('admin.btn_payment.index', compact('payments'));
+    }
+
+    public function webhook()
+    {
+        $logs = WebhookLog::when(request()->filled('search'), function ($q) {
+            $q->where(function ($q) {
+                $search = request('search');
+                $q->where('url', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhereHas('transaction', function ($query) use ($search) {
+                        $query->where('mr_order_id', 'like', "%{$search}%");
+                    });
+            });
+        })
+            ->when(request()->filled('date'), function ($q) {
+                $dates = explode(' to ', request('date'));
+                if (count($dates) == 2) {
+                    $q->whereBetween('created_at', [
+                        $dates[0] . ' 00:00:00',
+                        $dates[1] . ' 23:59:59',
+                    ]);
+                }
+            })
+            ->authUser()
+            ->orderBy('id', 'desc')
+            ->paginate(50);
+
+        return view('admin.webhook.list', compact('logs'));
     }
 }

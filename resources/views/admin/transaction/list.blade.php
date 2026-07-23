@@ -84,7 +84,7 @@
                     <div>
                         <div class="btn-group position-static gap-2" role="group">
                             <div class="col-9 col-sm-4">
-                                <input class="form-control datetimepicker" name="date" id="datepicker" type="text" data-options='{"disableMobile":true,"dateFormat":"Y-m-d","mode":"range"}' value="{{ request('date') }}">
+                                <input class="form-control datetimepicker" name="date" id="datepicker" type="text" data-options='{"disableMobile":true,"dateFormat":"Y-m-d","mode":"range"}' value="{{ request('date') }}" placeholder="Date Range">
                             </div>
                             <div class="btn-group position-static text-nowrap">
                                 <select class="form-select" name="pg" style="min-width: 120px">
