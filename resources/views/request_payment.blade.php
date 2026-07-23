@@ -12,6 +12,7 @@
     <h1>Sandbox Payment</h1>
     <form action="{{ url('/sandbox/request') }}" method="post">
         <input type="text" name="refresh_token" value="" placeholder="refresh token">
+        <input type="text" name="signature" value="" placeholder="signature">
         <input type="text" name="payer_name" value="Haresh">
         <input type="text" name="payer_email" value="hareshc1999@gmail.com">
         <input type="text" name="payer_mobile" value="9106029220">

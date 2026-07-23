@@ -31,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'sandbox/token',
             'request',
             'sandbox/request',
+            'status',
+            'sandbox/status',
 
             'hdfc/callback',
             'hdfc/sandbox/callback',
