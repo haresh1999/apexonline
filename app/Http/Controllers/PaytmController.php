@@ -153,7 +153,7 @@ class PaytmController extends Controller
 
         $responseBody = $response->json();
 
-        if (isset($responseBody['STATUS']) == 'TXN_SUCCESS') {
+        if (isset($responseBody['STATUS']) && $responseBody['STATUS'] == 'TXN_SUCCESS') {
 
             $transaction->update([
                 'status' => 'completed',
