@@ -69,7 +69,11 @@
                         @foreach ($bgs as $key => $bg)
                         <tr class="align-middle">
                             <td>{{ ++$key }}</td>
-                            <td>{{ $bg->name }}</td>
+                            <td class="white-space-nowrap text-start">
+                                <h6 class="mb-0">
+                                    {{ strtoupper($bg->name) }}
+                                </h6>
+                            </td>
                             <td>
                                 <a target="_blank" href="{{ $bg->url }}">
                                     <span class="fas fa-link"></span>
