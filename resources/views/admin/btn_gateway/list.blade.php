@@ -70,7 +70,7 @@
                         @foreach ($bgs as $key => $bg)
                         <tr class="align-middle">
                             <td>{{ ++$key }}</td>
-                            <td class="white-space-nowrap text-start">
+                            <td class="white-space-nowrap">
                                 <h6 class="mb-0">
                                     {{ strtoupper($bg->name) }}
                                 </h6>
