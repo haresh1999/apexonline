@@ -13,15 +13,16 @@ class BtnGatewayController extends Controller
      */
     public function index()
     {
-        $bgs = ButtonGateway::when(request()->filled('status'), function ($q) {
-            if (request('status') == 'trashed') {
-                $q->onlyTrashed();
-            } else {
-                $q->withTrashed()->where('status', request('status'));
-            }
-        }, function ($q) {
-            $q->withTrashed();
-        })
+        $bgs = ButtonGateway::withCount('transaction')
+            ->when(request()->filled('status'), function ($q) {
+                if (request('status') == 'trashed') {
+                    $q->onlyTrashed();
+                } else {
+                    $q->withTrashed()->where('status', request('status'));
+                }
+            }, function ($q) {
+                $q->withTrashed();
+            })
             ->orderBy('id', 'desc')
             ->get();
 

@@ -14,4 +14,9 @@ class ButtonGateway extends Model
         'url',
         'status'
     ];
+
+    public function transaction()
+    {
+        return $this->hasMany(ButtonPayment::class, 'bg_id');
+    }
 }

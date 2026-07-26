@@ -59,6 +59,7 @@
                         <tr>
                             <th class="p-4">ID</th>
                             <th class="p-4">Gateway Name</th>
+                            <th class="p-4">Tnx Count</th>
                             <th class="p-4">URL</th>
                             <th class="p-4">Status</th>
                             <th class="p-4">Last Updated</th>
@@ -74,6 +75,7 @@
                                     {{ strtoupper($bg->name) }}
                                 </h6>
                             </td>
+                            <td>{{ $bg->transaction_count }}</td>
                             <td>
                                 <a target="_blank" href="{{ $bg->url }}">
                                     <span class="fas fa-link"></span>
