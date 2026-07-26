@@ -32,7 +32,7 @@
                     </div>
                     <div class="scrollbar overflow-hidden-y">
                         <button type="submit" class="rounded btn btn-info flex-shrink-0">Filter</button>
-                        <a href="{{ route('btn.payment') }}" class="rounded btn btn-warning flex-shrink-0">Reset</a>
+                        <a href="{{ route('btn.tnx.index') }}" class="rounded btn btn-warning flex-shrink-0">Reset</a>
                     </div>
                 </div>
             </form>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\{
+    BtnTransactionController,
     CashfreeController,
     CashfreeSandboxController,
     CcavenueController,
@@ -25,6 +26,8 @@ use App\Http\Controllers\{
 };
 
 use App\Http\Controllers\Admin\{
+    ButtonController,
+    BtnGatewayController,
     LoginController,
     CommonController,
     CompanyController,
@@ -192,7 +195,14 @@ Route::middleware('admin.auth')->group(function () {
         Route::get('gateway/{id}/edit', [GatewayController::class, 'edit'])->name('pg.edit');
         Route::put('gateway/update/{id}', [GatewayController::class, 'update'])->name('pg.update');
 
-        Route::get('button-payment', [SalesController::class, 'btnPayment'])->name('btn.payment');
+        Route::get('button-gateway', [BtnGatewayController::class, 'index'])->name('bg.index');
+        Route::get('button-gateway/create', [BtnGatewayController::class, 'create'])->name('bg.create');
+        Route::post('button-gateway/store', [BtnGatewayController::class, 'store'])->name('bg.store');
+        Route::get('button-gateway/{id}/edit', [BtnGatewayController::class, 'edit'])->name('bg.edit');
+        Route::put('button-gateway/update/{id}', [BtnGatewayController::class, 'update'])->name('bg.update');
+        Route::delete('button-gateway/destroy/{id}', [BtnGatewayController::class, 'destroy'])->name('bg.destroy');
+
+        Route::get('button-payment', [BtnTransactionController::class, 'index'])->name('btn.tnx.index');
     });
 
     Route::get('user', [UserController::class, 'index'])->name('user.index');

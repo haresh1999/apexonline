@@ -198,20 +198,40 @@
                 @endif
 
                 @if (auth()->id() == 1)
-                <li class="nav-item">
-                    <div class="nav-item-wrapper">
-                        <a class="nav-link label-1 {{ navbar('button-payment') }}" href="{{ route('btn.payment') }}" role="button" data-bs-toggle="" aria-expanded="false">
-                            <div class="d-flex align-items-center">
-                                <span class="nav-link-icon">
-                                    <span data-feather="square"></span>
-                                </span>
-                                <div class="d-flex align-items-center">
-                                    <span class="nav-link-text">Button Payment</span>
-                                </div>
+                <div class="nav-item-wrapper">
+                    <a class="nav-link dropdown-indicator label-1" href="#nv-button-payment" role="button" data-bs-toggle="collapse" aria-expanded="{{ navbar(['button-gateway','button-gateway/create','button-gateway/*/edit','button-payment']) ? 'true' : 'false' }}" aria-controls="nv-button-payment">
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown-indicator-icon-wrapper">
+                                <span class="fas fa-caret-right dropdown-indicator-icon"></span>
                             </div>
-                        </a>
+                            <span class="nav-link-icon">
+                                <span data-feather="square"></span>
+                            </span>
+                            <span class="nav-link-text">Button Payment</span>
+                        </div>
+                    </a>
+                    <div class="parent-wrapper label-1">
+                        <ul class="nav collapse parent {{ navbar(['button-gateway','button-gateway/create','button-gateway/*/edit','button-payment']) ? 'show' : '' }}" data-bs-parent="#navbarVerticalCollapse" id="nv-button-payment">
+                            <li class="collapsed-nav-item-title d-none">Button Payment</li>
+
+                            <li class="nav-item">
+                                <a class="nav-link {{ navbar(['button-gateway','button-gateway/create','button-gateway/*/edit']) }}" href="{{ route('bg.index') }}">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Gateways</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link {{ navbar(['button-payment']) }}" href="{{ route('btn.tnx.index') }}">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Transactions</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                </li>
+                </div>
                 @endif
             </ul>
         </div>
