@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\TransactionController;
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Console\Command;
 
 class PaymentStatusCommand extends Command
@@ -36,9 +35,6 @@ class PaymentStatusCommand extends Command
 
         foreach ($tnxs as $tnx) {
 
-            $callback_url = $tnx->callback_url;
-            $callback_secret = User::where('id', $tnx->user_id)->value('callback_secret');
-
             $sendData = [
                 'transaction_id' => $tnx->id,
                 'order_id' => $tnx->mr_order_id,
@@ -55,7 +51,7 @@ class PaymentStatusCommand extends Command
 
             $tnxController = new TransactionController();
 
-            $tnxController->webhook($callback_url, $callback_secret, $sendData);
+            $tnxController->webhook($tnx->callback_url, $tnx->callback_secret, $sendData);
 
             $tnx->update(['status' => 'failed']);
         }
