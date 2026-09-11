@@ -124,7 +124,7 @@ class TransactionController extends Controller
         $tnx->update(['status' => $request->status]);
 
         $callback_url = $tnx->callback_url;
-        $callback_secret = auth()->user()->callback_secret;
+        $callback_secret = User::where('id', $tnx->user_id)->value('callback_secret');
 
         $sendData = [
             'transaction_id' => $tnx->id,
