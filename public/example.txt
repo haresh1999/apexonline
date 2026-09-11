@@ -1,1 +1,0 @@
-amount=10.00&callback_url=https%3A%2F%2Fmy.xs.com%2Fpayment%2Fprocess%2Fdeposit%2Fapexonline&order_id=5323686&payer_email=goudshravankumar%40gmail.com&payer_mobile=8555030703&payer_name=Sravan+Kumar+Kola&redirect_url=https%3A%2F%2Fmy.xs.com%2Fpayment%2Fprocessing%3Fid%3D5323686&reference_id=70d5d08e-ad24-44b9-9bb8-27b579688063&status=completed&transaction_id=163
