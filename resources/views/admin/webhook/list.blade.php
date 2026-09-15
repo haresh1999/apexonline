@@ -88,7 +88,7 @@
                 <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <pre><code>{!! $log->response !!}</code></pre>
+                {!! $log->response !!}
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
