@@ -61,7 +61,7 @@
                         <td class="text-start">{{ strtoupper($log->env) }}</td>
                         <td>{{ $log->status }}</td>
                         <td>
-                            <button class="btn btn-sm btn-info" type="button" data-bs-toggle="modal" data-bs-target="#show-payment-info-{{$log->id}}">{{$log->tnx_id}}</button>
+                            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#show-payment-info-{{$log->id}}">Show</button>
                         </td>
                         <td class="text-start">{{ $log->created_at }}</td>
                     </tr>
