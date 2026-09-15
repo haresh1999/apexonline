@@ -27,7 +27,8 @@ class Transaction extends Model
         'callback_url',
         'reference_id',
         'mr_order_id',
-        'gateway_id'
+        'gateway_id',
+        'payment_id'
     ];
 
     protected static function boot()

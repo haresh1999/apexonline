@@ -8,9 +8,11 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WebhookLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
@@ -271,5 +273,28 @@ class TransactionController extends Controller
         $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
 
         dd($calculatedSignature);
+    }
+
+    public function declaration(string $tid)
+    {
+        $tnx = Transaction::find($tid);
+
+        $data = [
+            'declarant_name' => $tnx->payer_name,
+            'email' => $tnx->payer_email,
+            'phone' => $tnx->payer_mobile,
+            'aadhaar_no' => '',
+            'address' => '',
+            'amount' => $tnx->amount,
+            'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
+            'payment_mode' => '',
+            'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
+        ];
+
+        $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
+
+        return $pdf->stream('service-completion.pdf');
+
+        // return view('admin.declaration', compact('data'));
     }
 }

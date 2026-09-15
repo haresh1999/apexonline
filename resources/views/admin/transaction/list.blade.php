@@ -144,6 +144,7 @@
                                 <th class="white-space-nowrap align-middle py-4 text-start">GATEWAY</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">ENV</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">AMOUNT</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">DEC</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">REDIRECT URL</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">CALLBACK URL</th>
@@ -192,6 +193,14 @@
 
                                 <td class="align-middle white-space-nowrap py-3 text-center">
                                     <h6 class="mb-0">₹{{ $tnx->amount }}</h6>
+                                </td>
+
+                                <td class="align-middle white-space-nowrap py-3 text-center">
+                                    @if ($tnx->status == 'completed')
+                                    <a target="_blank" href="{{ route('declaration',$tnx->id) }}" class="text-danger">
+                                        <span class="fas fa-file-pdf"></span>
+                                    </a>
+                                    @endif
                                 </td>
 
                                 <td class="align-middle white-space-nowrap py-3 text-center">

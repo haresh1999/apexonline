@@ -219,6 +219,8 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('webhoook', [SalesController::class, 'webhook'])->name('webhoook.index');
 
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('declaration/{tid}', [TransactionController::class, 'declaration'])->name('declaration');
 });
 
 // FALLBACK HANDLER

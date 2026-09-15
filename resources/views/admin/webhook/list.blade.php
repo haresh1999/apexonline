@@ -46,9 +46,10 @@
                         <th class="p-4">ID</th>
                         <th class="py-4 text-start">URL</th>
                         <th class="py-4 text-start">ORDER#</th>
-                        <th class="py-4 text-start">Env</th>
-                        <th class="p-4">Status</th>
-                        <th class="py-4 text-start">Date Time</th>
+                        <th class="py-4 text-start">ENV</th>
+                        <th class="p-4">STATUS</th>
+                        <th class="p-4">PAYMENT INFO</th>
+                        <th class="py-4 text-start">DATE TIME</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,6 +60,9 @@
                         <td class="text-start">{{ $log->transaction->mr_order_id }}</td>
                         <td class="text-start">{{ strtoupper($log->env) }}</td>
                         <td>{{ $log->status }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" type="button" data-bs-toggle="modal" data-bs-target="#show-payment-info-{{$log->id}}">{{$order->tnx_id}}</button>
+                        </td>
                         <td class="text-start">{{ $log->created_at }}</td>
                     </tr>
                     @endforeach
@@ -74,6 +78,25 @@
         @endif
     </div>
 </div>
+
+@foreach ($logs as $key => $log)
+<div class="modal fade" id="show-payment-info-{{$log->id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="payment-info">#{{ids($log->tnx_id)}} Payment Info!</h5>
+                <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <pre><code>{{ json_encode(json_decode($log->response), JSON_PRETTY_PRINT) }}</code></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 @endsection
 
 @section('script')

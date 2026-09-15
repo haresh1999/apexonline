@@ -34,11 +34,12 @@
                 </li>
                 @endif
 
-                @if(auth()->id() == 1)
+                @if (auth()->user()->user_id == null)
                 <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Company & Users</b></p>
                     <hr class="navbar-vertical-line" />
 
+                    @if(auth()->id() == 1)
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-company" role="button" data-bs-toggle="collapse" aria-expanded="{{ navbar(['company','company/create']) ? 'true' : 'false' }}" aria-controls="nv-company">
                             <div class="d-flex align-items-center">
@@ -76,7 +77,6 @@
                     </div>
                     @endif
 
-                    @if (auth()->user()->user_id == null)
                     <div class="nav-item-wrapper">
                         <a class="nav-link dropdown-indicator label-1" href="#nv-user" role="button" data-bs-toggle="collapse" aria-expanded="{{ navbar(['user','user/create','user/*/edit']) ? 'true' : 'false' }}" aria-controls="nv-user">
                             <div class="d-flex align-items-center">
@@ -112,8 +112,8 @@
                             </ul>
                         </div>
                     </div>
-                    @endif
                 </li>
+                @endif
 
                 <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Transactions & Sales</b></p>
