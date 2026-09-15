@@ -88,7 +88,7 @@
                 <button class="btn btn-close p-1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <pre><code>{{ json_encode(json_decode($log->response), JSON_PRETTY_PRINT) }}</code></pre>
+                <pre><code>{!! $log->response !!}</code></pre>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Cancel</button>
