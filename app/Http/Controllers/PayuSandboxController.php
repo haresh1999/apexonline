@@ -65,11 +65,13 @@ class PayuSandboxController extends Controller
             $transaction->update([
                 'payment_response' => json_encode($input),
                 'status' => 'completed',
+                'payment_id' => $input['mihpayid'] ?? null
             ]);
         } else {
             $transaction->update([
                 'payment_response' => json_encode($input),
-                'status' => 'failed'
+                'status' => 'failed',
+                'payment_id' => $input['mihpayid'] ?? null
             ]);
         }
 
@@ -92,7 +94,8 @@ class PayuSandboxController extends Controller
 
         $transaction->update([
             'payment_response' => json_encode($input),
-            'status' => 'failed'
+            'status' => 'failed',
+            'payment_id' => $input['mihpayid'] ?? null
         ]);
 
         return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);

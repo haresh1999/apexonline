@@ -188,6 +188,7 @@ class PhonepeSandboxController extends Controller
             $transaction->update([
                 'status' => 'failed',
                 'payment_response' => $response,
+                'payment_id' => $result['orderId'] ?? null
             ]);
 
             return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
@@ -206,6 +207,7 @@ class PhonepeSandboxController extends Controller
         $transaction->update([
             'status' => $paymentStatus,
             'payment_response' => json_encode($result),
+            'payment_id' => $result['orderId'] ?? null
         ]);
 
         return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);

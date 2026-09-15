@@ -122,12 +122,14 @@ class SabpaisaController extends Controller
             $transaction->update([
                 'status' => 'completed',
                 'payment_response' => json_encode($request->all()),
+                'payment_id' => $request->transaction_id ?? null
             ]);
         } else {
 
             $transaction->update([
                 'status' => 'failed',
                 'payment_response' => json_encode($request->all()),
+                'payment_id' => $request->transaction_id ?? null
             ]);
         }
 

@@ -162,7 +162,8 @@ class CashfreeSandboxController extends Controller
 
         $transaction->update([
             'status' => $paymentStatus,
-            'payment_response' => json_encode($result)
+            'payment_response' => json_encode($result),
+            'payment_id' => $response[0]['cf_payment_id'] ?? null
         ]);
 
         return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);

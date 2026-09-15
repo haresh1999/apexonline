@@ -189,6 +189,7 @@ class PhonepeController extends Controller
             $transaction->update([
                 'status' => 'failed',
                 'payment_response' => $response,
+                'payment_id' => $result['orderId'] ?? null
             ]);
 
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
@@ -207,6 +208,7 @@ class PhonepeController extends Controller
         $transaction->update([
             'status' => $paymentStatus,
             'payment_response' => json_encode($result),
+            'payment_id' => $result['orderId'] ?? null
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
