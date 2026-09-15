@@ -148,7 +148,7 @@ class InstaMojoController extends Controller
 
             $transaction->update([
                 'status' => 'failed',
-                'response' => json_encode($response->body())
+                'payment_response' => json_encode($response->body())
             ]);
 
             return response()->json(['error' => 'API failed'], 500);
@@ -162,19 +162,22 @@ class InstaMojoController extends Controller
 
             $transaction->update([
                 'status' => 'completed',
-                'response' => json_encode($data)
+                'payment_response' => json_encode($data),
+                'payment_id' => $data['id'] ?? null
             ]);
         } elseif ($status == false) {
 
             $transaction->update([
                 'status' => 'failed',
-                'response' => json_encode($data)
+                'payment_response' => json_encode($data),
+                'payment_id' => $data['id'] ?? null
             ]);
         } else {
 
             $transaction->update([
                 'status' => 'pending',
-                'response' => json_encode($data)
+                'payment_response' => json_encode($data),
+                'payment_id' => $data['id'] ?? null
             ]);
         }
 

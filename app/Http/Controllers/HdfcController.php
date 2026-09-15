@@ -96,9 +96,12 @@ class HdfcController extends Controller
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
+        $paymentId = $order->txn_id ?? $order->payment_gateway_response->txn_id ?? $order->payment_gateway_responses[0]->txn_id ?? null;
+
         $transaction->update([
             'status' => $paymentStatus,
-            'response' => json_encode($order)
+            'response' => json_encode($order),
+            'payment_id' => $paymentId,
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);

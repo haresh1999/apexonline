@@ -84,7 +84,8 @@ class CcavenueController extends Controller
 
         $transaction->update([
             'status' => $paymentStatus,
-            'response' => json_encode($data)
+            'response' => json_encode($data),
+            'payment_id' => $data['order_id'] ?? null
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);

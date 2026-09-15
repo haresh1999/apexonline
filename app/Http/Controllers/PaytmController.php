@@ -157,7 +157,8 @@ class PaytmController extends Controller
 
             $transaction->update([
                 'status' => 'completed',
-                'payment_response' => json_encode($responseBody)
+                'payment_response' => json_encode($responseBody),
+                'payment_id' => $responseBody['TXNID'] ?? null
             ]);
 
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
@@ -165,7 +166,8 @@ class PaytmController extends Controller
 
         $transaction->update([
             'status' => 'failed',
-            'payment_response' => json_encode($responseBody)
+            'payment_response' => json_encode($responseBody),
+            'payment_id' => $responseBody['TXNID'] ?? null
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);

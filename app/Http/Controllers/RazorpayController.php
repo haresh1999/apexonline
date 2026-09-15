@@ -157,17 +157,20 @@ class RazorpayController extends Controller
                 $transaction->update([
                     'payment_response' => json_encode($result),
                     'status' => 'completed',
+                    'payment_id' => $result['id'] ?? null
                 ]);
             } else {
                 $transaction->update([
                     'payment_response' => json_encode($result),
-                    'status' => 'failed'
+                    'status' => 'failed',
+                    'payment_id' => $result['id'] ?? null
                 ]);
             }
         } else {
             $transaction->update([
                 'payment_response' => json_encode($result),
-                'status' => 'failed'
+                'status' => 'failed',
+                'payment_id' => $result['id'] ?? null
             ]);
         }
 

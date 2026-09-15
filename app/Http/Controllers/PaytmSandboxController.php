@@ -165,7 +165,8 @@ class PaytmSandboxController extends Controller
 
             $transaction->update([
                 'status' => 'completed',
-                'payment_response' => json_encode($responseBody)
+                'payment_response' => json_encode($responseBody),
+                'payment_id' => $responseBody['body']['txnId'] ?? null
             ]);
 
             return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);

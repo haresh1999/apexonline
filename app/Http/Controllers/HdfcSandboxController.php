@@ -52,9 +52,12 @@ class HdfcSandboxController extends Controller
             'order_id' => $data['order_id']
         ])->first();
 
-
         if (!$transaction) {
             return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        if ($transaction->status == 'completed') {
+            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
         }
 
         $response = $service->orderStatus($transaction->order_id, $transaction->reference_id);
@@ -75,13 +78,12 @@ class HdfcSandboxController extends Controller
             $paymentStatus = 'failed';
         }
 
-        if ($transaction->status == 'completed') {
-            return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
-        }
+        $paymentId = $order->txn_id ?? $order->payment_gateway_response->txn_id ?? $order->payment_gateway_responses[0]->txn_id ?? null;
 
         $transaction->update([
             'status' => $paymentStatus,
-            'response' => json_encode($order)
+            'response' => json_encode($order),
+            'payment_id' => $paymentId,
         ]);
 
         return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);
