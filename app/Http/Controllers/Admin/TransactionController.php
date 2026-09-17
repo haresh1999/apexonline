@@ -185,7 +185,10 @@ class TransactionController extends Controller
 
         $filePath = storage_path('app/public/' . $tnx->reference_id . '.pdf');
 
-        return response()->download($filePath, 'apexonline-service-completion.pdf');
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="apexonline-service-completion.pdf"',
+        ]);
 
         // $tnxController = new CTransactionController();
 
