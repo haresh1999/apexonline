@@ -42,6 +42,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'payu/sandbox/failed',
             'paytm/callback',
             'paytm/sandbox/callback',
+
+            'esign/webhook/*'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
