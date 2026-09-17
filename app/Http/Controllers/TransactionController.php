@@ -8,10 +8,10 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WebhookLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
@@ -144,6 +144,29 @@ class TransactionController extends Controller
 
         $tnx = Transaction::where('id', $data['transaction_id'])->first();
 
+        if ($tnx->status == 'completed') {
+
+            $data = [
+                'declarant_name' => $tnx->payer_name,
+                'email' => $tnx->payer_email,
+                'phone' => $tnx->payer_mobile,
+                'aadhaar_no' => '',
+                'address' => '',
+                'amount' => $tnx->amount,
+                'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
+                'payment_mode' => '',
+                'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
+            ];
+
+            $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
+
+            $path = storage_path('app/public' . $tnx->reference_id . '.pdf');
+
+            $pdf->save($path);
+
+            $this->eSingRequest($tnx, $path);
+        }
+
         return WebhookLog::create([
             'tnx_id'    => $tnx->id,
             'url'       => $url,
@@ -257,13 +280,11 @@ class TransactionController extends Controller
         $secret = '17a89db4-4096-4d02-a3af-29ba3f259096';
 
         $payload = [
-            "refresh_token" => '95eebe25-7e97-4540-8964-5fb2af1b5201-1',
-            "order_id" => '5YhDYz',
-            // "order_id" => $request->order_id,
-            // "payer_email" => $request->payer_email,
-            // "payer_mobile" => $request->payer_mobile,
-            // "payer_name" => $request->payer_name,
-            // "refresh_token" => $request->refresh_token,
+            "order_id" => $request->order_id,
+            "payer_email" => $request->payer_email,
+            "payer_mobile" => $request->payer_mobile,
+            "payer_name" => $request->payer_name,
+            "refresh_token" => $request->refresh_token,
         ];
 
         ksort($payload);
@@ -275,26 +296,91 @@ class TransactionController extends Controller
         dd($calculatedSignature);
     }
 
-    public function declaration(string $tid)
+    public function eSingRequest($tnx, $pdfPath)
     {
-        $tnx = Transaction::find($tid);
+        $response = Http::withHeaders([
+            'X-API-KEY' => '2CZkOiKoWZt27ssskNZmmKUvIscxtctK',
+            'X-API-APP-ID' => '18166fa6-1c0d-4925-a16e-330fdef087ca'
+        ])
+            ->post('https://uat-ext.signcare.io/api/v1/eSign/request', [
+                'referenceId' => $tnx->reference_id,
+                'skipVerificationCode' => false,
+                'documentInfo' => [
+                    'name' => 'service-completion.pdf',
+                    'content' => pdfToBase64($pdfPath),
+                ],
+                'supportingDocuments' => [],
+                'sequentialSigning' => true,
+                'userInfo' => [
+                    [
+                        'name' => $tnx->payer_name,
+                        'emailId' => $tnx->payer_email,
+                        'userType' => 'Signer',
+                        'signatureType' => 'Electronic',
 
-        $data = [
-            'declarant_name' => $tnx->payer_name,
-            'email' => $tnx->payer_email,
-            'phone' => $tnx->payer_mobile,
-            'aadhaar_no' => '',
-            'address' => '',
-            'amount' => $tnx->amount,
-            'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
-            'payment_mode' => '',
-            'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
-        ];
+                        'electronicOptions' => [
+                            'canDraw' => true,
+                            'canType' => false,
+                            'canUpload' => false,
+                            'captureGPSLocation' => false,
+                            'capturePhoto' => false,
+                        ],
 
-        $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
+                        'aadhaarInfo' => null,
+                        'aadhaarOptions' => null,
+                        'signatureExpiryDate' => null,
+                        'emailReminderDays' => null,
 
-        return $pdf->stream('service-completion.pdf');
+                        'mobileNo' => '',
+                        'order' => 1,
+                        'userReferenceId' => $tnx->mr_order_id,
+                        'signAppearance' => 5,
+                        'pageToBeSigned' => 1,
+                        'pageNumber' => null,
 
-        // return view('admin.declaration', compact('data'));
+                        'pageCoordinates' => [
+                            [
+                                'pageNumber' => 1,
+                                'pageSize' => 841.89,
+                                'pageWidth' => 595.28,
+
+                                'pdfCoordinates' => [
+                                    [
+                                        'x1' => 45.76,
+                                        'y1' => 639.19,
+                                        'x2' => 120,
+                                        'y2' => 40,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+
+                'descriptionForInvitee' => 'eSign By APEX',
+                'finalCopyRecipientsEmailId' => '',
+                'responseUrl' => 'https://webhook.site/0e0aa98b-c18b-43f7-9b90-199dc12a9029',
+                'returnUrl' => 'https://signcare.io',
+                'uiMode' => false,
+            ]);
+
+        $result = $response->json();
+
+        if ($result->successful()) {
+
+            return $tnx->update([
+                'esign_id' => $result['data']['documentId'] ?? null,
+                'esign_status' => 'pending'
+            ]);
+        }
+
+        return $tnx->update([
+            'esign_status' => 'try'
+        ]);
+    }
+
+    public function esignWebhook()
+    {
+        // 
     }
 }

@@ -197,7 +197,7 @@
 
                                 <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if ($tnx->status == 'completed')
-                                    <a target="_blank" href="{{ route('declaration',$tnx->id) }}" class="text-danger">
+                                    <a target="_blank" href="{{ route('declaration',$tnx->id) }}" class="{{ $tnx->esign_status == 'completed' ? 'text-success' : 'text-danger' }} ">
                                         <span class="fas fa-file-pdf"></span>
                                     </a>
                                     @endif

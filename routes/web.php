@@ -26,7 +26,6 @@ use App\Http\Controllers\{
 };
 
 use App\Http\Controllers\Admin\{
-    ButtonController,
     BtnGatewayController,
     LoginController,
     CommonController,
@@ -174,7 +173,7 @@ Route::prefix('instamojo')->group(function () {
 
 Route::get('login', [LoginController::class, 'login'])->name('login');
 Route::post('login', [LoginController::class, 'loginSubmit'])->name('login.submit');
-
+Route::get('esign/webhook', [TransactionController::class, 'esignWebhook']);
 Route::middleware('admin.auth')->group(function () {
 
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
@@ -220,7 +219,7 @@ Route::middleware('admin.auth')->group(function () {
 
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('declaration/{tid}', [TransactionController::class, 'declaration'])->name('declaration');
+    Route::get('declaration/{tid}', [SalesController::class, 'declaration'])->name('declaration');
 });
 
 // FALLBACK HANDLER

@@ -28,7 +28,9 @@ class Transaction extends Model
         'reference_id',
         'mr_order_id',
         'gateway_id',
-        'payment_id'
+        'payment_id',
+        'esign_id',
+        'esign_status'
     ];
 
     protected static function boot()

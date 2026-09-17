@@ -72,3 +72,31 @@ function getUserId()
 
     return auth()->user()->user_id;
 }
+
+
+function pdfToBase64(string $pdfPath): string
+{
+    if (!file_exists($pdfPath)) {
+        throw new Exception("PDF file not found.");
+    }
+
+    return base64_encode(file_get_contents($pdfPath));
+}
+
+function base64ToPdf(string $base64, string $outputPath): bool
+{
+    // Remove data URI prefix if present
+    if (str_contains($base64, ',')) {
+        $base64 = explode(',', $base64, 2)[1];
+    }
+
+    $pdfContent = base64_decode($base64, true);
+
+    if ($pdfContent === false) {
+        throw new Exception("Invalid Base64 data.");
+    }
+
+    file_put_contents($outputPath, $pdfContent);
+
+    return true;
+}
