@@ -160,7 +160,7 @@ class TransactionController extends Controller
 
             $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
 
-            $path = storage_path('app/public' . $tnx->reference_id . '.pdf');
+            $path = storage_path('app/public/' . $tnx->reference_id . '.pdf');
 
             $pdf->save($path);
 
@@ -391,6 +391,8 @@ class TransactionController extends Controller
 
                 Transaction::where('reference_id', $refId)->update(['esign_status' => 'completed']);
             } catch (\Throwable $th) {
+
+                logger($th->getMessage());
 
                 return 'failed';
             }
