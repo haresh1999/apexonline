@@ -303,7 +303,8 @@ class TransactionController extends Controller
             'X-API-APP-ID' => '18166fa6-1c0d-4925-a16e-330fdef087ca'
         ])
             ->post('https://uat-ext.signcare.io/api/v1/eSign/request', [
-                'referenceId' => $tnx->reference_id,
+                // 'referenceId' => $tnx->reference_id,
+                'referenceId' => \Str::random(10),
                 'skipVerificationCode' => false,
                 'documentInfo' => [
                     'name' => 'service-completion.pdf',
@@ -314,7 +315,8 @@ class TransactionController extends Controller
                 'userInfo' => [
                     [
                         'name' => $tnx->payer_name,
-                        'emailId' => $tnx->payer_email,
+                        // 'emailId' => $tnx->payer_email,
+                        'emailId' => 'hareshc1999@gmail.com',
                         'userType' => 'Signer',
                         'signatureType' => 'Electronic',
 
@@ -359,14 +361,14 @@ class TransactionController extends Controller
 
                 'descriptionForInvitee' => 'eSign By APEX',
                 'finalCopyRecipientsEmailId' => '',
-                'responseUrl' => 'https://webhook.site/0e0aa98b-c18b-43f7-9b90-199dc12a9029',
-                'returnUrl' => 'https://signcare.io',
+                'responseUrl' => route('esign.wh', $tnx->reference_id),
+                'returnUrl' => route('esign.agree', $tnx->reference_id),
                 'uiMode' => false,
             ]);
 
-        $result = $response->json();
+        if ($response->successful()) {
 
-        if ($result->successful()) {
+            $result = $response->json();
 
             return $tnx->update([
                 'esign_id' => $result['data']['documentId'] ?? null,
@@ -379,8 +381,30 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function esignWebhook()
+    public function esignWebhook(Request $request, string $refId)
     {
-        // 
+        if ($request->DocumentStatus == 'Signed') {
+
+            try {
+
+                base64ToPdf($request->Content, storage_path('app/public/' . $refId . '.pdf'));
+
+                Transaction::where('reference_id', $refId)->update(['esign_status' => 'completed']);
+            } catch (\Throwable $th) {
+
+                return 'failed';
+            }
+        }
+
+        return 'ok';
+    }
+
+    public function esignAgree(string $refId)
+    {
+        $tnx = Transaction::where('reference_id', $refId)->firstOrFail();
+
+        $filePath = storage_path('app/public/' . $tnx->reference_id . '.pdf');
+
+        return response()->download($filePath, 'apexonline-service-completion.pdf');
     }
 }

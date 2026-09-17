@@ -173,7 +173,9 @@ Route::prefix('instamojo')->group(function () {
 
 Route::get('login', [LoginController::class, 'login'])->name('login');
 Route::post('login', [LoginController::class, 'loginSubmit'])->name('login.submit');
-Route::get('esign/webhook', [TransactionController::class, 'esignWebhook']);
+Route::get('esign/webhook/{refId}', [TransactionController::class, 'esignWebhook'])->name('esign.wh');
+Route::get('esign/agreement/{refId}', [TransactionController::class, 'esignAgree'])->name('esign.agree');
+
 Route::middleware('admin.auth')->group(function () {
 
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
