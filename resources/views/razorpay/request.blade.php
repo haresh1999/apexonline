@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edutrade - Payment Page</title>
+    <title>Apexonline - Payment Page</title>
 </head>
 <p>Please wait while we are opening the payment screen.</p>
 
@@ -26,7 +26,7 @@
                         "key": "{{setting('razorpay','key_id')}}",
                         "amount": "{{$input['amount']}}",
                         "currency": "INR",
-                        "name": "Edutrade",
+                        "name": "Apexonline",
                         "description": "Order {{ $input['id'] }}",
                         "image": "https://apexonline.in/wp-content/uploads/2025/09/cropped-cropped-Screenshot-2025-09-03-111318.png",
                         "order_id": result,

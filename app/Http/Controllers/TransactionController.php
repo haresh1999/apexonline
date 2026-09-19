@@ -97,9 +97,11 @@ class TransactionController extends Controller
             // };
         } else {
 
-            $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
+            // $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
 
-            $gateway = $gateways[array_rand($gateways)];
+            // $gateway = $gateways[array_rand($gateways)];
+
+            $gateway = 'upi';
         }
 
         $lastId = Transaction::latest('id')->value('id');

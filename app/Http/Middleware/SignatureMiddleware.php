@@ -15,33 +15,33 @@ class SignatureMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $secret = config('services.user.callback_secret');
+        // $secret = config('services.user.callback_secret');
 
-        $payload = $request->except(['signature', 'callback_url', 'redirect_url']);
+        // $payload = $request->except(['signature', 'callback_url', 'redirect_url']);
 
-        ksort($payload);
+        // ksort($payload);
 
-        $payloadQueryString = http_build_query($payload);
+        // $payloadQueryString = http_build_query($payload);
 
-        $receivedSignature = $request->signature ?? '';
+        // $receivedSignature = $request->signature ?? '';
 
-        if (!$receivedSignature) {
+        // if (!$receivedSignature) {
 
-            return response()->json([
-                'status' => false,
-                'error' => 'Signature missing or invalid signature provided'
-            ], 401);
-        }
+        //     return response()->json([
+        //         'status' => false,
+        //         'error' => 'Signature missing or invalid signature provided'
+        //     ], 401);
+        // }
 
-        $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
+        // $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
 
-        if (!hash_equals($calculatedSignature, $receivedSignature)) {
+        // if (!hash_equals($calculatedSignature, $receivedSignature)) {
 
-            return response()->json([
-                'status' => false,
-                'error' => 'Invalid signature'
-            ], 401);
-        }
+        //     return response()->json([
+        //         'status' => false,
+        //         'error' => 'Invalid signature'
+        //     ], 401);
+        // }
 
         return $next($request);
     }
