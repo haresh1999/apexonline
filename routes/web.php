@@ -175,13 +175,11 @@ Route::prefix('instamojo')->group(function () {
 
 Route::prefix('upi')->group(function () {
     Route::get('request', [UpiController::class, 'request']);
-    Route::any('success', [UpiController::class, 'success']);
-    Route::any('failed', [UpiController::class, 'failed']);
+    Route::any('callback/{ref}', [UpiController::class, 'callback']);
 
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [UpiSandboxController::class, 'request']);
-        Route::any('success', [UpiSandboxController::class, 'success']);
-        Route::any('failed', [UpiSandboxController::class, 'failed']);
+        Route::any('callback/{ref}', [UpiSandboxController::class, 'callback']);
     });
 });
 

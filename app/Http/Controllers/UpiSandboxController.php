@@ -40,8 +40,8 @@ class UpiSandboxController extends Controller
             'IND',
             'INR',
             'SALE',
-            url('upi/sandbox/success'),
-            url('upi/sandbox/failed'),
+            url('upi/sandbox/callback', $tnx->reference_id),
+            url('upi/sandbox/callback', $tnx->reference_id),
             'WEB'
         ]);
 
@@ -169,7 +169,7 @@ class UpiSandboxController extends Controller
         // ---------------------------------------
         // Generate Hash
         // ---------------------------------------
-    
+
         $hash = $this->createTourasHash(
             env('UPI_SBX_MERCHANT_ID'),
             $orderNo,
@@ -185,8 +185,79 @@ class UpiSandboxController extends Controller
         return view('upi.request', compact('hash', 'paymentUrl', 'merchantId', 'merchant_request', 'hash'));
     }
 
-    public function callback()
+    public function success(Request $request, string $refId)
     {
-        // 
+        $tnx = Transaction::where('reference_id', $refId)
+            ->where('gateway', 'upi')
+            ->where('env', 'sandbox')
+            ->first();
+
+        if (empty($_POST['txn_response']) || !$tnx) {
+
+            return response()->json([
+                'error' => 'Transaction not found.'
+            ], 404);
+        }
+
+        // ALREADY PROCESSED
+        if ($tnx->status == 'completed') {
+            return redirect()->to('sandbox/redirect?reference_id=' . $tnx->reference_id);
+        }
+
+        $encryptedResponse = $request->txn_response;
+
+        $decryptedResponse = $this->decryptTouras(
+            $encryptedResponse,
+            env('UPI_SBX_ENCRYPTION_KEY')
+        );
+
+        if ($decryptedResponse === false) {
+
+            return response()->json([
+                'error' => 'Unable to decrypt transaction response.'
+            ], 404);
+        }
+
+        $data = explode('|', $decryptedResponse);
+
+        $result['agId'] = $data[0] ?? '';
+        $result['merchantId'] = $data[1] ?? '';
+        $result['orderNo'] = $data[2] ?? '';
+        $result['amount'] = $data[3] ?? '';
+        $result['country'] = $data[4] ?? '';
+        $result['currency'] = $data[5] ?? '';
+        $result['txnDate'] = $data[6] ?? '';
+        $result['txnTime'] = $data[7] ?? '';
+        $result['agRef'] = $data[8] ?? '';
+        $result['pgRef'] = $data[9] ?? '';
+        $result['status'] = $data[10] ?? '';
+        $result['responseCode'] = $data[11] ?? '';
+        $result['responseMsg'] = $data[12] ?? '';
+
+        if ($result['merchantId'] !== env('UPI_SBX_MERCHANT_ID')) {
+
+            return response()->json([
+                'error' => 'Merchant ID mismatch.'
+            ], 404);
+        }
+
+        if (strtolower($result['status']) === 'successful') {
+
+            $tnx->update([
+                'status' => 'completed',
+                'payment_response' => json_encode($result),
+                'payment_id' => $result['agId']
+            ]);
+
+            return redirect()->to('sandbox/redirect?reference_id=' . $tnx->reference_id);
+        }
+
+        $tnx->update([
+            'status' => 'failed',
+            'payment_response' => json_encode($result),
+            'payment_id' => $result['agId']
+        ]);
+
+        return redirect()->to('sandbox/redirect?reference_id=' . $tnx->reference_id);
     }
 }
