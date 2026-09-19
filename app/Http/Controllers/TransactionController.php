@@ -305,8 +305,8 @@ class TransactionController extends Controller
             'X-API-APP-ID' => '18166fa6-1c0d-4925-a16e-330fdef087ca'
         ])
             ->post('https://uat-ext.signcare.io/api/v1/eSign/request', [
-                // 'referenceId' => $tnx->reference_id,
-                'referenceId' => \Str::random(10),
+                'referenceId' => $tnx->reference_id,
+                // 'referenceId' => \Str::random(10),
                 'skipVerificationCode' => false,
                 'documentInfo' => [
                     'name' => 'service-completion.pdf',
@@ -317,8 +317,8 @@ class TransactionController extends Controller
                 'userInfo' => [
                     [
                         'name' => $tnx->payer_name,
-                        // 'emailId' => $tnx->payer_email,
-                        'emailId' => 'hareshc1999@gmail.com',
+                        'emailId' => $tnx->payer_email,
+                        // 'emailId' => 'hareshc1999@gmail.com',
                         'userType' => 'Signer',
                         'signatureType' => 'Electronic',
 

@@ -185,7 +185,7 @@ class UpiSandboxController extends Controller
         return view('upi.request', compact('hash', 'paymentUrl', 'merchantId', 'merchant_request', 'hash'));
     }
 
-    public function success(Request $request, string $refId)
+    public function callback(Request $request, string $refId)
     {
         $tnx = Transaction::where('reference_id', $refId)
             ->where('gateway', 'upi')
