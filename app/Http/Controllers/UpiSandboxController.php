@@ -233,7 +233,7 @@ class UpiSandboxController extends Controller
         $result['status'] = $data[10] ?? '';
         $result['responseCode'] = $data[11] ?? '';
         $result['responseMsg'] = $data[12] ?? '';
-
+        
         if ($result['merchantId'] !== env('UPI_SBX_MERCHANT_ID')) {
 
             return response()->json([

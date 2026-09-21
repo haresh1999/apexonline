@@ -43,7 +43,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'paytm/callback',
             'paytm/sandbox/callback',
 
-            'esign/webhook/*'
+            'esign/webhook/*',
+
+            'upi/callback/*',
+            'upi/sandbox/callback/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
