@@ -27,14 +27,14 @@ class AuthMiddleware
             $seperation = explode('-', $refreshToken);
             $user_id = end($seperation);
 
-            // Token::where('created_at', '<=', Carbon::now()->subMinutes(5))
-            //     ->where('env', $env)
-            //     ->delete();
+            Token::where('created_at', '<=', Carbon::now()->subMinutes(5))
+                ->where('env', $env)
+                ->delete();
 
             $token = Token::where('user_id', $user_id)
                 ->where('token', $refreshToken)
                 ->where('env', $env)
-                // ->where('created_at', '>=', Carbon::now()->subMinutes(5))
+                ->where('created_at', '>=', Carbon::now()->subMinutes(5))
                 ->first();
 
             if (is_null($token) || ! isset($token->user_id)) {
@@ -47,7 +47,7 @@ class AuthMiddleware
 
             $user = User::find($token->user_id);
 
-            // $token->delete();
+            $token->delete();
 
             if (is_null($user)) {
 
