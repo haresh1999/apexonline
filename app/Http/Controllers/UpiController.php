@@ -179,7 +179,7 @@ class UpiController extends Controller
             env('UPI_ENCRYPTION_KEY')
         );
 
-        $paymentUrl = 'https://uatcheckout.touras.in/ms-transaction-core/paymentRedirection/checksumGatewayPage';
+        $paymentUrl = 'https://checkout.touras.in/ms-transaction-core/paymentRedirection/checksumGatewayPage';
         $merchantId = env('UPI_MERCHANT_ID');
 
         return view('upi.request', compact('hash', 'paymentUrl', 'merchantId', 'merchant_request', 'hash'));
