@@ -68,20 +68,26 @@ class TransactionController extends Controller
 
         if ($env == 'production') {
 
-            $pgGateway = Transaction::where('status', 'completed')
-                ->where('env', 'production')
-                ->latest('id')
-                ->value('gateway');
+            if (is_null($user['default_gateway'])) {
 
-            $gateways = Gateway::where('status', 1)->pluck('slug')->toArray();
+                $pgGateway = Transaction::where('status', 'completed')
+                    ->where('env', 'production')
+                    ->latest('id')
+                    ->value('gateway');
 
-            $methods = [];
+                $gateways = Gateway::where('status', 1)->pluck('slug')->toArray();
 
-            foreach ($gateways as $key => $gateway) {
-                $methods[$gateway] = $gateways[$key + 1] ?? $gateways[0];
+                $methods = [];
+
+                foreach ($gateways as $key => $gateway) {
+                    $methods[$gateway] = $gateways[$key + 1] ?? $gateways[0];
+                }
+
+                $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
+            } else {
+
+                $gateway = $user['default_gateway'];
             }
-
-            $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
 
             // $gateway = 'hdfc';
             // $gateway = match ($pgGateway) {
