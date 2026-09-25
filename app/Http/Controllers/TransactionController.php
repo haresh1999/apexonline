@@ -86,7 +86,7 @@ class TransactionController extends Controller
                 $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
             } else {
 
-                $gateway = $user['default_gateway'];
+                $gateway = strtolower($user['default_gateway']);
             }
 
             // $gateway = 'hdfc';
