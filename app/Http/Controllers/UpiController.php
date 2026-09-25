@@ -246,7 +246,7 @@ class UpiController extends Controller
             $tnx->update([
                 'status' => 'completed',
                 'payment_response' => json_encode($result),
-                'payment_id' => $result['agId']
+                'payment_id' => $result['agRef']
             ]);
 
             return redirect()->to('redirect?reference_id=' . $tnx->reference_id);
@@ -255,7 +255,7 @@ class UpiController extends Controller
         $tnx->update([
             'status' => 'failed',
             'payment_response' => json_encode($result),
-            'payment_id' => $result['agId']
+            'payment_id' => $result['agRef']
         ]);
 
         return redirect()->to('redirect?reference_id=' . $tnx->reference_id);
