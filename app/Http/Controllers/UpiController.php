@@ -40,8 +40,8 @@ class UpiController extends Controller
             'IND',
             'INR',
             'SALE',
-            url('upi/callback', $tnx->reference_id),
-            url('upi/callback', $tnx->reference_id),
+            url('upi/callback/' . $tnx->reference_id),
+            url('upi/callback/' . $tnx->reference_id),
             'WEB'
         ]);
 
@@ -179,7 +179,7 @@ class UpiController extends Controller
             env('UPI_ENCRYPTION_KEY')
         );
 
-        $paymentUrl = 'https://checkout.touras.in/ms-transaction-core/paymentRedirection/checksumGatewayPage';
+        $paymentUrl = 'https://checkout.touras.in/ms-transaction-core-1-0/paymentRedirection/checksumGatewayPage';
         $merchantId = env('UPI_MERCHANT_ID');
 
         return view('upi.request', compact('hash', 'paymentUrl', 'merchantId', 'merchant_request', 'hash'));
