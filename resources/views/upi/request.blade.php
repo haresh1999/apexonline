@@ -17,13 +17,13 @@
         <input type="hidden" name="merchant_request" value="<?= htmlspecialchars($merchant_request) ?>">
         <!-- Encrypted Hash -->
         <input type="hidden" name="hash" value="<?= htmlspecialchars($hash) ?>">
-        <button type="submit">Pay Now</button>
+        {{-- <button type="submit">Pay Now</button> --}}
     </form>
 </body>
-{{-- <script>
+<script>
     setTimeout(() => {
         document.getElementById('paymentForm').submit();
     }, 1000);
-</script> --}}
+</script>
 
 </html>
