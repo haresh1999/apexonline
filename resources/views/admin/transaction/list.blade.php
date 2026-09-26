@@ -145,6 +145,7 @@
                                 <th class="white-space-nowrap align-middle py-4 text-start">ENV</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">AMOUNT</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">DEC</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">INVOICE</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">REDIRECT URL</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">CALLBACK URL</th>
@@ -199,6 +200,14 @@
                                     @if ($tnx->status == 'completed')
                                     <a target="_blank" href="{{ route('declaration',$tnx->id) }}" class="{{ $tnx->esign_status == 'completed' ? 'text-success' : 'text-danger' }} ">
                                         <span class="fas fa-file-pdf"></span>
+                                    </a>
+                                    @endif
+                                </td>
+
+                                <td class="align-middle white-space-nowrap py-3 text-center">
+                                    @if ($tnx->status == 'completed')
+                                    <a href="{{ route('invoice',$tnx->id) }}" class="text-success">
+                                        <i class="fas fa-file-invoice"></i>
                                     </a>
                                     @endif
                                 </td>
