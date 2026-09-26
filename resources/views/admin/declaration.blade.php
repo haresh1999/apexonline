@@ -73,7 +73,7 @@
         }
 
         .name-field {
-            min-width: 75mm;
+            min-width: 150mm;
             font-size: 14px;
         }
 
@@ -214,20 +214,20 @@
                 I,
                 <span class="field name-field">
                     {{ $data['declarant_name'] ?? '' }}
-                </span>,
-                Aadhaar No.
+                </span>
+                {{-- Aadhaar No.
                 <span class="field aadhaar-field">
                     {{ $data['aadhaar_no'] ?? '' }}
-                </span>,
+                </span>, --}}
             </p>
 
-            <div class="address-label">
+            {{-- <div class="address-label">
                 residing at (Address)
             </div>
 
             <span class="field address-field">
                 {{ $data['address'] ?? '' }}
-            </span>
+            </span> --}}
 
             <div class="contact-row">
                 <span>Email ID:</span>
