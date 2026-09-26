@@ -192,7 +192,7 @@ class TransactionController extends Controller
             'item_name' => 'COMPLETE DIGITAL COURSE E-BOOK (PDF) WITH DAILY <br> LIVE UPDATE',
             'quantity' => 1,
             'amount' => $tnx->amount,
-            'utr' => $tnx->mr_order_id,
+            'utr' => $tnx->payment_id,
         ];
 
         // return view('invoice', compact('data'));
@@ -201,7 +201,7 @@ class TransactionController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream('invoice-' . $data['invoice_no'] . '.pdf');
+        return $pdf->download('invoice-' . $data['invoice_no'] . '.pdf');
     }
 
     public function declaration(string $tid)

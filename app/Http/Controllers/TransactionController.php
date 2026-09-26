@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InvoiceMail;
 use App\Models\Gateway;
 use App\Models\Token;
 use App\Models\Transaction;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 
 class TransactionController extends Controller
 {
@@ -154,6 +156,8 @@ class TransactionController extends Controller
 
         if ($tnx->status == 'completed') {
 
+            // GENERATE DECLERATION PDF START
+
             $data = [
                 'declarant_name' => $tnx->payer_name,
                 'email' => $tnx->payer_email,
@@ -168,11 +172,40 @@ class TransactionController extends Controller
 
             $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
 
-            $path = storage_path('app/public/' . $tnx->reference_id . '.pdf');
+            $path = storage_path('app/public/declaration' . ids($tnx->id) . '.pdf');
 
             $pdf->save($path);
 
-            $this->eSingRequest($tnx, $path);
+            // GENERATE DECLERATION PDF END
+
+            // $this->eSingRequest($tnx, $path);
+
+            // GENERATE INVOICE START //
+
+            $data1 = [
+                'invoice_no' => ids($tnx->id),
+                'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
+                'customer_name' => $tnx->payer_name,
+                'email' => $tnx->payer_email,
+                'mobile' => '+91 ' . $tnx->payer_mobile,
+                'item_name' => 'COMPLETE DIGITAL COURSE E-BOOK (PDF) WITH DAILY <br> LIVE UPDATE',
+                'quantity' => 1,
+                'amount' => $tnx->amount,
+                'utr' => $tnx->payment_id,
+            ];
+
+            $pdf1 = Pdf::loadView('invoice', ['data' => $data1])->setPaper('a4', 'portrait');
+
+            $path1 = storage_path('app/public/invoice' . ids($tnx->id) . '.pdf');
+
+            $pdf1->save($path1);
+
+            // GENERATE INVOICE END //
+
+            // SEND EMAIL COURSES & INVOICE START //
+
+            // Mail::to($tnx->payer_email)->send(new InvoiceMail());
+            // SEND EMAIL COURSES & INVOICE END //
         }
 
         return WebhookLog::create([

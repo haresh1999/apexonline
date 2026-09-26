@@ -281,7 +281,7 @@
             font-weight: bold;
             font-size: 12px;
             text-align: left;
-            margin-left: 45px;
+            text-align: center;
         }
 
         /* ================= TERMS ================= */
@@ -387,9 +387,7 @@
                         <div class="for-company"> For :APEX ONLINE </div>
                         <div class="signature-box">
                             <!-- Add signature image here -->
-                            <!--
-                        <img src="{{ public_path('images/signature.png') }}">
-                        -->
+                            <img src="{{ public_path('assets/img/signature.jpeg') }}">
                         </div>
                         <div class="signature-line"> Authorized Signatory </div>
                     </div>
