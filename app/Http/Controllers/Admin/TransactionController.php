@@ -179,6 +179,31 @@ class TransactionController extends Controller
         return view('admin.webhook.list', compact('logs'));
     }
 
+    public function invoice(string $id)
+    {
+        $tnx = Transaction::where('id', $id)->firstOrFail();
+
+        $data = [
+            'invoice_no' => ids($tnx->id),
+            'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
+            'customer_name' => $tnx->payer_name,
+            'email' => $tnx->payer_email,
+            'mobile' => '+91 ' . $tnx->payer_mobile,
+            'item_name' => 'COMPLETE DIGITAL COURSE E-BOOK (PDF) WITH DAILY <br> LIVE UPDATE',
+            'quantity' => 1,
+            'amount' => $tnx->amount,
+            'utr' => $tnx->mr_order_id,
+        ];
+
+        // return view('invoice', compact('data'));
+
+        $pdf = Pdf::loadView('invoice', compact('data'));
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('invoice-' . $data['invoice_no'] . '.pdf');
+    }
+
     public function declaration(string $tid)
     {
         $tnx = Transaction::findOrFail($tid);
