@@ -357,7 +357,7 @@ class TransactionController extends Controller
                 $course['name'],
                 $tnx->order_id,
                 $tnx->amount,
-                $tnx->created_at,
+                Carbon::parse($tnx->created_at)->format('d-m-Y'),
                 $course['url'],
                 ids($tnx->id),
                 $course['subject']
