@@ -183,6 +183,10 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::where('id', $id)->firstOrFail();
 
+        $cont = new CTransactionController();
+
+        $cont->sendCourseMail($tnx);
+
         $fileName = ids($tnx->id) . '.pdf';
         $path = storage_path('app/public/invoice/' . $fileName);
 

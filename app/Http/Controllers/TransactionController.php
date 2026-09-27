@@ -157,79 +157,7 @@ class TransactionController extends Controller
 
         if ($tnx->status == 'completed') {
 
-            // GENERATE DECLARATION PDF
-
-            $declarationData = [
-                'declarant_name' => $tnx->payer_name,
-                'email' => $tnx->payer_email,
-                'phone' => $tnx->payer_mobile,
-                'aadhaar_no' => '',
-                'address' => '',
-                'amount' => $tnx->amount,
-                'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
-                'payment_mode' => '',
-                'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
-            ];
-
-            $declarationDir = storage_path('app/public/declaration');
-
-            if (!is_dir($declarationDir)) {
-                mkdir($declarationDir, 0755, true);
-            }
-
-            $declarationPath = $declarationDir . '/' . ids($tnx->id) . '.pdf';
-
-            $declarationPdf = Pdf::loadView('admin.declaration', ['data' => $declarationData])->setPaper('a4', 'portrait');
-
-            $declarationPdf->save($declarationPath);
-
-            // OPTIONAL ESIGN
-            // $this->eSignRequest($tnx, $declarationPath);
-
-            // GENERATE INVOICE PDF
-
-            $course = getCourse((float) $tnx->amount); //  GET COURSE
-
-            $invoiceData = [
-                'invoice_no' => ids($tnx->id),
-                'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
-                'customer_name' => $tnx->payer_name,
-                'email' => $tnx->payer_email,
-                'mobile' => '+91 ' . $tnx->payer_mobile,
-                'item_name' => $course['name'],
-                'quantity' => 1,
-                'amount' => $tnx->amount,
-                'utr' => $tnx->payment_id,
-            ];
-
-            $invoiceDir = storage_path('app/public/invoice');
-
-            if (!is_dir($invoiceDir)) {
-                mkdir($invoiceDir, 0755, true);
-            }
-
-            $invoicePath = $invoiceDir . '/' . ids($tnx->id) . '.pdf';
-
-            $invoicePdf = Pdf::loadView('invoice', ['data' => $invoiceData])->setPaper('a4', 'portrait');
-
-            $invoicePdf->save($invoicePath);
-
-            //  SEND COURSE + INVOICE EMAIL
-
-            Mail::to($tnx->payer_email)->send(
-                new CourseMail(
-                    $invoicePath,
-                    $course['path'],
-                    $tnx->payer_name,
-                    $course['name'],
-                    $tnx->order_id,
-                    $tnx->amount,
-                    $tnx->created_at,
-                    $course['url'],
-                    ids($tnx->id),
-                    $course['subject']
-                )
-            );
+            $this->sendCourseMail($tnx);
         }
 
         return WebhookLog::create([
@@ -361,91 +289,169 @@ class TransactionController extends Controller
         dd($calculatedSignature);
     }
 
-    public function eSingRequest($tnx, $pdfPath)
+    public function sendCourseMail(object $tnx)
     {
-        // $response = Http::withHeaders([
-        //     'X-API-KEY' => '2CZkOiKoWZt27ssskNZmmKUvIscxtctK',
-        //     'X-API-APP-ID' => '18166fa6-1c0d-4925-a16e-330fdef087ca'
-        // ])
-        //     ->post('https://uat-ext.signcare.io/api/v1/eSign/request', [
-        //         'referenceId' => $tnx->reference_id,
-        //         // 'referenceId' => \Str::random(10),
-        //         'skipVerificationCode' => false,
-        //         'documentInfo' => [
-        //             'name' => 'service-completion.pdf',
-        //             'content' => pdfToBase64($pdfPath),
-        //         ],
-        //         'supportingDocuments' => [],
-        //         'sequentialSigning' => true,
-        //         'userInfo' => [
-        //             [
-        //                 'name' => $tnx->payer_name,
-        //                 'emailId' => $tnx->payer_email,
-        //                 // 'emailId' => 'hareshc1999@gmail.com',
-        //                 'userType' => 'Signer',
-        //                 'signatureType' => 'Electronic',
+        // GENERATE DECLARATION PDF
 
-        //                 'electronicOptions' => [
-        //                     'canDraw' => true,
-        //                     'canType' => false,
-        //                     'canUpload' => false,
-        //                     'captureGPSLocation' => false,
-        //                     'capturePhoto' => false,
-        //                 ],
+        $declarationData = [
+            'declarant_name' => $tnx->payer_name,
+            'email' => $tnx->payer_email,
+            'phone' => $tnx->payer_mobile,
+            'aadhaar_no' => '',
+            'address' => '',
+            'amount' => $tnx->amount,
+            'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
+            'payment_mode' => '',
+            'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
+        ];
 
-        //                 'aadhaarInfo' => null,
-        //                 'aadhaarOptions' => null,
-        //                 'signatureExpiryDate' => null,
-        //                 'emailReminderDays' => null,
+        $declarationDir = storage_path('app/public/declaration');
 
-        //                 'mobileNo' => '',
-        //                 'order' => 1,
-        //                 'userReferenceId' => $tnx->mr_order_id,
-        //                 'signAppearance' => 5,
-        //                 'pageToBeSigned' => 1,
-        //                 'pageNumber' => null,
+        if (!is_dir($declarationDir)) {
+            mkdir($declarationDir, 0755, true);
+        }
 
-        //                 'pageCoordinates' => [
-        //                     [
-        //                         'pageNumber' => 1,
-        //                         'pageSize' => 841.89,
-        //                         'pageWidth' => 595.28,
+        $declarationPath = $declarationDir . '/' . ids($tnx->id) . '.pdf';
 
-        //                         'pdfCoordinates' => [
-        //                             [
-        //                                 'x1' => 45.76,
-        //                                 'y1' => 639.19,
-        //                                 'x2' => 120,
-        //                                 'y2' => 40,
-        //                             ],
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
+        $declarationPdf = Pdf::loadView('admin.declaration', ['data' => $declarationData])->setPaper('a4', 'portrait');
 
-        //         'descriptionForInvitee' => 'eSign By APEX',
-        //         'finalCopyRecipientsEmailId' => '',
-        //         'responseUrl' => route('esign.wh', $tnx->reference_id),
-        //         'returnUrl' => route('esign.agree', $tnx->reference_id),
-        //         'uiMode' => false,
-        //     ]);
+        $declarationPdf->save($declarationPath);
 
-        // if ($response->successful()) {
+        // OPTIONAL ESIGN
+        // $this->eSignRequest($tnx, $declarationPath);
 
-        //     $result = $response->json();
+        // GENERATE INVOICE PDF
 
-        //     return $tnx->update([
-        //         'esign_id' => $result['data']['documentId'] ?? null,
-        //         'esign_status' => 'pending'
-        //     ]);
-        // }
+        $course = getCourse((float) $tnx->amount); //  GET COURSE
 
-        // return $tnx->update([
-        //     'esign_status' => 'try'
-        // ]);
+        $invoiceData = [
+            'invoice_no' => ids($tnx->id),
+            'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
+            'customer_name' => $tnx->payer_name,
+            'email' => $tnx->payer_email,
+            'mobile' => '+91 ' . $tnx->payer_mobile,
+            'item_name' => $course['name'],
+            'quantity' => 1,
+            'amount' => $tnx->amount,
+            'utr' => $tnx->payment_id,
+        ];
+
+        $invoiceDir = storage_path('app/public/invoice');
+
+        if (!is_dir($invoiceDir)) {
+            mkdir($invoiceDir, 0755, true);
+        }
+
+        $invoicePath = $invoiceDir . '/' . ids($tnx->id) . '.pdf';
+
+        $invoicePdf = Pdf::loadView('invoice', ['data' => $invoiceData])->setPaper('a4', 'portrait');
+
+        $invoicePdf->save($invoicePath);
+
+        //  SEND COURSE + INVOICE EMAIL
+
+        Mail::to($tnx->payer_email)->send(
+            new CourseMail(
+                $invoicePath,
+                $course['path'],
+                $tnx->payer_name,
+                $course['name'],
+                $tnx->order_id,
+                $tnx->amount,
+                $tnx->created_at,
+                $course['url'],
+                ids($tnx->id),
+                $course['subject']
+            )
+        );
+
         return;
     }
+
+    // public function eSingRequest($tnx, $pdfPath)
+    // {
+    //     $response = Http::withHeaders([
+    //         'X-API-KEY' => '2CZkOiKoWZt27ssskNZmmKUvIscxtctK',
+    //         'X-API-APP-ID' => '18166fa6-1c0d-4925-a16e-330fdef087ca'
+    //     ])
+    //         ->post('https://uat-ext.signcare.io/api/v1/eSign/request', [
+    //             'referenceId' => $tnx->reference_id,
+    //             // 'referenceId' => \Str::random(10),
+    //             'skipVerificationCode' => false,
+    //             'documentInfo' => [
+    //                 'name' => 'service-completion.pdf',
+    //                 'content' => pdfToBase64($pdfPath),
+    //             ],
+    //             'supportingDocuments' => [],
+    //             'sequentialSigning' => true,
+    //             'userInfo' => [
+    //                 [
+    //                     'name' => $tnx->payer_name,
+    //                     'emailId' => $tnx->payer_email,
+    //                     // 'emailId' => 'hareshc1999@gmail.com',
+    //                     'userType' => 'Signer',
+    //                     'signatureType' => 'Electronic',
+
+    //                     'electronicOptions' => [
+    //                         'canDraw' => true,
+    //                         'canType' => false,
+    //                         'canUpload' => false,
+    //                         'captureGPSLocation' => false,
+    //                         'capturePhoto' => false,
+    //                     ],
+
+    //                     'aadhaarInfo' => null,
+    //                     'aadhaarOptions' => null,
+    //                     'signatureExpiryDate' => null,
+    //                     'emailReminderDays' => null,
+
+    //                     'mobileNo' => '',
+    //                     'order' => 1,
+    //                     'userReferenceId' => $tnx->mr_order_id,
+    //                     'signAppearance' => 5,
+    //                     'pageToBeSigned' => 1,
+    //                     'pageNumber' => null,
+
+    //                     'pageCoordinates' => [
+    //                         [
+    //                             'pageNumber' => 1,
+    //                             'pageSize' => 841.89,
+    //                             'pageWidth' => 595.28,
+
+    //                             'pdfCoordinates' => [
+    //                                 [
+    //                                     'x1' => 45.76,
+    //                                     'y1' => 639.19,
+    //                                     'x2' => 120,
+    //                                     'y2' => 40,
+    //                                 ],
+    //                             ],
+    //                         ],
+    //                     ],
+    //                 ],
+    //             ],
+
+    //             'descriptionForInvitee' => 'eSign By APEX',
+    //             'finalCopyRecipientsEmailId' => '',
+    //             'responseUrl' => route('esign.wh', $tnx->reference_id),
+    //             'returnUrl' => route('esign.agree', $tnx->reference_id),
+    //             'uiMode' => false,
+    //         ]);
+
+    //     if ($response->successful()) {
+
+    //         $result = $response->json();
+
+    //         return $tnx->update([
+    //             'esign_id' => $result['data']['documentId'] ?? null,
+    //             'esign_status' => 'pending'
+    //         ]);
+    //     }
+
+    //     return $tnx->update([
+    //         'esign_status' => 'try'
+    //     ]);
+    // }
 
     // public function esignWebhook(Request $request, string $refId)
     // {
