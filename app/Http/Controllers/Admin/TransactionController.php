@@ -188,8 +188,9 @@ class TransactionController extends Controller
 
         // If invoice already exists
         if (file_exists($path)) {
-            return response()->download($path, 'invoice-' . $fileName, [
+            return response()->file($path, [
                 'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $fileName . '"',
             ]);
         }
 
@@ -218,8 +219,9 @@ class TransactionController extends Controller
         $pdf->save($path);
 
         // Download newly generated invoice
-        return response()->download($path, 'invoice-' . $fileName, [
+        return response()->file($path, [
             'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
         ]);
     }
 
