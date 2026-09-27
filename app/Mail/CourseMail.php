@@ -10,17 +10,26 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class InvoiceMail extends Mailable
+class CourseMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        public string $invoicePath,
+        public string $coursePath,
+        public string $name,
+        public string $courseName,
+        public string $orderId,
+        public string $amount,
+        public string $purchaseDate,
+        public string $courseUrl,
+        public string $invoice,
+        public string $subject,
+
+    ) {}
 
     /**
      * Get the message envelope.
@@ -28,7 +37,7 @@ class InvoiceMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Apexonline Invoice',
+            subject: $this->subject,
         );
     }
 
@@ -38,7 +47,7 @@ class InvoiceMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.invoice',
+            view: 'view.course',
         );
     }
 
@@ -49,6 +58,13 @@ class InvoiceMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromPath($this->invoicePath)
+                ->as('Invoice.pdf')
+                ->withMime('application/pdf'),
+            Attachment::fromPath($this->coursePath)
+                ->as('Invoice.pdf')
+                ->withMime('application/pdf'),
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CourseMail;
 use App\Mail\InvoiceMail;
 use App\Models\Gateway;
 use App\Models\Token;
@@ -156,9 +157,9 @@ class TransactionController extends Controller
 
         if ($tnx->status == 'completed') {
 
-            // GENERATE DECLERATION PDF START
+            // GENERATE DECLARATION PDF
 
-            $data = [
+            $declarationData = [
                 'declarant_name' => $tnx->payer_name,
                 'email' => $tnx->payer_email,
                 'phone' => $tnx->payer_mobile,
@@ -170,42 +171,65 @@ class TransactionController extends Controller
                 'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
             ];
 
-            $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
+            $declarationDir = storage_path('app/public/declaration');
 
-            $path = storage_path('app/public/declaration' . ids($tnx->id) . '.pdf');
+            if (!is_dir($declarationDir)) {
+                mkdir($declarationDir, 0755, true);
+            }
 
-            $pdf->save($path);
+            $declarationPath = $declarationDir . '/' . ids($tnx->id) . '.pdf';
 
-            // GENERATE DECLERATION PDF END
+            $declarationPdf = Pdf::loadView('admin.declaration', ['data' => $declarationData])->setPaper('a4', 'portrait');
 
-            // $this->eSingRequest($tnx, $path);
+            $declarationPdf->save($declarationPath);
 
-            // GENERATE INVOICE START //
+            // OPTIONAL ESIGN
+            // $this->eSignRequest($tnx, $declarationPath);
 
-            $data1 = [
+            // GENERATE INVOICE PDF
+
+            $course = getCourse((float) $tnx->amount); //  GET COURSE
+
+            $invoiceData = [
                 'invoice_no' => ids($tnx->id),
                 'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
                 'customer_name' => $tnx->payer_name,
                 'email' => $tnx->payer_email,
                 'mobile' => '+91 ' . $tnx->payer_mobile,
-                'item_name' => 'COMPLETE DIGITAL COURSE E-BOOK (PDF) WITH DAILY <br> LIVE UPDATE',
+                'item_name' => $course['name'],
                 'quantity' => 1,
                 'amount' => $tnx->amount,
                 'utr' => $tnx->payment_id,
             ];
 
-            $pdf1 = Pdf::loadView('invoice', ['data' => $data1])->setPaper('a4', 'portrait');
+            $invoiceDir = storage_path('app/public/invoice');
 
-            $path1 = storage_path('app/public/invoice' . ids($tnx->id) . '.pdf');
+            if (!is_dir($invoiceDir)) {
+                mkdir($invoiceDir, 0755, true);
+            }
 
-            $pdf1->save($path1);
+            $invoicePath = $invoiceDir . '/' . ids($tnx->id) . '.pdf';
 
-            // GENERATE INVOICE END //
+            $invoicePdf = Pdf::loadView('invoice', ['data' => $invoiceData])->setPaper('a4', 'portrait');
 
-            // SEND EMAIL COURSES & INVOICE START //
+            $invoicePdf->save($invoicePath);
 
-            // Mail::to($tnx->payer_email)->send(new InvoiceMail());
-            // SEND EMAIL COURSES & INVOICE END //
+            //  SEND COURSE + INVOICE EMAIL
+
+            Mail::to($tnx->payer_email)->send(
+                new CourseMail(
+                    $invoicePath,
+                    $course['path'],
+                    $tnx->payer_name,
+                    $course['name'],
+                    $tnx->order_id,
+                    $tnx->amount,
+                    $tnx->created_at,
+                    $course['url'],
+                    ids($tnx->id),
+                    $course['subject']
+                )
+            );
         }
 
         return WebhookLog::create([

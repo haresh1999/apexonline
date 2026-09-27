@@ -183,3 +183,34 @@ function amountInWords($amount)
 
     return $convert($amount) . ' Rupees Only';
 }
+
+
+function getCourse(float $amount): array
+{
+    return match (true) {
+        $amount <= 1000 => [
+            'path'  => public_path('courses/course-1.pdf'),
+            'name' => 'Course 1',
+            'url'  => asset('public/courses/course-1.pdf'),
+            'subject' => 'Course 1'
+        ],
+        $amount <= 3000 => [
+            'path'  => public_path('courses/course-2.pdf'),
+            'name' => 'Course 2',
+            'url'  => asset('public/courses/course-2.pdf'),
+            'subject' => 'Course 2'
+        ],
+        $amount <= 6000 => [
+            'path'  => public_path('courses/course-3.pdf'),
+            'name' => 'Course 3',
+            'url'  => asset('public/courses/course-3.pdf'),
+            'subject' => 'Course 3'
+        ],
+        default => [
+            'path'  => public_path('courses/course-4.pdf'),
+            'name' => 'Course 4',
+            'url'  => asset('public/courses/course-4.pdf'),
+            'subject' => 'Course 4'
+        ],
+    };
+}

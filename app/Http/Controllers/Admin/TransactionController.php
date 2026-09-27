@@ -183,58 +183,83 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::where('id', $id)->firstOrFail();
 
+        $fileName = ids($tnx->id) . '.pdf';
+        $path = storage_path('app/public/invoice/' . $fileName);
+
+        // If invoice already exists
+        if (file_exists($path)) {
+            return response()->download($path, 'invoice-' . $fileName, [
+                'Content-Type' => 'application/pdf',
+            ]);
+        }
+
+        $course = getCourse((float) $tnx->amount);
+
         $data = [
             'invoice_no' => ids($tnx->id),
             'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
             'customer_name' => $tnx->payer_name,
             'email' => $tnx->payer_email,
             'mobile' => '+91 ' . $tnx->payer_mobile,
-            'item_name' => 'COMPLETE DIGITAL COURSE E-BOOK (PDF) WITH DAILY <br> LIVE UPDATE',
+            'item_name' => $course['name'],
             'quantity' => 1,
             'amount' => $tnx->amount,
             'utr' => $tnx->payment_id,
         ];
 
-        // return view('invoice', compact('data'));
+        $pdf = Pdf::loadView('invoice', compact('data'))->setPaper('A4', 'portrait');
 
-        $pdf = Pdf::loadView('invoice', compact('data'));
+        // Make sure directory exists
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), 0755, true);
+        }
 
-        $pdf->setPaper('A4', 'portrait');
+        // Save invoice
+        $pdf->save($path);
 
-        return $pdf->download('invoice-' . $data['invoice_no'] . '.pdf');
+        // Download newly generated invoice
+        return $pdf->download('invoice-' . $fileName);
     }
 
     public function declaration(string $tid)
     {
         $tnx = Transaction::findOrFail($tid);
 
-        $filePath = storage_path('app/public/' . $tnx->reference_id . '.pdf');
+        $fileName = ids($tnx->id) . '.pdf';
+        $path = storage_path('app/public/declaration/' . $fileName);
 
-        return response()->file($filePath, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="apexonline-service-completion.pdf"',
-        ]);
+        // If declaration already exists, open it directly
+        if (file_exists($path)) {
+            return response()->file($path, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+            ]);
+        }
 
-        // $tnxController = new CTransactionController();
+        $data = [
+            'declarant_name' => $tnx->payer_name,
+            'email' => $tnx->payer_email,
+            'phone' => $tnx->payer_mobile,
+            'aadhaar_no' => '',
+            'address' => '',
+            'amount' => $tnx->amount,
+            'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
+            'payment_mode' => '',
+            'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
+        ];
 
-        // $tnxController->eSingRequest($tnx, storage_path('app/public/service-completion (1).pdf'));
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
 
-        // CTransactionController
+        // Make sure directory exists
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), 0755, true);
+        }
 
-        // $data = [
-        //     'declarant_name' => $tnx->payer_name,
-        //     'email' => $tnx->payer_email,
-        //     'phone' => $tnx->payer_mobile,
-        //     'aadhaar_no' => '',
-        //     'address' => '',
-        //     'amount' => $tnx->amount,
-        //     'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
-        //     'payment_mode' => '',
-        //     'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
-        // ];
+        // Save PDF
+        $pdf->save($path);
 
-        // $pdf = Pdf::loadView('admin.declaration', compact('data'))->setPaper('a4', 'portrait');
-
-        // return $pdf->stream('service-completion.pdf');
+        // Download newly generated PDF
+        return $pdf->download('declaration-' . $fileName);
     }
 }
