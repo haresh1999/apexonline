@@ -28,7 +28,6 @@ class CourseMail extends Mailable
         public string $courseUrl,
         public string $invoice,
         public string $subject,
-
     ) {}
 
     /**

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Mail\CourseMail;
-use App\Mail\InvoiceMail;
 use App\Models\Gateway;
 use App\Models\Token;
 use App\Models\Transaction;
