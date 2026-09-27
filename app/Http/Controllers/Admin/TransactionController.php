@@ -98,7 +98,7 @@ class TransactionController extends Controller
         ));
     }
 
-    public function show($id)
+    public function show(string $id)
     {
         $tnxs = Transaction::authTnx()->where('id', $id)->first();
 
@@ -110,7 +110,7 @@ class TransactionController extends Controller
         return view('admin.transaction.show', compact('tnxs'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $request->validate([
             'status' => ['required', 'in:completed,failed,refunded,processing,pending'],
@@ -183,9 +183,9 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::where('id', $id)->firstOrFail();
 
-        $cont = new CTransactionController();
+        // $cont = new CTransactionController();
 
-        $cont->sendCourseMail($tnx);
+        // $cont->sendCourseMail($tnx);
 
         $fileName = ids($tnx->id) . '.pdf';
         $path = storage_path('app/public/invoice/' . $fileName);
