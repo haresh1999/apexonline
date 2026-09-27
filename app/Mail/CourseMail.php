@@ -46,7 +46,7 @@ class CourseMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.course',
+            view: 'course',
         );
     }
 
