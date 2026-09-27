@@ -27,7 +27,7 @@ class CourseMail extends Mailable
         public string $purchaseDate,
         public string $courseUrl,
         public string $invoice,
-        public string $subject,
+        public string $subjects,
     ) {}
 
     /**
@@ -36,7 +36,7 @@ class CourseMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->subject,
+            subject: $this->subjects,
         );
     }
 
