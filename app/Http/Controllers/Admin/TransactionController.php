@@ -218,7 +218,9 @@ class TransactionController extends Controller
         $pdf->save($path);
 
         // Download newly generated invoice
-        return $pdf->download('invoice-' . $fileName);
+        return response()->download($path, 'invoice-' . $fileName, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 
     public function declaration(string $tid)
@@ -259,7 +261,9 @@ class TransactionController extends Controller
         // Save PDF
         $pdf->save($path);
 
-        // Download newly generated PDF
-        return $pdf->download('declaration-' . $fileName);
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+        ]);
     }
 }
