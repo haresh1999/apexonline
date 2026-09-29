@@ -240,6 +240,7 @@ Route::fallback([CommonController::class, 'pageNotFound']);
 Route::get('page-non-found', [CommonController::class, 'pageNotFound'])->name('not.found');
 Route::get('internal-server-error', [CommonController::class, 'serverError'])->name('server.error');
 Route::view('test-payment', 'request_payment');
+Route::post('oneroyal/callback', [CommonController::class, 'callback']);
 // Route::any('response', function (Request $request) {
 //     dd($request->all());
 // });

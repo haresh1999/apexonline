@@ -17,30 +17,30 @@ class SignatureMiddleware
     {
         $clientId = config('services.user.client_id');
 
-        if ($clientId !== 'apexonline') {
-            
+        if (! in_array($clientId, ['apexonline', 'oneroyal'])) {
+
             $secret = config('services.user.callback_secret');
-    
+
             $payload = $request->except(['signature', 'callback_url', 'redirect_url']);
-    
+
             ksort($payload);
-    
+
             $payloadQueryString = http_build_query($payload);
-    
+
             $receivedSignature = $request->signature ?? '';
-    
+
             if (!$receivedSignature) {
-    
+
                 return response()->json([
                     'status' => false,
                     'error' => 'Signature missing or invalid signature provided'
                 ], 401);
             }
-    
+
             $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
-    
+
             if (!hash_equals($calculatedSignature, $receivedSignature)) {
-    
+
                 return response()->json([
                     'status' => false,
                     'error' => 'Invalid signature'

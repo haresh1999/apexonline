@@ -90,26 +90,16 @@ class TransactionController extends Controller
 
                 $gateway = strtolower($user['default_gateway']);
             }
-
-            // $gateway = 'hdfc';
-            // $gateway = match ($pgGateway) {
-            //     'hdfc' => 'instamojo',
-            //     'instamojo' => 'cashfree',
-            //     'cashfree' => 'phonepe',
-            //     'phonepe' => 'payu',
-            //     'payu' => 'paytm',
-            //     'paytm' => 'sabpaisa',
-            //     'sabpaisa' => 'zoho',
-            //     'zoho' => 'hdfc',
-            //     default => 'hdfc'
-            // };
         } else {
 
-            $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
+            if (is_null($user['default_gateway'])) {
 
-            $gateway = $gateways[array_rand($gateways)];
+                $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
 
-            // $gateway = 'upi';
+                $gateway = $gateways[array_rand($gateways)];
+            } else {
+                $gateway = strtolower($user['default_gateway']);
+            }
         }
 
         $lastId = Transaction::latest('id')->value('id');

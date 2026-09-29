@@ -47,6 +47,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
             'upi/callback/*',
             'upi/sandbox/callback/*',
+
+            'oneroyal/callback'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

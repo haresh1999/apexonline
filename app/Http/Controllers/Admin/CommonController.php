@@ -16,4 +16,9 @@ class CommonController extends Controller
     {
         return view('admin.errors.500');
     }
+
+    public function callback()
+    {
+        return response()->json('success');
+    }
 }

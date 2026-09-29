@@ -214,3 +214,15 @@ function getCourse(float $amount): array
         ],
     };
 }
+
+// $gateway = match ($pgGateway) {
+//     'hdfc' => 'instamojo',
+//     'instamojo' => 'cashfree',
+//     'cashfree' => 'phonepe',
+//     'phonepe' => 'payu',
+//     'payu' => 'paytm',
+//     'paytm' => 'sabpaisa',
+//     'sabpaisa' => 'zoho',
+//     'zoho' => 'hdfc',
+//     default => 'hdfc'
+// };
