@@ -190,27 +190,27 @@ function getCourse(float $amount): array
     return match (true) {
         $amount <= 1000 => [
             'path'  => public_path('courses/course-1.pdf'),
-            'name' => 'Course 1',
+            'name' => 'Advanced Machine Learning with Python',
             'url'  => asset('public/courses/course-1.pdf'),
-            'subject' => 'Course 1'
+            'subject' => 'Advanced Machine Learning with Python'
         ],
         $amount <= 3000 => [
             'path'  => public_path('courses/course-2.pdf'),
-            'name' => 'Course 2',
+            'name' => 'BUILDING IN WEB3 — DEVELOPMENT, LAYER 2S & THE FUTURE',
             'url'  => asset('public/courses/course-2.pdf'),
-            'subject' => 'Course 2'
+            'subject' => 'BUILDING IN WEB3 — DEVELOPMENT, LAYER 2S & THE FUTURE'
         ],
         $amount <= 6000 => [
             'path'  => public_path('courses/course-3.pdf'),
-            'name' => 'Course 3',
+            'name' => 'PROGRAMMING & SOFTWARE DEVELOPMENT',
             'url'  => asset('public/courses/course-3.pdf'),
-            'subject' => 'Course 3'
+            'subject' => 'PROGRAMMING & SOFTWARE DEVELOPMENT'
         ],
         default => [
             'path'  => public_path('courses/course-4.pdf'),
-            'name' => 'Course 4',
+            'name' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS',
             'url'  => asset('public/courses/course-4.pdf'),
-            'subject' => 'Course 4'
+            'subject' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS'
         ],
     };
 }
