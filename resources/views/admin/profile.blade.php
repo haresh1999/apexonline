@@ -27,7 +27,7 @@
                     </div>
                     <div class="position-relative bg-body-quaternary rounded-circle cursor-pointer d-flex flex-center mb-xxl-7">
                         <div class="avatar avatar-5xl">
-                            <img class="rounded-circle" src="{{ asset('public/admin/assets/img/team/150x150/58.webp') }}" alt="" />
+                            <img class="rounded-circle" src="{{ asset('admin/assets/img/team/150x150/58.webp') }}" alt="" />
                         </div>
                         <label class="w-100 h-100 position-absolute z-1" for="upload-avatar"></label>
                     </div>

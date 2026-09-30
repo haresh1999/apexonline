@@ -3,7 +3,7 @@
 @section('title','Order')
 
 @section('style')
-<link href="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
+<link href="{{ asset('admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
 <style>
     .table-wrapper table {
         min-width: 1800px;
@@ -266,5 +266,5 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.js') }}"></script>
+<script src="{{ asset('admin/vendors/flatpickr/flatpickr.min.js') }}"></script>
 @endsection

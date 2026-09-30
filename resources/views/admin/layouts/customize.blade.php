@@ -24,7 +24,7 @@
                     <input class="btn-check" id="themeSwitcherLight" name="theme-color" type="radio" value="light" data-theme-control="phoenixTheme" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="themeSwitcherLight">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype mb-0" src="{{ asset('public/admin/assets/img/generic/default-light.png') }}" alt="" />
+                            <img class="img-fluid img-prototype mb-0" src="{{ asset('admin/assets/img/generic/default-light.png') }}" alt="" />
                         </span>
                         <span class="label-text">Light</span>
                     </label>
@@ -33,7 +33,7 @@
                     <input class="btn-check" id="themeSwitcherDark" name="theme-color" type="radio" value="dark" data-theme-control="phoenixTheme" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="themeSwitcherDark">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype mb-0" src="{{ asset('public/admin/assets/img/generic/default-dark.png') }}" alt="" />
+                            <img class="img-fluid img-prototype mb-0" src="{{ asset('admin/assets/img/generic/default-dark.png') }}" alt="" />
                         </span>
                         <span class="label-text"> Dark</span>
                     </label>
@@ -42,7 +42,7 @@
                     <input class="btn-check" id="themeSwitcherAuto" name="theme-color" type="radio" value="auto" data-theme-control="phoenixTheme" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="themeSwitcherAuto">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype mb-0" src="{{ asset('public/admin/assets/img/generic/auto.png') }}" alt="" />
+                            <img class="img-fluid img-prototype mb-0" src="{{ asset('admin/assets/img/generic/auto.png') }}" alt="" />
                         </span>
                         <span class="label-text"> Auto</span>
                     </label>
@@ -74,8 +74,8 @@
                     <input class="btn-check" id="navbarPositionVertical" name="navigation-type" type="radio" value="vertical" data-theme-control="phoenixNavbarPosition" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarPositionVertical">
                         <span class="rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('public/admin/assets/img/generic/default-light.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('public/admin/assets/img/generic/default-dark.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('admin/assets/img/generic/default-light.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('admin/assets/img/generic/default-dark.png') }}" alt="" />
                         </span>
                         <span class="label-text">Vertical</span>
                     </label>
@@ -84,8 +84,8 @@
                     <input class="btn-check" id="navbarPositionHorizontal" name="navigation-type" type="radio" value="horizontal" data-theme-control="phoenixNavbarPosition" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarPositionHorizontal">
                         <span class="rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('public/admin/assets/img/generic/top-default.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('public/admin/assets/img/generic/top-default-dark.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('admin/assets/img/generic/top-default.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('admin/assets/img/generic/top-default-dark.png') }}" alt="" />
                         </span>
                         <span class="label-text"> Horizontal</span>
                     </label>
@@ -94,8 +94,8 @@
                     <input class="btn-check" id="navbarPositionCombo" name="navigation-type" type="radio" value="combo" data-theme-control="phoenixNavbarPosition" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarPositionCombo">
                         <span class="rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('public/admin/assets/img/generic/nav-combo-light.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('public/admin/assets/img/generic/nav-combo-dark.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('admin/assets/img/generic/nav-combo-light.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('admin/assets/img/generic/nav-combo-dark.png') }}" alt="" />
                         </span>
                         <span class="label-text"> Combo</span>
                     </label>
@@ -104,8 +104,8 @@
                     <input class="btn-check" id="navbarPositionTopDouble" name="navigation-type" type="radio" value="dual-nav" data-theme-control="phoenixNavbarPosition" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarPositionTopDouble">
                         <span class="rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('public/admin/assets/img/generic/dual-light.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('public/admin/assets/img/generic/dual-dark.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-dark-none" src="{{ asset('admin/assets/img/generic/dual-light.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none" src="{{ asset('admin/assets/img/generic/dual-dark.png') }}" alt="" />
                         </span>
                         <span class="label-text"> Dual nav</span>
                     </label>
@@ -118,8 +118,8 @@
                 <div class="col-6">
                     <input class="btn-check" id="navbar-style-default" type="radio" name="config.name" value="default" data-theme-control="phoenixNavbarVerticalStyle" />
                     <label class="btn d-block w-100 btn-navbar-style fs-9" for="navbar-style-default">
-                        <img class="img-fluid img-prototype d-dark-none" src="{{ asset('public/admin/assets/img/generic/default-light.png') }}" alt="" />
-                        <img class="img-fluid img-prototype d-light-none" src="{{ asset('public/admin/assets/img/generic/default-dark.png') }}" alt="" />
+                        <img class="img-fluid img-prototype d-dark-none" src="{{ asset('admin/assets/img/generic/default-light.png') }}" alt="" />
+                        <img class="img-fluid img-prototype d-light-none" src="{{ asset('admin/assets/img/generic/default-dark.png') }}" alt="" />
                         <span class="label-text d-dark-none"> Default</span>
                         <span class="label-text d-light-none">Default</span>
                     </label>
@@ -127,8 +127,8 @@
                 <div class="col-6">
                     <input class="btn-check" id="navbar-style-dark" type="radio" name="config.name" value="darker" data-theme-control="phoenixNavbarVerticalStyle" />
                     <label class="btn d-block w-100 btn-navbar-style fs-9" for="navbar-style-dark">
-                        <img class="img-fluid img-prototype d-dark-none" src="{{ asset('public/admin/assets/img/generic/vertical-darker.png') }}" alt="" />
-                        <img class="img-fluid img-prototype d-light-none" src="{{ asset('public/admin/assets/img/generic/vertical-lighter.png') }}" alt="" />
+                        <img class="img-fluid img-prototype d-dark-none" src="{{ asset('admin/assets/img/generic/vertical-darker.png') }}" alt="" />
+                        <img class="img-fluid img-prototype d-light-none" src="{{ asset('admin/assets/img/generic/vertical-lighter.png') }}" alt="" />
                         <span class="label-text d-dark-none"> Darker</span>
                         <span class="label-text d-light-none">Lighter</span>
                     </label>
@@ -142,8 +142,8 @@
                     <input class="btn-check" id="navbarShapeDefault" name="navbar-shape" type="radio" value="default" data-theme-control="phoenixNavbarTopShape" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarShapeDefault">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-default.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-default-dark.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('admin/assets/img/generic/top-default.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('admin/assets/img/generic/top-default-dark.png') }}" alt="" />
                         </span>
                         <span class="label-text">Default</span>
                     </label>
@@ -152,8 +152,8 @@
                     <input class="btn-check" id="navbarShapeSlim" name="navbar-shape" type="radio" value="slim" data-theme-control="phoenixNavbarTopShape" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarShapeSlim">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-slim.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-slim-dark.png') }}" alt="" /></span>
+                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('admin/assets/img/generic/top-slim.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('admin/assets/img/generic/top-slim-dark.png') }}" alt="" /></span>
                         <span class="label-text"> Slim</span>
                     </label>
                 </div>
@@ -166,8 +166,8 @@
                     <input class="btn-check" id="navbarTopDefault" name="navbar-top-style" type="radio" value="default" data-theme-control="phoenixNavbarTopStyle" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarTopDefault">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-default.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-style-darker.png') }}" alt="" /></span>
+                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('admin/assets/img/generic/top-default.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('admin/assets/img/generic/top-style-darker.png') }}" alt="" /></span>
                         <span class="label-text">Default</span>
                     </label>
                 </div>
@@ -175,8 +175,8 @@
                     <input class="btn-check" id="navbarTopDarker" name="navbar-top-style" type="radio" value="darker" data-theme-control="phoenixNavbarTopStyle" />
                     <label class="btn d-inline-block btn-navbar-style fs-9" for="navbarTopDarker">
                         <span class="mb-2 rounded d-block">
-                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('public/admin/assets/img/generic/navbar-top-style-light.png') }}" alt="" />
-                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('public/admin/assets/img/generic/top-style-lighter.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-dark-none mb-0" src="{{ asset('admin/assets/img/generic/navbar-top-style-light.png') }}" alt="" />
+                            <img class="img-fluid img-prototype d-light-none mb-0" src="{{ asset('admin/assets/img/generic/top-style-lighter.png') }}" alt="" />
                         </span>
                         <span class="label-text d-dark-none">Darker</span>
                         <span class="label-text d-light-none">Lighter</span>

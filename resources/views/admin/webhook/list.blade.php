@@ -3,7 +3,7 @@
 @section('title','Webhook Logs')
 
 @section('style')
-<link href="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
+<link href="{{ asset('admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -100,5 +100,5 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.js') }}"></script>
+<script src="{{ asset('admin/vendors/flatpickr/flatpickr.min.js') }}"></script>
 @endsection

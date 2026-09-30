@@ -3,7 +3,7 @@
 @section('title','Dashboard')
 
 @section('style')
-<link href="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
+<link href="{{ asset('admin/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -145,7 +145,7 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('public/admin/vendors/flatpickr/flatpickr.min.js') }}"></script>
+<script src="{{ asset('admin/vendors/flatpickr/flatpickr.min.js') }}"></script>
 <script>
     $('#datepicker').change(function(){
         window.location.href = "{{ route('dashboard') }}?date="+this.value

@@ -225,7 +225,7 @@ function getCourse(float $amount): array
         return [
             'path'  => public_path('courses/course-4.pdf'),
             'name' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS',
-            'url'  => asset('public/courses/course-4.pdf'),
+            'url'  => asset('courses/course-4.pdf'),
             'subject' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS'
         ];
     }
