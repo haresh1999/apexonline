@@ -1,11 +1,15 @@
 <?php
 
-function ids($id)
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+
+function ids(string $id)
 {
     return sprintf('%05d', $id);
 }
 
-function setting($pg, $key)
+function setting(string $pg, string $key)
 {
     $env = getAppEnv();
 
@@ -184,6 +188,30 @@ function amountInWords($amount)
     return $convert($amount) . ' Rupees Only';
 }
 
+function uploadFile($image, $path, $name)
+{
+    $store_path = Storage::disk('public')->path($path);
+
+    if (! is_dir($store_path)) {
+
+        File::makeDirectory($store_path, 0777, true);
+    }
+
+    $image_name = Str::slug($name, '-') . '.' . $image->getClientOriginalExtension();
+
+    move_uploaded_file($image->getpathname(), $store_path . '/' . $image_name);
+
+    return $path . '/' . $image_name;
+}
+
+function getFile($path)
+{
+    if (Storage::disk('public')->exists($path)) {
+
+        return asset('storage/' . $path);
+    }
+    return null;
+}
 
 function getCourse(float $amount): array
 {
