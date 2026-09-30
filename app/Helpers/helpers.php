@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -215,42 +216,24 @@ function getFile($path)
 
 function getCourse(float $amount): array
 {
-    return match (true) {
-        $amount <= 1000 => [
-            'path'  => public_path('courses/course-1.pdf'),
-            'name' => 'Advanced Machine Learning with Python',
-            'url'  => asset('public/courses/course-1.pdf'),
-            'subject' => 'Advanced Machine Learning with Python'
-        ],
-        $amount <= 3000 => [
-            'path'  => public_path('courses/course-2.pdf'),
-            'name' => 'BUILDING IN WEB3 — DEVELOPMENT, LAYER 2S & THE FUTURE',
-            'url'  => asset('public/courses/course-2.pdf'),
-            'subject' => 'BUILDING IN WEB3 — DEVELOPMENT, LAYER 2S & THE FUTURE'
-        ],
-        $amount <= 6000 => [
-            'path'  => public_path('courses/course-3.pdf'),
-            'name' => 'PROGRAMMING & SOFTWARE DEVELOPMENT',
-            'url'  => asset('public/courses/course-3.pdf'),
-            'subject' => 'PROGRAMMING & SOFTWARE DEVELOPMENT'
-        ],
-        default => [
+    $course = DB::table('courses')
+        ->where('min_amt', '<=', $amount)
+        ->where('max_amt', '>=', $amount)
+        ->first();
+
+    if (! $course) {
+        return [
             'path'  => public_path('courses/course-4.pdf'),
             'name' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS',
             'url'  => asset('public/courses/course-4.pdf'),
             'subject' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS'
-        ],
-    };
-}
+        ];
+    }
 
-// $gateway = match ($pgGateway) {
-//     'hdfc' => 'instamojo',
-//     'instamojo' => 'cashfree',
-//     'cashfree' => 'phonepe',
-//     'phonepe' => 'payu',
-//     'payu' => 'paytm',
-//     'paytm' => 'sabpaisa',
-//     'sabpaisa' => 'zoho',
-//     'zoho' => 'hdfc',
-//     default => 'hdfc'
-// };
+    return [
+        'path' => public_path('storage/' . $course->pdf_path),
+        'name' => $course->name,
+        'url' => asset('storage/' . $course->pdf_path),
+        'subject' => $course->subject,
+    ];
+}
