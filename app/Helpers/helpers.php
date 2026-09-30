@@ -223,10 +223,10 @@ function getCourse(float $amount): array
 
     if (! $course) {
         return [
-            'path'  => public_path('courses/course-4.pdf'),
-            'name' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS',
-            'url'  => asset('courses/course-4.pdf'),
-            'subject' => 'REGULATION, TAXATION, COMPLIANCE & INSTITUTIONS'
+            'path'  => public_path('courses/part4_risk_management.pdf'),
+            'name' => 'Part 4 Risk Management',
+            'url'  => asset('courses/part4_risk_management.pdf'),
+            'subject' => 'Part 4 Risk Management'
         ];
     }
 
