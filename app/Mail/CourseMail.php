@@ -62,7 +62,7 @@ class CourseMail extends Mailable
                 ->as('Invoice.pdf')
                 ->withMime('application/pdf'),
             Attachment::fromPath($this->coursePath)
-                ->as('Invoice.pdf')
+                ->as($this->courseName)
                 ->withMime('application/pdf'),
         ];
     }
