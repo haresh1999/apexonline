@@ -40,13 +40,15 @@
                             </p>
 
                             <p style="margin:0 0 18px; font-size:15px; line-height:25px; color:#555555;">
-                                Thank you for your purchase! We are happy to confirm that your
-                                course enrollment has been completed successfully.
+                                Thank you for your purchase!
+                            </p>
+
+                            <p style="margin:0 0 18px; font-size:15px; line-height:25px; color:#555555;">
+                                We are happy to confirm that your purchase has been completed successfully. Your Course E-Book (PDF) is now available for you to access and use for self-study.
                             </p>
 
                             <p style="margin:0 0 25px; font-size:15px; line-height:25px; color:#555555;">
-                                You can now access your purchased course and start learning.
-                                We wish you a great learning journey!
+                                We hope this learning material provides you with valuable knowledge and supports your learning journey.
                             </p>
 
                             <!-- Success Box -->
@@ -68,7 +70,7 @@
 
                             <!-- Course Details -->
                             <h2 style="margin:0 0 15px; font-size:18px; color:#222222;">
-                                Course Details
+                                Order Details
                             </h2>
 
                             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; margin-bottom:25px;">
@@ -155,7 +157,7 @@
                             </p>
 
                             <p style="margin:0; font-size:14px; line-height:23px; color:#555555;">
-                                Thank you for choosing us and happy learning! 🎓
+                                Thank you for choosing APEX ONLINE. 🎓
                             </p>
 
                         </td>
