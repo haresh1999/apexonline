@@ -74,7 +74,7 @@
         </li>
     </ul>
     <div id="orderTable">
-        <div class="mb-4">
+        <div class="mb-3">
             <form class="position-relative" action="{{ route('tnx.index') }}" method="get">
                 <div class="row g-3 align-items-end">
 
