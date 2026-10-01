@@ -314,7 +314,7 @@ class TransactionController extends Controller
         $course = getCourse((float) $tnx->amount); //  GET COURSE
 
         $invoiceData = [
-            'invoice_no' => ids($tnx->id),
+            'invoice_no' => ($tnx->id + 2762),
             'date' => Carbon::parse($tnx->created_at)->format('d-m-Y'),
             'customer_name' => $tnx->payer_name,
             'email' => $tnx->payer_email,
