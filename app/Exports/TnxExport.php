@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class TnxExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
@@ -108,8 +109,15 @@ class TnxExport implements FromCollection, WithHeadings, WithMapping, WithStyles
             $data->gateway,
             $data->amount,
             $data->reference_id,
-            $data->payment_id,
+            (string) $data->payment_id,
             Carbon::parse($data->created_at)->format('d-m-Y H:i'),
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'K' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
