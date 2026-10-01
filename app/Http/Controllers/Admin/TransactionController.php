@@ -41,6 +41,8 @@ class TransactionController extends Controller
             })
             ->when($request->filled('env'), function ($q) use ($request) {
                 $q->where('env', $request->env);
+            }, function ($q) {
+                $q->where('env', 'production');
             })
             ->when($request->filled('date'), function ($q) use ($request) {
                 if ($request->date == 'today') {

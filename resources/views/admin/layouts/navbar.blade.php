@@ -144,7 +144,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'today']) }}">
+                                    <a class="nav-link" href="{{ route('tnx.index',array_merge(request()->query(), ['date' => 'today'])) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Today</span>
                                         </div>
@@ -152,7 +152,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'yesterday']) }}">
+                                    <a class="nav-link" href="{{ route('tnx.index',array_merge(request()->query(), ['date' => 'yesterday'])) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Yesterday</span>
                                         </div>
@@ -160,7 +160,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'this-month']) }}">
+                                    <a class="nav-link" href="{{ route('tnx.index',array_merge(request()->query(), ['date' => 'this-month'])) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">This Month</span>
                                         </div>
@@ -168,7 +168,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('tnx.index',['date' => 'last-month']) }}">
+                                    <a class="nav-link" href="{{ route('tnx.index',array_merge(request()->query(), ['date' => 'last-month'])) }}">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Last Month</span>
                                         </div>
@@ -234,6 +234,7 @@
                 </div>
                 @endif
 
+                @if (auth()->id() == 1)
                 <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Courses & PDF FIle</b></p>
                     <hr class="navbar-vertical-line" />
@@ -251,7 +252,7 @@
                         </a>
                     </div>
                 </li>
-
+                @endif
             </ul>
         </div>
     </div>
