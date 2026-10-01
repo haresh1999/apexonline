@@ -66,6 +66,8 @@ class TransactionController extends Controller
                             $dates[0] . ' 00:00:00',
                             $dates[1] . ' 23:59:59',
                         ]);
+                    } else {
+                        $q->whereDate('created_at', $request->date);
                     }
                 }
             })
