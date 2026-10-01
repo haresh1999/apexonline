@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\TnxExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransactionController as CTransactionController;
 use App\Models\Gateway;
@@ -11,6 +12,7 @@ use App\Models\WebhookLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -187,10 +189,6 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::where('id', $id)->firstOrFail();
 
-        // $cont = new CTransactionController();
-
-        // $cont->sendCourseMail($tnx);
-
         $fileName = ids($tnx->id) . '.pdf';
         $path = storage_path('app/public/invoice/' . $fileName);
 
@@ -275,5 +273,10 @@ class TransactionController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $fileName . '"',
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new TnxExport(), 'transactions.xlsx');
     }
 }

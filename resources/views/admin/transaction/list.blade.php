@@ -75,54 +75,107 @@
     </ul>
     <div id="orderTable">
         <div class="mb-4">
-            <form class="position-relative" action="{{ Request::fullUrl() }}" method="get">
-                <div class="d-flex flex-wrap gap-3">
-                    <div class="search-box">
-                        <input class="form-control search-input search" type="search" name="search" placeholder="Search anything..." value="{{ Request::get('search') }}" aria-label="Search" />
-                        <span class="fas fa-search search-box-icon"></span>
+            <form class="position-relative" action="{{ route('tnx.index') }}" method="get">
+                <div class="row g-3 align-items-end">
+
+                    {{-- Search --}}
+                    <div class="col-12 col-lg-2">
+                        <label class="ps-0 form-label mb-1">Search</label>
+                        <div class="search-box position-relative w-auto">
+                            <input class="form-control search-input search" type="search" name="search" placeholder="Search anything..." value="{{ request('search') }}" aria-label="Search" />
+                            <span class="fas fa-search search-box-icon"></span>
+                        </div>
                     </div>
-                    <div>
-                        <div class="btn-group position-static gap-2" role="group">
-                            <div class="col-9 col-sm-4">
-                                <input class="form-control datetimepicker" name="date" id="datepicker" type="text" data-options='{"disableMobile":true,"dateFormat":"Y-m-d","mode":"range"}' value="{{ request('date') }}" placeholder="Date Range">
-                            </div>
-                            <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="pg" style="min-width: 120px">
-                                    <option selected="" value="">Gateway</option>
-                                    @foreach ($gateways as $pg)
-                                    <option @selected(Request::get('pg')==$pg) value="{{ $pg }}">{{ucfirst($pg)}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="status" style="min-width: 120px">
-                                    <option selected="" value="">Status</option>
-                                    <option @selected(Request::get('status')=='pending' ) value="pending">Pending</option>
-                                    <option @selected(Request::get('status')=='processing' ) value="processing">Processing</option>
-                                    <option @selected(Request::get('status')=='completed' ) value="completed">Completed</option>
-                                    <option @selected(Request::get('status')=='failed' ) value="failed">Failed</option>
-                                    <option @selected(Request::get('status')=='refunded' ) value="refunded">Refunded</option>
-                                </select>
-                            </div>
-                            <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="env" style="min-width: 120px">
-                                    <option selected="" value="">Env</option>
-                                    <option @selected(Request::get('env')=='sandbox' ) value="sandbox">Sandbox</option>
-                                    <option @selected(Request::get('env')=='production' ) value="production">Production</option>
-                                </select>
-                            </div>
-                            @if(auth()->id() == 1)
-                            <div class="btn-group position-static text-nowrap">
-                                <select class="form-select" name="user_id" style="min-width: 120px">
-                                    <option selected="" value="" selected>Company</option>
-                                    @foreach ($users as $uId => $user)
-                                    <option @selected(Request::get('user_id')==$uId ) value="{{$uId}}">{{$user}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif
-                            <button type="submit" class="rounded btn btn-info flex-shrink-0">Filter</button>
-                            <a href="{{ route('tnx.index') }}" class="rounded btn btn-warning flex-shrink-0">Reset</a>
+
+                    {{-- Date --}}
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <label class="ps-0 form-label mb-1">Date</label>
+                        <input class="form-control datetimepicker" name="date" id="datepicker" type="text" data-options='{"disableMobile":true,"dateFormat":"Y-m-d","mode":"range"}' value="{{ request('date') }}" placeholder="Date Range">
+                    </div>
+
+                    {{-- Gateway --}}
+                    <div class="col-6 col-sm-3 col-lg-2">
+                        <label class="ps-0 form-label mb-1">Gateway</label>
+                        <select class="form-select" name="pg">
+                            <option value="">All Gateways</option>
+                            @foreach ($gateways as $pg)
+                            <option value="{{ $pg }}" @selected(request('pg')==$pg)>
+                                {{ ucfirst($pg) }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Status --}}
+                    <div class="col-6 col-sm-3 col-lg-2">
+                        <label class="ps-0 form-label mb-1">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="">All Status</option>
+                            <option value="pending" @selected(request('status')=='pending' )>
+                                Pending
+                            </option>
+                            <option value="processing" @selected(request('status')=='processing' )>
+                                Processing
+                            </option>
+                            <option value="completed" @selected(request('status')=='completed' )>
+                                Completed
+                            </option>
+                            <option value="failed" @selected(request('status')=='failed' )>
+                                Failed
+                            </option>
+                            <option value="refunded" @selected(request('status')=='refunded' )>
+                                Refunded
+                            </option>
+                        </select>
+                    </div>
+
+                    {{-- Environment --}}
+                    <div class="col-6 col-sm-3 col-lg-2">
+                        <label class="ps-0 form-label mb-1">Environment</label>
+                        <select class="form-select" name="env">
+                            <option value="">All Environments</option>
+                            <option value="sandbox" @selected(request('env')=='sandbox' )>
+                                Sandbox
+                            </option>
+                            <option value="production" @selected(request('env')=='production' )>
+                                Production
+                            </option>
+                        </select>
+                    </div>
+
+                    {{-- Company --}}
+                    @if(auth()->id() == 1)
+                    <div class="col-6 col-sm-3 col-lg-2">
+                        <label class="ps-0 form-label mb-1">Company</label>
+                        <select class="form-select" name="user_id">
+                            <option value="">All Companies</option>
+                            @foreach ($users as $uId => $user)
+                            <option value="{{ $uId }}" @selected(request('user_id')==$uId)>
+                                {{ $user }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
+                    {{-- Buttons --}}
+                    <div class="col-12 col-lg-auto ms-lg-auto">
+                        <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+
+                            <button type="submit" class="btn btn-info flex-grow-1 flex-lg-grow-0">
+                                <span class="fas fa-filter me-1"></span>
+                                Filter
+                            </button>
+
+                            <a href="{{ route('tnx.export', request()->query()) }}" class="btn btn-success flex-grow-1 flex-lg-grow-0">
+                                <span class="fas fa-file-excel me-1"></span>
+                                Export Excel
+                            </a>
+
+                            <a href="{{ route('tnx.index') }}" class="btn btn-warning flex-grow-1 flex-lg-grow-0">
+                                <span class="fas fa-redo me-1"></span>
+                                Reset
+                            </a>
                         </div>
                     </div>
                 </div>

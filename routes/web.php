@@ -229,6 +229,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('transaction', [SalesController::class, 'index'])->name('tnx.index');
     Route::get('transaction/show/{id}', [SalesController::class, 'show'])->name('tnx.show');
     Route::post('transaction/update/{id}', [SalesController::class, 'update'])->name('tnx.update');
+    Route::get('transaction/export', [SalesController::class, 'export'])->name('tnx.export');
 
     Route::get('invoice/{id}', [SalesController::class, 'invoice'])->name('invoice');
     Route::get('webhoook', [SalesController::class, 'webhook'])->name('webhoook.index');
