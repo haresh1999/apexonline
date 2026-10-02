@@ -245,12 +245,18 @@
                                     <a href="{{ route('invoice',$tnx->id) }}" class="text-success">
                                         <i class="fas fa-file-invoice"></i>
                                     </a>
+                                    @else
+                                    ---
                                     @endif
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
+                                    @if ($tnx->status == 'completed')
                                     <a href="{{ route('send.email',$tnx->id) }}">
                                         <i class="fas fa-sync"></i>
                                     </a>
+                                    @else
+                                    ---
+                                    @endif
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
                                     <h6 class="mb-0">{{ strtoupper($tnx->env) }}</h6>
