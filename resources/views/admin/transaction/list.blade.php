@@ -184,7 +184,7 @@
                         <thead>
                             <tr>
                                 <th class="white-space-nowrap align-middle py-3 text-start">NAME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center">ORDER</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">ORDER</th>
                                 <th class="white-space-nowrap align-middle py-3 text-center">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-3 text-center">AMOUNT</th>
                                 <th class="white-space-nowrap align-middle py-3 text-center">PDF</th>
@@ -206,7 +206,7 @@
                                 <td class="align-middle white-space-nowrap py-3">
                                     {{ $tnx->user->name }}
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center">
+                                <td class="align-middle white-space-nowrap py-3 text-start">
                                     <h6 class="mb-0">
                                         <a href="{{ route('tnx.show',$tnx->id) }}">{{ $tnx->mr_order_id }}</a>
                                     </h6>
