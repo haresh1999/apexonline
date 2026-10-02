@@ -9,11 +9,6 @@
         min-width: 1800px;
     }
 
-    .table td:last-child,
-    .table th:last-child {
-        padding-right: 2rem !important;
-    }
-
     .table td:first-child,
     .table th:first-child {
         padding-left: 1rem !important;
@@ -188,35 +183,35 @@
                     <table class="table table-sm fs-9 mb-0">
                         <thead>
                             <tr>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 50px">NAME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 50px">ORDER</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">STATUS</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">AMOUNT</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">PDF</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 40px">RESEND</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">ENV</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 50px">GATEWAY</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 100px">DATETIME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 170px">REF#</th>
                                 <th class="white-space-nowrap align-middle py-3 text-start">NAME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 110px">EMAIL</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 70px">MOBILE</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 80px">UPDATED TIME</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center">ORDER</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center">STATUS</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center">AMOUNT</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center">PDF</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center">RESEND</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center">ENV</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">GATEWAY</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">DATETIME</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">REF#</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">NAME</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">EMAIL</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">MOBILE</th>
+                                <th class="white-space-nowrap align-middle py-3 text-start">UPDATED TIME</th>
                             </tr>
                         </thead>
 
                         <tbody class="list" id="order-table-body">
                             @foreach ($tnxs as $tnx)
                             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                <td class="align-middle white-space-nowrap py-3" style="max-width: 50px">
+                                <td class="align-middle white-space-nowrap py-3">
                                     {{ $tnx->user->name }}
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 50px">
+                                <td class="align-middle white-space-nowrap py-3 text-center">
                                     <h6 class="mb-0">
                                         <a href="{{ route('tnx.show',$tnx->id) }}">{{ $tnx->mr_order_id }}</a>
                                     </h6>
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 70px">
+                                <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if(in_array($tnx->status, ['completed']))
                                     <span class="badge badge-phoenix fs-10 badge-phoenix-success">
                                         <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
@@ -234,10 +229,10 @@
                                     </span>
                                     @endif
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
+                                <td class="align-middle white-space-nowrap py-3 text-center">
                                     <h6 class="mb-0">₹{{ $tnx->amount }}</h6>
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
+                                <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if ($tnx->status == 'completed')
                                     <a target="_blank" href="{{ route('declaration',$tnx->id) }}" class="{{ $tnx->esign_status == 'completed' ? 'text-success' : 'text-danger' }} me-2">
                                         <span class="fas fa-file-pdf"></span>
@@ -249,7 +244,7 @@
                                     ---
                                     @endif
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 40px">
+                                <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if ($tnx->status == 'completed')
                                     <a href="{{ route('send.email',$tnx->id) }}">
                                         <i class="fas fa-sync"></i>
@@ -258,28 +253,28 @@
                                     ---
                                     @endif
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
+                                <td class="align-middle white-space-nowrap py-3 text-center">
                                     <h6 class="mb-0">{{ strtoupper($tnx->env == 'production' ? 'Live' : 'Test') }}</h6>
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-start" style="max-width: 50px">
+                                <td class="align-middle white-space-nowrap py-3 text-start">
                                     <h6 class="mb-0">{{ strtoupper($tnx->gateway) }}</h6>
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-start" style="max-width: 100px">
+                                <td class="align-middle white-space-nowrap py-3 text-start">
                                     {{ $tnx->created_at }}
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3" style="max-width: 170px">
+                                <td class="align-middle white-space-nowrap py-3">
                                     {{ $tnx->reference_id }}
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3">
                                     {{ $tnx->payer_name }}
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3" style="max-width: 110px">
+                                <td class="align-middle white-space-nowrap py-3">
                                     {{ $tnx->payer_email }}
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3" style="max-width: 70px">
+                                <td class="align-middle white-space-nowrap py-3">
                                     {{ $tnx->payer_mobile }}
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-start" style="max-width: 80px">
+                                <td class="align-middle white-space-nowrap py-3 text-start">
                                     {{ $tnx->updated_at }}
                                 </td>
                             </tr>
