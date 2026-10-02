@@ -259,7 +259,7 @@
                                     @endif
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
-                                    <h6 class="mb-0">{{ strtoupper($tnx->env) }}</h6>
+                                    <h6 class="mb-0">{{ strtoupper($tnx->env == 'production' ? 'Live' : 'Test') }}</h6>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-start" style="max-width: 50px">
                                     <h6 class="mb-0">{{ strtoupper($tnx->gateway) }}</h6>
