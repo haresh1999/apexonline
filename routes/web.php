@@ -235,6 +235,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('webhoook', [SalesController::class, 'webhook'])->name('webhoook.index');
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('declaration/{tid}', [SalesController::class, 'declaration'])->name('declaration');
+    Route::get('send/email/{id}', [SalesController::class, 'sendEmail'])->name('send.email');
 
     Route::get('course', [CourseController::class, 'index'])->name('course.index');
     Route::get('course/create', [CourseController::class, 'create'])->name('course.create');

@@ -342,6 +342,7 @@ class TransactionController extends Controller
         Mail::to($tnx->payer_email)->send(
             new CourseMail(
                 $invoicePath,
+                $declarationPath,
                 $course['path'],
                 $tnx->payer_name,
                 $course['name'],
@@ -350,7 +351,7 @@ class TransactionController extends Controller
                 Carbon::parse($tnx->created_at)->format('d-m-Y'),
                 $course['url'],
                 ids($tnx->id),
-                $course['subject']
+                $course['subject'],
             )
         );
 

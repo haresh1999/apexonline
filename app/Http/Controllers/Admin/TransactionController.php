@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\TnxExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransactionController as CTransactionController;
+use App\Mail\CourseMail;
 use App\Models\Gateway;
 use App\Models\Transaction;
 use App\Models\User;
@@ -12,6 +13,7 @@ use App\Models\WebhookLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
@@ -273,6 +275,41 @@ class TransactionController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $fileName . '"',
         ]);
+    }
+
+    public function sendEmail(string $id)
+    {
+        try {
+
+            $tnx = Transaction::findOrFail($id);
+
+            $invoicePath = storage_path('app/public/invoice/' . ids($tnx->id) . '.pdf');
+            $declarationPath = storage_path('app/public/declaration/' . ids($tnx->id) . '.pdf');
+
+            $course = getCourse((float) $tnx->amount); //  GET COURSE
+
+            Mail::to($tnx->payer_email)->send(
+                new CourseMail(
+                    $invoicePath,
+                    $declarationPath,
+                    $course['path'],
+                    $tnx->payer_name,
+                    $course['name'],
+                    $tnx->order_id,
+                    $tnx->amount,
+                    Carbon::parse($tnx->created_at)->format('d-m-Y'),
+                    $course['url'],
+                    ids($tnx->id),
+                    $course['subject'],
+                )
+            );
+
+            return redirect()->back()->with('res.success', 'Email send successful');
+            // 
+        } catch (\Throwable $th) {
+
+            return redirect()->back()->with('res.error', 'Something went wrong!');
+        }
     }
 
     public function export()

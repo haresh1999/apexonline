@@ -19,6 +19,7 @@ class CourseMail extends Mailable
      */
     public function __construct(
         public string $invoicePath,
+        public string $declarationPath,
         public string $coursePath,
         public string $name,
         public string $courseName,
@@ -59,10 +60,13 @@ class CourseMail extends Mailable
     {
         return [
             Attachment::fromPath($this->invoicePath)
-                ->as('Invoice.pdf')
+                ->as('Invoice')
                 ->withMime('application/pdf'),
             Attachment::fromPath($this->coursePath)
                 ->as($this->courseName)
+                ->withMime('application/pdf'),
+            Attachment::fromPath($this->declarationPath)
+                ->as('Declaration')
                 ->withMime('application/pdf'),
         ];
     }
