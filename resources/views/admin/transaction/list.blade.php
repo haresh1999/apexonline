@@ -183,20 +183,20 @@
                     <table class="table table-sm fs-9 mb-0">
                         <thead>
                             <tr>
-                                <th class="white-space-nowrap align-middle py-3 text-start">NAME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">ORDER</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center">STATUS</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center">AMOUNT</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center">PDF</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center">RESEND</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center">ENV</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">GATEWAY</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">DATETIME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">REF#</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">NAME</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">EMAIL</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">MOBILE</th>
-                                <th class="white-space-nowrap align-middle py-3 text-start">UPDATED TIME</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">NAME</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">ORDER</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">STATUS</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">AMOUNT</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">PDF</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">RESEND</th>
+                                <th class="white-space-nowrap align-middle py-4 text-center">ENV</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">GATEWAY</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">DATETIME</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">REF#</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">NAME</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">EMAIL</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">MOBILE</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">UPDATED TIME</th>
                             </tr>
                         </thead>
 
