@@ -193,7 +193,7 @@
                                 <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">AMOUNT</th>
                                 <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">PDF</th>
-                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">RESEND</th>
+                                <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 40px">RESEND</th>
                                 <th class="white-space-nowrap align-middle py-3 text-center" style="max-width: 60px">ENV</th>
                                 <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 50px">GATEWAY</th>
                                 <th class="white-space-nowrap align-middle py-3 text-start" style="max-width: 100px">DATETIME</th>
@@ -249,7 +249,7 @@
                                     ---
                                     @endif
                                 </td>
-                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 60px">
+                                <td class="align-middle white-space-nowrap py-3 text-center" style="max-width: 40px">
                                     @if ($tnx->status == 'completed')
                                     <a href="{{ route('send.email',$tnx->id) }}">
                                         <i class="fas fa-sync"></i>
