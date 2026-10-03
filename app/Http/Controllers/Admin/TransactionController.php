@@ -289,7 +289,7 @@ class TransactionController extends Controller
             $course = getCourse((float) $tnx->amount); //  GET COURSE
 
             Mail::to($tnx->payer_email)->bcc([
-                'hareshc1999@gmail.com',
+                'haresh@swapinfoway.com',
                 'ikondubai@gmail.com'
             ])->send(
                 new CourseMail(
