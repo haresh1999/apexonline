@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GatewayRequest;
 use App\Models\Gateway;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class GatewayController extends Controller
@@ -72,6 +73,34 @@ class GatewayController extends Controller
     public function update(GatewayRequest $request, string $id)
     {
         $input = $request->validated();
+
+        // Prevent deactivating the last active gateway
+        if ($input['status'] == 0) {
+
+            $activeGatewayCount = Gateway::where('status', 1)
+                ->where('id', '!=', $id)
+                ->count();
+
+            if ($activeGatewayCount == 0) {
+                return redirect()->back()->with(
+                    'res.error',
+                    'At least one payment gateway must remain active.'
+                );
+            }
+        }
+
+        // Prevent deactivating a gateway that is set as default for users
+        $activeGateway = User::whereRaw(
+            'LOWER(default_gateway) = ?',
+            [strtolower($input['name'])]
+        )->exists();
+
+        if ($activeGateway && $input['status'] == 0) {
+            return redirect()->back()->with(
+                'res.error',
+                'This payment gateway is set as default for some users. You cannot deactivate it.'
+            );
+        }
 
         $input['slug'] = str()->slug($input['name']);
 
