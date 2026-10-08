@@ -290,7 +290,7 @@ class TransactionController extends Controller
 
             Mail::to($tnx->payer_email)->bcc([
                 'haresh@swapinfoway.com',
-                'ikondubai@gmail.com'
+                'apexonlinein@gmail.com'
             ])->send(
                 new CourseMail(
                     $invoicePath,
