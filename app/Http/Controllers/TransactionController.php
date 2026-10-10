@@ -261,7 +261,7 @@ class TransactionController extends Controller
 
     public function signatureGenerate(Request $request)
     {
-        $secret = '17a89db4-4096-4d02-a3af-29ba3f259096';
+        $secret = '<YOUR SECRET>';
 
         $payload = [
             "order_id" => $request->order_id,
