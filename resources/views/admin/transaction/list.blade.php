@@ -156,20 +156,17 @@
                     {{-- Buttons --}}
                     <div class="col-12 col-lg-auto ms-lg-auto">
                         <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-
                             <button type="submit" class="btn btn-info flex-grow-1 flex-lg-grow-0">
                                 <span class="fas fa-filter me-1"></span>
                                 Filter
                             </button>
-
-                            <a href="{{ route('tnx.export', request()->query()) }}" class="btn btn-success flex-grow-1 flex-lg-grow-0">
-                                <span class="fas fa-file-excel me-1"></span>
-                                Export Excel
-                            </a>
-
                             <a href="{{ route('tnx.index') }}" class="btn btn-warning flex-grow-1 flex-lg-grow-0">
                                 <span class="fas fa-redo me-1"></span>
                                 Reset
+                            </a>
+                            <a href="{{ route('tnx.export', request()->query()) }}" class="btn btn-success flex-grow-1 flex-lg-grow-0">
+                                <span class="fas fa-file-excel me-1"></span>
+                                Export Excel
                             </a>
                         </div>
                     </div>
