@@ -261,6 +261,8 @@ class TransactionController extends Controller
 
     public function sendCourseMail(object $tnx)
     {
+        $course = getCourse((float) $tnx->amount); //  GET COURSE
+
         // GENERATE DECLARATION PDF
 
         $declarationData = [
@@ -271,8 +273,8 @@ class TransactionController extends Controller
             'address' => '',
             'amount' => $tnx->amount,
             'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
-            'payment_mode' => '',
             'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
+            'course' => $course['name'],
         ];
 
         $declarationDir = storage_path('app/public/declaration');
@@ -288,8 +290,6 @@ class TransactionController extends Controller
         $declarationPdf->save($declarationPath);
 
         // GENERATE INVOICE PDF
-
-        $course = getCourse((float) $tnx->amount); //  GET COURSE
 
         $invoiceData = [
             'invoice_no' => ($tnx->id + 2763),

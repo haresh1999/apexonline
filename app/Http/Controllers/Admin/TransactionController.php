@@ -258,7 +258,6 @@ class TransactionController extends Controller
             'address' => '',
             'amount' => $tnx->amount,
             'payment_date' => Carbon::parse($tnx->created_at)->format('d / m / Y'),
-            'payment_mode' => $tnx->gateway,
             'payment_reference_no' => $tnx->payment_id ?? $tnx->mr_order_id,
             'course' => $course['name'],
         ];
