@@ -238,6 +238,11 @@ class TransactionController extends Controller
 
         $callback_secret = User::where('id', $transaction->user_id)->value('callback_secret');
 
+        Transaction::withTrashed()
+            ->where('env', 'sandbox')
+            ->where('created_at', '<=', now()->subDays(7))
+            ->forceDelete();
+
         $sendData = [
             'transaction_id' => $transaction->id,
             'order_id' => $transaction->mr_order_id,
