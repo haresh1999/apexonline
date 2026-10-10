@@ -129,7 +129,7 @@ class TransactionController extends Controller
         return redirect()->to($url);
     }
 
-    public function webhook($url, $secret, $data)
+    public function webhook(string $url, string $secret, array $data)
     {
         ksort($data);
 
@@ -144,9 +144,11 @@ class TransactionController extends Controller
 
         $tnx = Transaction::where('id', $data['transaction_id'])->first();
 
-        if ($tnx->status == 'completed') {
+        if ($tnx->status == 'completed' && ! in_array($tnx->user->client_id, ['apexonline', 'apexonline_web'])) {
 
-            $this->sendCourseMail($tnx);
+            $pdfPath = $this->sendCourseMail($tnx);
+
+            $this->eSingRequest($tnx, $pdfPath);
         }
 
         return WebhookLog::create([
@@ -358,123 +360,121 @@ class TransactionController extends Controller
             )
         );
 
-        return;
+        return $declarationPath;
     }
 
-    // public function eSingRequest($tnx, $pdfPath)
-    // {
-    //     $response = Http::withHeaders([
-    //         'X-API-KEY' => '2CZkOiKoWZt27ssskNZmmKUvIscxtctK',
-    //         'X-API-APP-ID' => '18166fa6-1c0d-4925-a16e-330fdef087ca'
-    //     ])
-    //         ->post('https://uat-ext.signcare.io/api/v1/eSign/request', [
-    //             'referenceId' => $tnx->reference_id,
-    //             // 'referenceId' => \Str::random(10),
-    //             'skipVerificationCode' => false,
-    //             'documentInfo' => [
-    //                 'name' => 'service-completion.pdf',
-    //                 'content' => pdfToBase64($pdfPath),
-    //             ],
-    //             'supportingDocuments' => [],
-    //             'sequentialSigning' => true,
-    //             'userInfo' => [
-    //                 [
-    //                     'name' => $tnx->payer_name,
-    //                     'emailId' => $tnx->payer_email,
-    //                     // 'emailId' => 'haresh@swapinfoway.com',
-    //                     'userType' => 'Signer',
-    //                     'signatureType' => 'Electronic',
+    public function eSingRequest(object $tnx, string $pdfPath)
+    {
+        $response = Http::withHeaders([
+            'X-API-KEY' => '1jtJ9sflpNMGjaaL0GoUW8MTyCV2jDP4',
+            'X-API-APP-ID' => '2f3e7e25-1a4d-415b-a64e-448912610306'
+        ])
+            ->post('https://ext.signcare.io/api/v1/eSign/request', [
+                'referenceId' => $tnx->reference_id,
+                'skipVerificationCode' => false,
+                'documentInfo' => [
+                    'name' => 'service-completion.pdf',
+                    'content' => pdfToBase64($pdfPath),
+                ],
+                'supportingDocuments' => [],
+                'sequentialSigning' => true,
+                'userInfo' => [
+                    [
+                        'name' => $tnx->payer_name,
+                        'emailId' => $tnx->payer_email,
+                        'userType' => 'Signer',
+                        'signatureType' => 'Electronic',
 
-    //                     'electronicOptions' => [
-    //                         'canDraw' => true,
-    //                         'canType' => false,
-    //                         'canUpload' => false,
-    //                         'captureGPSLocation' => false,
-    //                         'capturePhoto' => false,
-    //                     ],
+                        'electronicOptions' => [
+                            'canDraw' => true,
+                            'canType' => false,
+                            'canUpload' => false,
+                            'captureGPSLocation' => false,
+                            'capturePhoto' => false,
+                        ],
 
-    //                     'aadhaarInfo' => null,
-    //                     'aadhaarOptions' => null,
-    //                     'signatureExpiryDate' => null,
-    //                     'emailReminderDays' => null,
+                        'aadhaarInfo' => null,
+                        'aadhaarOptions' => null,
+                        'signatureExpiryDate' => null,
+                        'emailReminderDays' => null,
 
-    //                     'mobileNo' => '',
-    //                     'order' => 1,
-    //                     'userReferenceId' => $tnx->mr_order_id,
-    //                     'signAppearance' => 5,
-    //                     'pageToBeSigned' => 1,
-    //                     'pageNumber' => null,
+                        'mobileNo' => '',
+                        'order' => 1,
+                        'userReferenceId' => $tnx->mr_order_id,
+                        'signAppearance' => 5,
+                        'pageToBeSigned' => 1,
+                        'pageNumber' => null,
 
-    //                     'pageCoordinates' => [
-    //                         [
-    //                             'pageNumber' => 1,
-    //                             'pageSize' => 841.89,
-    //                             'pageWidth' => 595.28,
+                        'pageCoordinates' => [
+                            [
+                                'pageNumber' => 1,
+                                'pageSize' => 841.89,
+                                'pageWidth' => 595.28,
 
-    //                             'pdfCoordinates' => [
-    //                                 [
-    //                                     'x1' => 45.76,
-    //                                     'y1' => 639.19,
-    //                                     'x2' => 120,
-    //                                     'y2' => 40,
-    //                                 ],
-    //                             ],
-    //                         ],
-    //                     ],
-    //                 ],
-    //             ],
+                                'pdfCoordinates' => [
+                                    [
+                                        'x1' => 45.76,
+                                        'y1' => 639.19,
+                                        'x2' => 120,
+                                        'y2' => 40,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
 
-    //             'descriptionForInvitee' => 'eSign By APEX',
-    //             'finalCopyRecipientsEmailId' => '',
-    //             'responseUrl' => route('esign.wh', $tnx->reference_id),
-    //             'returnUrl' => route('esign.agree', $tnx->reference_id),
-    //             'uiMode' => false,
-    //         ]);
+                'descriptionForInvitee' => 'eSign By APEX',
+                'finalCopyRecipientsEmailId' => '',
+                'responseUrl' => route('esign.wh', $tnx->reference_id),
+                'returnUrl' => route('esign.agree', $tnx->reference_id),
+                'uiMode' => false,
+            ]);
 
-    //     if ($response->successful()) {
+        if ($response->successful()) {
 
-    //         $result = $response->json();
+            $result = $response->json();
 
-    //         return $tnx->update([
-    //             'esign_id' => $result['data']['documentId'] ?? null,
-    //             'esign_status' => 'pending'
-    //         ]);
-    //     }
+            return $tnx->update([
+                'esign_id' => $result['data']['documentId'] ?? null,
+                'esign_status' => 'pending'
+            ]);
+        }
 
-    //     return $tnx->update([
-    //         'esign_status' => 'try'
-    //     ]);
-    // }
+        return $tnx->update([
+            'esign_status' => 'try'
+        ]);
+    }
 
-    // public function esignWebhook(Request $request, string $refId)
-    // {
-    //     if ($request->DocumentStatus == 'Signed') {
+    public function esignWebhook(Request $request, string $refId)
+    {
+        if ($request->DocumentStatus == 'Signed') {
 
-    //         try {
+            try {
 
-    //             base64ToPdf($request->Content, storage_path('app/public/' . $refId . '.pdf'));
+                base64ToPdf($request->Content, storage_path('app/public/' . $refId . '.pdf'));
 
-    //             Transaction::where('reference_id', $refId)->update(['esign_status' => 'completed']);
-    //         } catch (\Throwable $th) {
+                Transaction::where('reference_id', $refId)->update(['esign_status' => 'completed']);
+            } catch (\Throwable $th) {
 
-    //             logger($th->getMessage());
+                logger($th->getMessage());
 
-    //             return 'failed';
-    //         }
-    //     }
+                return 'failed';
+            }
+        }
 
-    //     return 'ok';
-    // }
+        return 'ok';
+    }
 
-    // public function esignAgree(string $refId)
-    // {
-    //     $tnx = Transaction::where('reference_id', $refId)->firstOrFail();
+    public function esignAgree(string $refId)
+    {
+        $tnx = Transaction::where('reference_id', $refId)->firstOrFail();
 
-    //     $filePath = storage_path('app/public/' . $tnx->reference_id . '.pdf');
+        $filePath = storage_path('app/public/' . $tnx->reference_id . '.pdf');
 
-    //     return response()->file($filePath, [
-    //         'Content-Type' => 'application/pdf',
-    //         'Content-Disposition' => 'inline; filename="apexonline-service-completion.pdf"',
-    //     ]);
-    // }
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="apexonline-service-completion.pdf"',
+        ]);
+    }
 }
