@@ -17,7 +17,7 @@ class SignatureMiddleware
     {
         $clientId = config('services.user.client_id');
 
-        if (! in_array($clientId, ['apexonline', 'oneroyal'])) {
+        if (! in_array($clientId, ['apexonline', 'oneroyal', 'apexonline_web'])) {
 
             $secret = config('services.user.callback_secret');
 

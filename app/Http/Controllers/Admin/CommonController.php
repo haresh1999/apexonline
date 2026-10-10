@@ -17,8 +17,13 @@ class CommonController extends Controller
         return view('admin.errors.500');
     }
 
-    public function callback()
+    public function oneroyalCallback()
     {
-        return response()->json('success');
+        return response()->json(date('Y-m-d H:i:s'));
+    }
+
+    public function apexonlineCallback()
+    {
+        return response()->json(date('Y-m-d H:i:s'));
     }
 }
