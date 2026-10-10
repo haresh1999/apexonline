@@ -191,7 +191,7 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::where('id', $id)->firstOrFail();
 
-        $fileName = ids($tnx->reference_id) . '.pdf';
+        $fileName = $tnx->reference_id . '.pdf';
         $path = public_path('storage/invoice/' . $fileName);
 
         // If invoice already exists
@@ -237,7 +237,7 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::findOrFail($tid);
 
-        $fileName = ids($tnx->reference_id) . '.pdf';
+        $fileName = $tnx->reference_id . '.pdf';
         $path = public_path('storage/declaration/' . $fileName);
 
         // If declaration already exists, open it directly
