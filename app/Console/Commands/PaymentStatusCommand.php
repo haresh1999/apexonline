@@ -51,7 +51,7 @@ class PaymentStatusCommand extends Command
 
             $tnxController = new TransactionController();
 
-            $tnxController->webhook($tnx->callback_url, $tnx->callback_secret, $sendData);
+            $tnxController->webhook($tnx->callback_url, $tnx->user->callback_secret, $sendData);
 
             $tnx->update(['status' => 'failed']);
         }
