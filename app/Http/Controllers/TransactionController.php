@@ -452,7 +452,7 @@ class TransactionController extends Controller
 
             try {
 
-                base64ToPdf($request->Content, storage_path('app/public/' . $refId . '.pdf'));
+                base64ToPdf($request->Content, storage_path('app/public/declaration/' . $refId . '.pdf'));
 
                 Transaction::where('reference_id', $refId)->update(['esign_status' => 'completed']);
             } catch (\Throwable $th) {
@@ -470,7 +470,7 @@ class TransactionController extends Controller
     {
         $tnx = Transaction::where('reference_id', $refId)->firstOrFail();
 
-        $filePath = storage_path('app/public/' . $tnx->reference_id . '.pdf');
+        $filePath = public_path('storage/declaration/' . $tnx->reference_id . '.pdf');
 
         return response()->file($filePath, [
             'Content-Type' => 'application/pdf',
