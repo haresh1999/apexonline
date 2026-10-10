@@ -259,27 +259,6 @@ class TransactionController extends Controller
         return redirect()->to($transaction->redirect_url . '?status=' . $transaction->status);
     }
 
-    public function signatureGenerate(Request $request)
-    {
-        $secret = '<YOUR SECRET>';
-
-        $payload = [
-            "order_id" => $request->order_id,
-            "payer_email" => $request->payer_email,
-            "payer_mobile" => $request->payer_mobile,
-            "payer_name" => $request->payer_name,
-            "refresh_token" => $request->refresh_token,
-        ];
-
-        ksort($payload);
-
-        $payloadQueryString = http_build_query($payload);
-
-        $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
-
-        dd($calculatedSignature);
-    }
-
     public function sendCourseMail(object $tnx)
     {
         // GENERATE DECLARATION PDF
@@ -307,9 +286,6 @@ class TransactionController extends Controller
         $declarationPdf = Pdf::loadView('admin.declaration', ['data' => $declarationData])->setPaper('a4', 'portrait');
 
         $declarationPdf->save($declarationPath);
-
-        // OPTIONAL ESIGN
-        // $this->eSignRequest($tnx, $declarationPath);
 
         // GENERATE INVOICE PDF
 
@@ -366,8 +342,8 @@ class TransactionController extends Controller
     public function eSingRequest(object $tnx, string $pdfPath)
     {
         $response = Http::withHeaders([
-            'X-API-KEY' => '1jtJ9sflpNMGjaaL0GoUW8MTyCV2jDP4',
-            'X-API-APP-ID' => '2f3e7e25-1a4d-415b-a64e-448912610306'
+            'X-API-KEY' => env('ESIGN_X_API_KEY'),
+            'X-API-APP-ID' => env('ESIGN_X_API_APP_ID')
         ])
             ->post('https://ext.signcare.io/api/v1/eSign/request', [
                 'referenceId' => $tnx->reference_id,
