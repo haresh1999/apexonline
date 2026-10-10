@@ -249,7 +249,7 @@
                 <span class="field amount-field">
                     {{ $data['amount'] ?? '' }}
                 </span>
-                to <span class="bold">APEXONLINE</span>
+                to <span class="bold">APEX ONLINE</span>
             </p>
 
             <p>
@@ -257,14 +257,7 @@
                 <span class="field payment-date-field">
                     {{ $data['payment_date'] ?? '' }}
                 </span>,
-                through (UPI/NETBANKING)
-                <span class="field payment-mode-field">
-                    {{ $data['payment_mode'] ?? '' }}
-                </span>
-            </p>
-
-            <p>
-                (Payment Gateway / Mode of Payment), bearing Payment Reference No.
+                Bearing Payment Reference No.
                 <span class="field payment-reference-field">
                     {{ $data['payment_reference_no'] ?? '' }}
                 </span>.
@@ -272,12 +265,9 @@
         </div>
 
         {{-- SERVICE CONFIRMATION --}}
-        <p class="confirmation">
-            I hereby confirm that the
-            <span class="bold">
-                service offered by APEXONLINE in connection with the above-mentioned
-                transaction has been completed and delivered to me to my satisfaction.
-            </span>
+        <p class="declaration">
+            I hereby confirm that the course <b>"{{$data['course']}}"</b> and service offered by <b>APEX ONLINE</b> in connection with the above-
+            mentioned transaction has been completed and delivered to me to my satisfaction.
         </p>
 
         {{-- CONFIRMATION POINTS --}}
@@ -290,12 +280,12 @@
                 I have received and availed the service as agreed.
             </li>
             <li>
-                I am satisfied with the service provided by APEXONLINE.
+                I am satisfied with the service provided by APEX ONLINE.
             </li>
             <li>
                 There are
                 <span class="bold">no pending service obligations</span>
-                from APEXONLINE in relation to the above-mentioned transaction.
+                from APEX ONLINE in relation to the above-mentioned transaction.
             </li>
             <li>
                 I have no complaint regarding the completion or delivery of the
@@ -322,8 +312,9 @@
         <p class="declaration">
             I am making this declaration voluntarily, with full understanding of
             its contents and without any coercion, pressure, threat, undue influence,
-            false promise, or misrepresentation from APEXONLINE or any other person.
+            false promise, or misrepresentation from <b>APEX ONLINE</b> or any other person.
         </p>
+
 
         {{-- BOTTOM DETAILS --}}
         <div class="bottom-section">
