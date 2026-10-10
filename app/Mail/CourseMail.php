@@ -65,9 +65,9 @@ class CourseMail extends Mailable
             Attachment::fromPath($this->coursePath)
                 ->as($this->courseName)
                 ->withMime('application/pdf'),
-            Attachment::fromPath($this->declarationPath)
-                ->as('Declaration')
-                ->withMime('application/pdf'),
+            // Attachment::fromPath($this->declarationPath)
+            //     ->as('Declaration')
+            //     ->withMime('application/pdf'),
         ];
     }
 }
