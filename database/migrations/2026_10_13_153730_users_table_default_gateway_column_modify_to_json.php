@@ -16,7 +16,7 @@ return new class extends Migration
 
         foreach ($row as $value) {
             $data = [];
-            $data[] = 'upi';
+            $data[] = $value->default_gateway;
 
             DB::table('users')->where('id', $value->id)->update(['default_gateway' => json_encode($data)]);
         }
