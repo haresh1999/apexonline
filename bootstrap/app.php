@@ -3,6 +3,7 @@
 use App\Http\Middleware\{
     AuthMiddleware,
     SignatureMiddleware,
+    TnxLimitMiddleware,
     TokenMiddleware,
 };
 
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => AuthMiddleware::class,
             'signature' => SignatureMiddleware::class,
             'token' => TokenMiddleware::class,
+            'tnx.limit' => TnxLimitMiddleware::class,
         ])->validateCsrfTokens(except: [
             'token',
             'sandbox/token',
@@ -48,7 +50,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'upi/callback/*',
             'upi/sandbox/callback/*',
 
-            'oneroyal/callback'
+            'oneroyal/callback',
+            'apexonline/callback'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

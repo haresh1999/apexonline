@@ -43,7 +43,7 @@ class TransactionController extends Controller
         $validator = Validator::make($request->all(), [
             'order_id' => [
                 'required',
-                Rule::unique('transactions', 'order_id')->where(function ($query) use ($user, $env) {
+                Rule::unique('transactions', 'mr_order_id')->where(function ($query) use ($user, $env) {
                     return $query->where('user_id', $user['id'])
                         ->where('env', $env);
                 }),

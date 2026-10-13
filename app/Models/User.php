@@ -22,7 +22,9 @@ class User extends Authenticatable
         'default_gateway',
         'callback_secret',
         'password',
-        'status'
+        'status',
+        'is_limit',
+        'limit_count'
     ];
 
     protected $hidden = [

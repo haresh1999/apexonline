@@ -30,14 +30,16 @@ class CompanyRequest extends FormRequest
                 'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
                 'client_id' => ['required', Rule::unique('users', 'client_id')->ignore($this->id)],
                 'client_secret' => ['required', 'uuid', Rule::unique('users', 'client_secret')->ignore($this->id)],
-                'sbx_client_id' => ['nullable', Rule::unique('users', 'sbx_client_id')->ignore($this->id)],
-                'sbx_client_secret' => ['nullable', 'uuid', Rule::unique('users', 'sbx_client_secret')->ignore($this->id)],
+                'sbx_client_id' => ['required', Rule::unique('users', 'sbx_client_id')->ignore($this->id)],
+                'sbx_client_secret' => ['required', 'uuid', Rule::unique('users', 'sbx_client_secret')->ignore($this->id)],
                 'whitelist_ip' => ['nullable', 'string'],
                 'default_gateway' => ['nullable', 'array', 'min:1'],
                 'default_gateway.*' => ['nullable', 'string'],
                 'callback_secret' => ['required', 'uuid', Rule::unique('users', 'callback_secret')->ignore($this->id)],
                 'password' => ['nullable', 'string', 'min:8'],
                 'status' => ['required', 'in:0,1'],
+                'is_limit' => ['required', 'in:0,1'],
+                'limit_count' => ['nullable', 'required_if:is_limit,1', 'integer', 'min:1'],
             ];
         }
 
@@ -47,14 +49,16 @@ class CompanyRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'client_id' => ['required', 'unique:users,client_id'],
             'client_secret' => ['required', 'uuid', 'unique:users,client_secret'],
-            'sbx_client_id' => ['nullable', 'unique:users,sbx_client_id',],
-            'sbx_client_secret' => ['nullable', 'uuid', 'unique:users,sbx_client_secret'],
+            'sbx_client_id' => ['required', 'unique:users,sbx_client_id',],
+            'sbx_client_secret' => ['required', 'uuid', 'unique:users,sbx_client_secret'],
             'whitelist_ip' => ['nullable', 'string'],
             'default_gateway' => ['nullable', 'array', 'min:1'],
             'default_gateway.*' => ['nullable', 'string'],
             'callback_secret' => ['required', 'uuid', 'unique:users,callback_secret'],
             'password' => ['required', 'string', 'min:8'],
             'status' => ['required', 'in:0,1'],
+            'is_limit' => ['required', 'in:0,1'],
+            'limit_count' => ['nullable', 'required_if:is_limit,1', 'integer', 'min:1'],
         ];
     }
 }

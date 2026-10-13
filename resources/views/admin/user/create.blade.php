@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('company.store') }}" method="post">
+                    <form action="{{ route('company.store') }}" method="post" autocomplete="off">
                         @csrf
                         <div class="row mb-3">
                             <div class="col-md-12">
@@ -135,40 +135,52 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="ps-0 form-label text-body required" for="client_id">Client ID</label>
                                 <input class="form-control no-arrow" type="text" name="client_id" id="client_id" value="{{ old('client_id') }}" />
                                 @error('client_id')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="ps-0 form-label text-body required" for="client_secret">Client Secret</label>
                                 <input class="form-control no-arrow" type="text" name="client_secret" id="client_secret" value="{{ old('client_secret',str()->uuid()) }}" readonly />
                                 @error('client_secret')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
+
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="ps-0 form-label text-body required" for="sbx_client_id">Sandbox Client ID</label>
                                 <input class="form-control no-arrow" type="text" name="sbx_client_id" id="sbx_client_id" value="{{ old('sbx_client_id') }}" />
                                 @error('sbx_client_id')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label class="ps-0 form-label text-body required" for="sbx_client_secret">Sandbox Client Secret</label>
                                 <input class="form-control no-arrow" type="text" name="sbx_client_secret" id="sbx_client_secret" value="{{ old('sbx_client_secret',str()->uuid()) }}" readonly />
                                 @error('sbx_client_secret')
+                                <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="ps-0 form-label text-body required" for="callback_secret">Callback Secret</label>
+                                <input class="form-control no-arrow" type="text" name="callback_secret" id="callback_secret" value="{{ old('callback_secret',str()->uuid()) }}" readonly />
+                                @error('callback_secret')
+                                <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="ps-0 form-label text-body required" for="password">Password</label>
+                                <input class="form-control no-arrow" type="text" name="password" id="password" value="{{ generateStrongPassword(16) }}" />
+                                @error('password')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
@@ -185,6 +197,33 @@
                         </div>
 
                         <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="required p-0 form-label">Transaction Limit? (Per User Transactions Limit Status):</label>
+                                    <br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" id="yes" type="radio" name="is_limit" value="1" @checked(old('is_limit')==1)>
+                                        <label class="form-check-label" for="yes">Enabled</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" id="disabled" type="radio" name="is_limit" value="0" @checked(old('is_limit')==0)>
+                                        <label class="form-check-label" for="disabled">Disabled</label>
+                                    </div>
+                                    @error('is_limit')
+                                    <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="ps-0 form-label text-body required" for="limit_count">Number Of Transaction Limit</label>
+                                <input class="form-control no-arrow" type="number" name="limit_count" id="limit_count" value="{{ old('limit_count') }}" />
+                                @error('limit_count')
+                                <span class="text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <div class="col-md-12">
                                 <label id="organizerMultiple" class="ps-0 form-label text-body" for="default_gateway">Default Gateway</label>
 
@@ -195,26 +234,6 @@
                                     @endforeach
                                 </select>
                                 @error('default_gateway')
-                                <span class="text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <label class="ps-0 form-label text-body required" for="callback_secret">Callback Secret</label>
-                                <input class="form-control no-arrow" type="text" name="callback_secret" id="callback_secret" value="{{ old('callback_secret',str()->uuid()) }}" readonly />
-                                @error('callback_secret')
-                                <span class="text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <label class="ps-0 form-label text-body required" for="password">Password</label>
-                                <input class="form-control no-arrow" type="text" name="password" id="password" value="{{ generateStrongPassword(16) }}" />
-                                @error('password')
                                 <span class="text-danger">{{$message}}</span>
                                 @enderror
                             </div>
