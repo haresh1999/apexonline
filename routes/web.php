@@ -47,7 +47,6 @@ Route::prefix('sandbox')->group(function () {
     Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth', 'signature']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
     Route::get('generate-sign', [TransactionController::class, 'signatureGenerate']);
-    Route::view('transaction-limit-reached', 'tnx_limit')->name('tnx.limit');
 });
 
 Route::prefix('/')->group(function () {
@@ -56,8 +55,9 @@ Route::prefix('/')->group(function () {
     Route::post('status', [TransactionController::class, 'status'])->middleware(['throttle:600,10', 'auth', 'signature']);
     Route::get('redirect', [TransactionController::class, 'redirect'])->middleware(['throttle:60,1']);
     Route::get('generate-sign', [TransactionController::class, 'signatureGenerate']);
-    Route::view('transaction-limit-reached', 'tnx_limit')->name('tnx.limit');
 });
+
+Route::view('transaction-limit-reached', 'tnx_limit')->name('tnx.limit');
 
 // RAZORPAY
 Route::prefix('razorpay')->group(function () {
