@@ -101,7 +101,13 @@
                             <td class="text-start">{{ $user->email }}</td>
                             <td>{{ $user->earning_count }}</td>
                             <td>{{ number_format($user->earning_sum_amount,2) }}</td>
-                            <td class="text-start">{{ ucfirst($user->default_gateway ?? 'N/A') }}</td>
+                            <td class="text-start" style="max-width: 220px">
+                                @forelse($user->default_gateway ?? [] as $pg)
+                                <span class="badge badge-phoenix badge-phoenix-primary">{{$pg}}</span>
+                                @empty
+                                N/A
+                                @endforelse
+                            </td>
                             <td class="text-start">{{ $user->updated_at }}</td>
                             <td>
                                 @if($user->status == 1)

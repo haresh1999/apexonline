@@ -90,12 +90,11 @@ class GatewayController extends Controller
         }
 
         // Prevent deactivating a gateway that is set as default for users
-        $activeGateway = User::whereRaw(
-            'LOWER(default_gateway) = ?',
-            [strtolower($input['name'])]
-        )->exists();
+        $activeGateway = User::pluck('default_gateway')->whereNotNull()->toArray();
 
-        if ($activeGateway && $input['status'] == 0) {
+        $pgs = array_values(array_unique(array_merge(...$activeGateway)));
+
+        if (in_array(str()->slug($input['name'], '-'), $pgs) && $input['status'] == 0) {
             return redirect()->back()->with(
                 'res.error',
                 'This payment gateway is set as default for some users. You cannot deactivate it.'

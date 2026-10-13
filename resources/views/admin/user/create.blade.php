@@ -3,7 +3,85 @@
 @section('title','Add New Company')
 
 @section('style')
+<link href="{{ asset('admin/vendors/choices/choices.min.css') }}" rel="stylesheet" />
+<style>
+    /* Selected gateway tags */
+    .choices__list--multiple .choices__item--selectable {
+        background-color: #fff3e9 !important;
+        border: 1px solid #f8c59f !important;
+        color: #a85a22 !important;
+        border-radius: 4px !important;
+        padding: 3px 7px !important;
+        font-size: 11px !important;
+    }
 
+    /* Remove (X) button */
+    .choices[data-type*="select-multiple"] .choices__button,
+    .choices__list--multiple .choices__item .choices__button {
+        border-left: 1px solid #f8c59f !important;
+        background-image: none !important;
+        color: #a85a22 !important;
+        opacity: 1 !important;
+        margin-left: 6px !important;
+        padding: 0 0 0 6px !important;
+        width: auto !important;
+        height: auto !important;
+        text-indent: 0 !important;
+        font-size: 0 !important;
+    }
+
+    /* Display a clear X icon */
+    .choices__list--multiple .choices__item .choices__button::after {
+        content: "\00d7";
+        font-size: 16px !important;
+        font-weight: bold;
+        line-height: 1;
+        color: #a85a22 !important;
+    }
+
+    .choices__list--multiple .choices__item .choices__button:hover::after {
+        color: #dc2626 !important;
+    }
+
+    /* Dropdown container */
+    .choices__list--dropdown,
+    .choices__list[aria-expanded] {
+        background: #fff !important;
+        color: #333 !important;
+        border: 1px solid #f8c59f !important;
+    }
+
+    /* Normal options */
+    .choices__list--dropdown .choices__item--choice,
+    .choices__list[aria-expanded] .choices__item--choice {
+        background: #fff !important;
+        color: #333 !important;
+        cursor: pointer !important;
+        padding: 10px 12px !important;
+    }
+
+    /* Hover / keyboard-highlighted option */
+    .choices__list--dropdown .choices__item--choice.is-highlighted,
+    .choices__list[aria-expanded] .choices__item--choice.is-highlighted {
+        background: #fff3e9 !important;
+        color: #a85a22 !important;
+    }
+
+    /* Keep selectable options interactive */
+    .choices__list--dropdown .choices__item--choice[data-selectable],
+    .choices__list[aria-expanded] .choices__item--choice[data-selectable] {
+        cursor: pointer !important;
+        pointer-events: auto !important;
+    }
+
+    /* Disabled options only */
+    .choices__list--dropdown .choices__item--choice.is-disabled,
+    .choices__list[aria-expanded] .choices__item--choice.is-disabled {
+        background: #f8fafc !important;
+        color: #94a3b8 !important;
+        cursor: not-allowed !important;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -108,11 +186,12 @@
 
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                <label class="ps-0 form-label text-body" for="default_gateway">Default Gateway</label>
-                                <select class="form-control" name="default_gateway" id="default_gateway">
-                                    <option value="" selected>Select...</option>
+                                <label id="organizerMultiple" class="ps-0 form-label text-body" for="default_gateway">Default Gateway</label>
+
+                                <select class="form-select" id="organizerMultiple" name="default_gateway[]" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}'>
+                                    <option value="">Select...</option>
                                     @foreach ($gateways as $pg)
-                                    <option @selected(old('default_gateway')==$pg) value="{{$pg}}">{{ucfirst($pg)}}</option>
+                                    <option @selected(in_array(Str::lower($pg,'-'),old('default_gateway',[]))) value="{{Str::lower($pg,'-')}}">{{ucfirst($pg)}}</option>
                                     @endforeach
                                 </select>
                                 @error('default_gateway')
@@ -173,5 +252,5 @@
 @endsection
 
 @section('script')
-
+<script src="{{ asset('admin/vendors/choices/choices.min.js') }}"></script>
 @endsection

@@ -88,7 +88,7 @@ class TransactionController extends Controller
                 $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
             } else {
 
-                $gateway = strtolower($user['default_gateway']);
+                $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
             }
         } else {
 
@@ -98,7 +98,7 @@ class TransactionController extends Controller
 
                 $gateway = $gateways[array_rand($gateways)];
             } else {
-                $gateway = strtolower($user['default_gateway']);
+                $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
             }
         }
 
