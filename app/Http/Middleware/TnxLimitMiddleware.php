@@ -30,10 +30,13 @@ class TnxLimitMiddleware
                 ->count();
 
             if ($alreadyPaid >= $user['limit_count']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You have reached your daily payment limit.'
-                ], 422);
+
+                return redirect()->route('tnx.limit');
+
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'You have reached your daily payment limit.'
+                // ], 422);
             }
         }
 
