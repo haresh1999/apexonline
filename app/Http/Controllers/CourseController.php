@@ -68,7 +68,10 @@ class CourseController extends Controller
 
             $input['pdf_path'] = uploadFile($request->pdf, 'course', $fileName);
 
-            Storage::disk('public')->delete($course->pdf);
+            if ($course->pdf) {
+
+                Storage::disk('public')->delete($course->pdf);
+            }
         }
 
         $course->update($input);
@@ -80,7 +83,10 @@ class CourseController extends Controller
     {
         $course = Course::find($id);
 
-        Storage::disk('public')->delete($course->pdf_path);
+        if ($course->pdf_path) {
+
+            Storage::disk('public')->delete($course->pdf_path);
+        }
 
         $course->delete();
 
