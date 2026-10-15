@@ -97,7 +97,7 @@ class CashfreeSandboxController extends Controller
     public function callback(Request $request)
     {
         $request->validate([
-            'ref_id' => 'required',
+            'reference_id' => 'required',
             'order_id' => 'required'
         ]);
 
