@@ -41,19 +41,19 @@ class PdfController extends Controller
             'path' => $pdf,
         ]);
 
-        $emails = Transaction::where('env', 'production')
-            ->where('status', 'completed')
-            ->where('created_at', '<', $row->created_at)
-            ->whereNotNull('email')
-            ->where('email', '!=', '')
-            ->distinct()
-            ->pluck('email');
+        // $emails = Transaction::where('env', 'production')
+        //     ->where('status', 'completed')
+        //     ->where('created_at', '<', $row->created_at)
+        //     ->whereNotNull('email')
+        //     ->where('email', '!=', '')
+        //     ->distinct()
+        //     ->pluck('email');
 
-        foreach ($emails as $email) {
-            Mail::to($email)->queue(
-                new PdfMail($pdf, $request->name)
-            );
-        }
+        // foreach ($emails as $email) {
+        //     Mail::to($email)->queue(
+        //         new PdfMail($pdf, $request->name)
+        //     );
+        // }
 
         return redirect()
             ->route('pdf.index')
