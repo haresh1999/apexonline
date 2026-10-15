@@ -243,7 +243,7 @@
                         <a class="nav-link label-1 {{ navbar(['course','course/create','course/*/edit']) }}" href="{{ route('course.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
                             <div class="d-flex align-items-center">
                                 <span class="nav-link-icon">
-                                    <span data-feather="file-text"></span>
+                                    <span data-feather="file"></span>
                                 </span>
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-text">Course</span>
@@ -251,8 +251,22 @@
                             </div>
                         </a>
                     </div>
+
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar(['pdf','pdf/create']) }}" href="{{ route('pdf.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="file-text"></span>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-text">Daily Signals</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </li>
                 @endif
+
             </ul>
         </div>
     </div>

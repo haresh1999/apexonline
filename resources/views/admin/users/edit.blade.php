@@ -14,8 +14,6 @@
         <li class="breadcrumb-item active">Edit</li>
     </ol>
 </nav>
-<h3 class="mb-2 lh-sm">Edit User</h3>
-<p class="text-body-tertiary lead mb-2">Modify user info.</p>
 <div class="row g-4">
     <div class="col-12 col-xl-6 order-1 order-xl-0">
         <div class="mb-0">

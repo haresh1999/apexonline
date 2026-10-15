@@ -22,7 +22,6 @@
     </ol>
 </nav>
 <h2 class="mb-2 lh-sm">Sales Details</h2>
-<p class="text-body-tertiary lead mb-2">View details of the selected sale.</p>
 <div class="row g-4">
     <div class="col-12 col-xl-6 offset-3 order-1 order-xl-0">
         <div class="mb-0">

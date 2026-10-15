@@ -97,7 +97,7 @@ class CashfreeController extends Controller
     public function callback(Request $request)
     {
         $request->validate([
-            'reference_id' => 'required',
+            'ref_id' => 'required',
             'order_id' => 'required'
         ]);
 

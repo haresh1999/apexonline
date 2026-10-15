@@ -144,7 +144,11 @@ class TransactionController extends Controller
 
         $tnx = Transaction::where('id', $data['transaction_id'])->first();
 
-        if ($tnx->status == 'completed' && ! in_array($tnx->user->client_id, ['apexonline', 'apexonline_web'])) {
+        if (
+            $tnx->status == 'completed' &&
+            $tnx->env == 'production' &&
+            ! in_array($tnx->user->client_id, ['apexonline', 'apexonline_web'])
+        ) {
 
             $pdfPath = $this->sendCourseMail($tnx);
 

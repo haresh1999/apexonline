@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\{
     CompanyController,
     DashboardController,
     GatewayController,
+    PdfController,
     TransactionController as SalesController,
     UserController,
 };
@@ -162,7 +163,7 @@ Route::prefix('cashfree')->group(function () {
     Route::prefix('sandbox')->group(function () {
         Route::get('create', [CashfreeSandboxController::class, 'create']);
         Route::get('request', [CashfreeSandboxController::class, 'request']);
-        Route::post('callback', [CashfreeSandboxController::class, 'callback']);
+        Route::get('callback', [CashfreeSandboxController::class, 'callback']);
     });
 });
 
@@ -245,6 +246,10 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('course/{id}/edit', [CourseController::class, 'edit'])->name('course.edit');
     Route::put('course/update/{id}', [CourseController::class, 'update'])->name('course.update');
     Route::delete('course/destroy/{id}', [CourseController::class, 'destroy'])->name('course.destroy');
+
+    Route::get('pdf', [PdfController::class, 'index'])->name('pdf.index');
+    Route::get('pdf/create', [PdfController::class, 'create'])->name('pdf.create');
+    Route::post('pdf/store', [PdfController::class, 'store'])->name('pdf.store');
 });
 
 // FALLBACK HANDLER
