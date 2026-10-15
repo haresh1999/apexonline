@@ -26,10 +26,10 @@ class PdfMail extends Mailable
         );
     }
 
-    public function content(): Content
+    public function build()
     {
-        return new Content(
-            html: '<h2>' . e($this->name) . '</h2>',
+        return $this->html(
+            '<h2>' . e($this->name) . '</h2>'
         );
     }
 
