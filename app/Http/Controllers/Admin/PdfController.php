@@ -41,19 +41,21 @@ class PdfController extends Controller
             'path' => $pdf,
         ]);
 
-        // $emails = Transaction::where('env', 'production')
-        //     ->where('status', 'completed')
-        //     ->where('created_at', '<', $row->created_at)
-        //     ->whereNotNull('email')
-        //     ->where('email', '!=', '')
+        // $emails = Transaction::where('created_at', '<', $row->created_at)
+        //     ->whereNotNull('payer_email')
         //     ->distinct()
-        //     ->pluck('email');
+        //     ->pluck('payer_email')
+        //     ->toArray();
 
-        // foreach ($emails as $email) {
-        //     Mail::to($email)->queue(
-        //         new PdfMail($pdf, $request->name)
-        //     );
-        // }
+        $emails = [
+            'haresh@swapinfoway.com',
+            'hareshc1999@gmail.com',
+        ];
+
+        if (!empty($emails)) {
+
+            Mail::to($emails)->send(new PdfMail(public_path($pdf), $row->name));
+        }
 
         return redirect()
             ->route('pdf.index')

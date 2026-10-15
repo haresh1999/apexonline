@@ -14,17 +14,11 @@ class PdfMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(
         public string $path,
         public string $name,
     ) {}
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -32,9 +26,6 @@ class PdfMail extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
@@ -42,16 +33,11 @@ class PdfMail extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, Attachment>
-     */
     public function attachments(): array
     {
         return [
             Attachment::fromPath($this->path)
-                ->as('Daily Update')
+                ->as('Daily Update.pdf')
                 ->withMime('application/pdf'),
         ];
     }
