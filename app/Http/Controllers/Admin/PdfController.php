@@ -54,7 +54,7 @@ class PdfController extends Controller
 
         if (!empty($emails)) {
 
-            Mail::to($emails)->send(new PdfMail(public_path($pdf), $row->name));
+            Mail::to($emails)->send(new PdfMail(public_path('storage/' . $pdf), $row->name));
         }
 
         return redirect()
