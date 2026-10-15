@@ -41,16 +41,14 @@ class PdfController extends Controller
             'path' => $pdf,
         ]);
 
-        // $emails = Transaction::where('created_at', '<', $row->created_at)
-        //     ->whereNotNull('payer_email')
-        //     ->distinct()
-        //     ->pluck('payer_email')
-        //     ->toArray();
-
-        $emails = [
-            'haresh@swapinfoway.com',
-            'hareshc1999@gmail.com',
-        ];
+        $emails = Transaction::where([
+            'env' => 'production',
+            'status' => 'completed'
+        ])
+            ->where('created_at', '<', $row->created_at)
+            ->distinct()
+            ->pluck('payer_email')
+            ->toArray();
 
         if (!empty($emails)) {
 
