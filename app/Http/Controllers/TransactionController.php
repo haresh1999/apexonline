@@ -453,6 +453,8 @@ class TransactionController extends Controller
 
     public function esignAgree(string $refId)
     {
+        sleep(5);
+
         $tnx = Transaction::where('reference_id', $refId)->firstOrFail();
 
         $filePath = public_path('storage/declaration/' . $tnx->reference_id . '.pdf');
