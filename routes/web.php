@@ -163,7 +163,7 @@ Route::prefix('cashfree')->group(function () {
     Route::prefix('sandbox')->group(function () {
         Route::get('create', [CashfreeSandboxController::class, 'create']);
         Route::get('request', [CashfreeSandboxController::class, 'request']);
-        Route::get('callback', [CashfreeSandboxController::class, 'callback']);
+        Route::post('callback', [CashfreeSandboxController::class, 'callback']);
     });
 });
 
