@@ -252,7 +252,7 @@
                         </a>
                     </div>
 
-                    <div class="nav-item-wrapper">
+                    {{-- <div class="nav-item-wrapper">
                         <a class="nav-link label-1 {{ navbar(['pdf','pdf/create']) }}" href="{{ route('pdf.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
                             <div class="d-flex align-items-center">
                                 <span class="nav-link-icon">
@@ -263,7 +263,7 @@
                                 </div>
                             </div>
                         </a>
-                    </div>
+                    </div> --}}
                 </li>
                 @endif
 
