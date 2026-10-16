@@ -7,6 +7,7 @@ use App\Mail\PdfMail;
 use App\Models\Pdf;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
 class PdfController extends Controller
@@ -50,9 +51,14 @@ class PdfController extends Controller
             ->pluck('payer_email')
             ->toArray();
 
-        if (!empty($emails)) {
+        foreach ($emails as $email) {
 
-            Mail::to($emails)->send(new PdfMail(public_path('storage/' . $pdf), $row->name));
+            Mail::to($email)->send(
+                new PdfMail(
+                    public_path('storage/' . $pdf),
+                    $row->name
+                )
+            );
         }
 
         return redirect()
