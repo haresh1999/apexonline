@@ -11,6 +11,7 @@ use App\Http\Controllers\{
     HdfcSandboxController,
     InstaMojoController,
     InstaMojoSandboxController,
+    PaisaPayController,
     PhonepeController,
     PhonepeSandboxController,
     RazorpayController,
@@ -251,6 +252,8 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('pdf/create', [PdfController::class, 'create'])->name('pdf.create');
     Route::post('pdf/store', [PdfController::class, 'store'])->name('pdf.store');
 });
+
+Route::get('create', [PaisaPayController::class, 'create']);
 
 // FALLBACK HANDLER
 Route::fallback([CommonController::class, 'pageNotFound']);
