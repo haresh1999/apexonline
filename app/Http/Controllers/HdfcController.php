@@ -96,8 +96,6 @@ class HdfcController extends Controller
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
-        logger($order);
-
         $transaction->update([
             'status' => $paymentStatus,
             'payment_response' => json_encode($order),
