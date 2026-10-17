@@ -78,12 +78,10 @@ class HdfcSandboxController extends Controller
             $paymentStatus = 'failed';
         }
 
-        $paymentId = $order->txn_id ?? $order->payment_gateway_response->txn_id ?? $order->payment_gateway_responses[0]->txn_id ?? null;
-
         $transaction->update([
             'status' => $paymentStatus,
             'payment_response' => json_encode($order),
-            'payment_id' => $paymentId,
+            'payment_id' => $order['txn_id'],
         ]);
 
         return redirect()->to('sandbox/redirect?reference_id=' . $transaction->reference_id);

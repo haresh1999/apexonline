@@ -33,7 +33,7 @@ class HdfcController extends Controller
             'customer_email' => $transaction->payer_email,
             'customer_phone' => $transaction->payer_mobile,
             'return_url'     => url('hdfc/callback'),
-            'description'    => 'WOOCOMMERCE ORDER PAYMENT OF ORDER ID ' . $transaction->orderId,
+            'description'    => 'WOOCOMMERCE ORDER PAYMENT OF ORDER ID ' . $transaction->order_id,
             'first_name'     => $transaction->payer_name,
         ]);
 
@@ -99,7 +99,7 @@ class HdfcController extends Controller
         $transaction->update([
             'status' => $paymentStatus,
             'payment_response' => json_encode($order),
-            'payment_id' => $order->txn_id,
+            'payment_id' => $order['txn_id'],
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
