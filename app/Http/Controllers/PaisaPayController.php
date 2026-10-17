@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class PaisaPayController extends Controller
 {
-    public function create()
+    public function request()
     {
         // Configure your API details here
         $API_BASE_URL = "https://pay.paisapay.site"; // Actual API URL
@@ -28,5 +28,10 @@ class PaisaPayController extends Controller
 
         // Generate and output the redirect form
         echo $sdk->createOrderForm($amount, $userPhone, $orderId);
+    }
+
+    public function callback(Request $request)
+    {
+        dd($request->all());
     }
 }
