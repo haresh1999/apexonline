@@ -84,7 +84,7 @@ class CcavenueSandboxController extends Controller
 
         $transaction->update([
             'status' => $paymentStatus,
-            'response' => json_encode($data),
+            'payment_response' => json_encode($data),
             'payment_id' => $data['order_id'] ?? null
         ]);
 

@@ -82,7 +82,7 @@ class HdfcSandboxController extends Controller
 
         $transaction->update([
             'status' => $paymentStatus,
-            'response' => json_encode($order),
+            'payment_response' => json_encode($order),
             'payment_id' => $paymentId,
         ]);
 

@@ -40,7 +40,7 @@ class HdfcController extends Controller
         if (!$response['success']) {
             return response()->json([
                 'message' => 'Payment session failed',
-                'response' => $response
+                'payment_response' => $response
             ], 500);
         }
 
@@ -49,7 +49,7 @@ class HdfcController extends Controller
         if (!$paymentUrl) {
             return response()->json([
                 'message' => 'Payment URL not found',
-                'response' => $response
+                'payment_response' => $response
             ], 500);
         }
 
@@ -100,7 +100,7 @@ class HdfcController extends Controller
 
         $transaction->update([
             'status' => $paymentStatus,
-            'response' => json_encode($order),
+            'payment_response' => json_encode($order),
             'payment_id' => $paymentId,
         ]);
 
