@@ -22,7 +22,7 @@ class PaisaPayController extends Controller
 
 
         // Payment details
-        $amount = 1;
+        $amount = 100;
         $userPhone = "9106029220";
         $orderId = "MY_ORDER_" . time();
 
