@@ -74,6 +74,10 @@ class HdfcController extends Controller
             return response()->json(['error' => 'Transaction not found'], 404);
         }
 
+        if ($transaction->status == 'completed') {
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        }
+
         $response = $hdfcService->orderStatus($transaction->order_id);
 
         if (!isset($response['data'])) {
@@ -90,10 +94,6 @@ class HdfcController extends Controller
             $paymentStatus = 'pending';
         } else {
             $paymentStatus = 'failed';
-        }
-
-        if ($transaction->status == 'completed') {
-            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $transaction->update([

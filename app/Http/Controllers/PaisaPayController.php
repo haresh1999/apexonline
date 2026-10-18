@@ -3,28 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Classes\PaisaPay;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PaisaPayController extends Controller
 {
-    public function request()
+    public function request(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+                $q->where('status', 'pending')->where('env', 'production');
+            })]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->first());
+        }
+
+        $tnx = Transaction::where('reference_id', $request->reference_id)->first();
+
         // Configure your API details here
-        $API_BASE_URL = "https://pay.paisapay.site"; // Actual API URL
-        $MERCHANT_TOKEN = "2411a9a7-3729-4b37-a1df-e02f7f1de569";
-        $MERCHANT_SECRET = "b5a81b0062684faf5ed18e042ca9069b";
 
         $sdk = new PaisaPay(
-            $API_BASE_URL,
-            $MERCHANT_TOKEN,
-            $MERCHANT_SECRET,
+            env('PP_BASE_URL'),
+            env('PP_MERCHANT_TOKEN'),
+            env('PP_MERCHANT_SECRET'),
         );
 
-
         // Payment details
-        $amount = 100;
-        $userPhone = "9106029220";
-        $orderId = "MY_ORDER_" . time();
+        $amount = $tnx->amount;
+        $userPhone = $tnx->payer_mobile;
+        $orderId = $tnx->order_id;
 
         // Generate and output the redirect form
         echo $sdk->createOrderForm($amount, $userPhone, $orderId);
@@ -32,6 +43,33 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
-        dd($request->all());
+        return;
+        // $transaction = Transaction::where([
+        //     'env' => 'sandbox',
+        //     'gateway' => 'hdfc',
+        //     'order_id' => $data['order_id']
+        // ])->first();
+
+        // if (!$transaction) {
+        //     return response()->json(['error' => 'Transaction not found'], 404);
+        // }
+
+        // if ($transaction->status == 'completed') {
+        //     return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        // }
+
+        // if (!$response['success']) {
+        //     return response()->json('Payment verification failed');
+        // }
+
+        // $order = $response['data'];
+
+        // $transaction->update([
+        //     'status' => '<>',
+        //     'payment_response' => '<>',
+        //     'payment_id' => '<>',
+        // ]);
+
+        // return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
     }
 }

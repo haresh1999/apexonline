@@ -90,6 +90,15 @@ class TransactionController extends Controller
 
                 $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
             }
+
+            if ($gateway == 'paisapay' && $input['amount'] < 100) {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
         } else {
 
             if (is_null($user['default_gateway'])) {
@@ -147,7 +156,8 @@ class TransactionController extends Controller
         if (
             $tnx->status == 'completed' &&
             $tnx->env == 'production' &&
-            ! in_array($tnx->user->client_id, ['apexonline', 'apexonline_web'])
+            ! in_array($tnx->user->client_id, ['apexonline', 'apexonline_web']) &&
+            ! in_array($tnx->gateway, ['paisapay'])
         ) {
 
             $pdfPath = $this->sendCourseMail($tnx);

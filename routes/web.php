@@ -258,8 +258,6 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('pdf/store', [PdfController::class, 'store'])->name('pdf.store');
 });
 
-Route::get('create', [PaisaPayController::class, 'create']);
-
 // FALLBACK HANDLER
 Route::fallback([CommonController::class, 'pageNotFound']);
 Route::get('page-non-found', [CommonController::class, 'pageNotFound'])->name('not.found');
