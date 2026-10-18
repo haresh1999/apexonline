@@ -190,7 +190,7 @@ Route::prefix('upi')->group(function () {
 
 Route::prefix('paisapay')->group(function () {
     Route::get('request', [PaisaPayController::class, 'request']);
-    Route::any('callback/{ref}', [PaisaPayController::class, 'callback']);
+    Route::any('callback', [PaisaPayController::class, 'callback']);
 });
 
 Route::get('login', [LoginController::class, 'login'])->name('login');

@@ -43,6 +43,8 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
+        dd($request->all());
+
         return;
         // $transaction = Transaction::where([
         //     'env' => 'sandbox',
