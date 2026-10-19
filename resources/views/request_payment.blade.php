@@ -444,7 +444,7 @@
 
                     <div class="form-group">
                         <label>Redirect URL</label>
-                        <input type="url" name="redirect_url" value="{{ env('APP_URL') }}/redirect" required>
+                        <input type="url" name="redirect_url" value="{{ env('APP_URL') }}/return" required>
                     </div>
 
                     <button type="submit" class="pay-button">
@@ -508,7 +508,7 @@
 
                     <div class="form-group">
                         <label>Redirect URL</label>
-                        <input type="url" name="redirect_url" value="{{ env('APP_URL') }}/redirect" required>
+                        <input type="url" name="redirect_url" value="{{ env('APP_URL') }}/return" required>
                     </div>
 
                     <button type="submit" class="pay-button">

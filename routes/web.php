@@ -266,5 +266,5 @@ Route::post('oneroyal/callback', [CommonController::class, 'oneroyalCallback']);
 Route::post('apexonline/callback', [CommonController::class, 'apexonlineCallback']);
 
 Route::view('testing', 'request_payment');
-Route::any('redirect', [CommonController::class, 'redirectBack']);
+Route::any('return', [CommonController::class, 'redirectBack']);
 Route::post('callback', [CommonController::class, 'callBack']);
