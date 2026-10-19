@@ -43,35 +43,48 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
-        dd($request->all());
+        $request->validate([
+            'udf1' => 'required'
+        ]);
 
-        return;
-        // $transaction = Transaction::where([
-        //     'env' => 'sandbox',
-        //     'gateway' => 'hdfc',
-        //     'order_id' => $data['order_id']
-        // ])->first();
+        $transaction = Transaction::where([
+            'env' => 'production',
+            'gateway' => 'paisapay',
+            'order_id' => $request->udf1
+        ])->first();
 
-        // if (!$transaction) {
-        //     return response()->json(['error' => 'Transaction not found'], 404);
-        // }
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
 
-        // if ($transaction->status == 'completed') {
-        //     return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
-        // }
+        if ($transaction->status == 'completed') {
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+        }
 
-        // if (!$response['success']) {
-        //     return response()->json('Payment verification failed');
-        // }
+        $secretKey = env('PP_MERCHANT_SECRET');
+        $payload = str_replace(' ', '+', $request->payload); // Ensure Base64 is preserved
+        $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
+        $response = json_decode($decrypted, true);
 
-        // $order = $response['data'];
+        if ($response) {
+            if ($response['status'] === 'SUCCESS') {
 
-        // $transaction->update([
-        //     'status' => '<>',
-        //     'payment_response' => '<>',
-        //     'payment_id' => '<>',
-        // ]);
+                $transaction->update([
+                    'status' => 'completed',
+                    'payment_response' => json_encode($response),
+                    'payment_id' => $response['utr'] ?? null
+                ]);
 
-        // return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+                return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+            }
+        }
+
+        $transaction->update([
+            'status' => 'failed',
+            'payment_response' => json_encode($response),
+            'payment_id' => $response['utr'] ?? null
+        ]);
+
+        return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
     }
 }
