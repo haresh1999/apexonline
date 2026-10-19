@@ -26,4 +26,16 @@ class CommonController extends Controller
     {
         return response()->json(date('Y-m-d H:i:s'));
     }
+
+    public function redirectBack(Request $request)
+    {
+        dd($request->all());
+    }
+
+    public function callBack(Request $request)
+    {
+        file_put_contents(public_path('response.json'), json_encode($request->all()));
+
+        return 'ok';
+    }
 }

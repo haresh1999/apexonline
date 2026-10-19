@@ -262,12 +262,9 @@ Route::middleware('admin.auth')->group(function () {
 Route::fallback([CommonController::class, 'pageNotFound']);
 Route::get('page-non-found', [CommonController::class, 'pageNotFound'])->name('not.found');
 Route::get('internal-server-error', [CommonController::class, 'serverError'])->name('server.error');
-Route::view('test-payment', 'request_payment');
 Route::post('oneroyal/callback', [CommonController::class, 'oneroyalCallback']);
 Route::post('apexonline/callback', [CommonController::class, 'apexonlineCallback']);
-// Route::any('response', function (Request $request) {
-//     dd($request->all());
-// });
-// Route::post('callback', function (Request $request) {
-//     file_put_contents(public_path('response.json'), json_encode($request->all()));
-// });
+
+Route::view('testing', 'request_payment');
+Route::any('redirect', [CommonController::class, 'redirectBack']);
+Route::post('callback', [CommonController::class, 'callBack']);

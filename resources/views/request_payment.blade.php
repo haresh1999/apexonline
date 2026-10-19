@@ -387,29 +387,6 @@
 <body>
     <div class="container">
 
-        <header class="navbar">
-            <div class="brand">
-                <div class="brand-icon">P</div>
-                <div>
-                    <h2>PayFlow</h2>
-                    <p>Payment Management Portal</p>
-                </div>
-            </div>
-
-            <div class="secure-badge">
-                <span>✓</span> Secure Payment
-            </div>
-        </header>
-
-        <section class="hero">
-            <div class="eyebrow">PAYMENT GATEWAY</div>
-            <h1>Manage payments<br><span>with confidence.</span></h1>
-            <p>
-                Create and test payment requests through a clean,
-                secure and streamlined payment interface.
-            </p>
-        </section>
-
         <main class="payment-grid">
 
             <!-- Sandbox Payment -->
@@ -418,24 +395,8 @@
                     <div class="mode-icon">🧪</div>
                     <span class="mode-label">TEST MODE</span>
                 </div>
-
-                <h2 class="card-title">Sandbox Payment</h2>
-                <p class="card-description">
-                    Test your payment integration in the sandbox environment.
-                </p>
-
-                <div class="amount-box">
-                    <div>
-                        <div class="amount-label">Default amount</div>
-                        <div class="amount">₹1.00</div>
-                    </div>
-                    <span>INR</span>
-                </div>
-
                 <form action="{{ url('/sandbox/request') }}" method="post">
                     @csrf
-
-                    <p class="section-label">PAYMENT DETAILS</p>
 
                     <div class="form-group">
                         <label>Refresh Token</label>
@@ -472,28 +433,24 @@
 
                         <div class="form-group">
                             <label>Order ID</label>
-                            <input type="text" name="order_id" value="{{ Str::random(6) }}" required>
+                            <input type="text" name="order_id" value="ORD_{{ time() }}" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Callback URL</label>
-                        <input type="url" name="callback_url" value="https://apexonline.in" required>
+                        <input type="url" name="callback_url" value="{{ env('APP_URL') }}/callback" required>
                     </div>
 
                     <div class="form-group">
                         <label>Redirect URL</label>
-                        <input type="url" name="redirect_url" value="https://apexonline.in" required>
+                        <input type="url" name="redirect_url" value="{{ env('APP_URL') }}/redirect" required>
                     </div>
 
                     <button type="submit" class="pay-button">
                         <span class="button-icon">↗</span>
                         Initiate Test Payment
                     </button>
-
-                    <p class="card-footer">
-                        Sandbox transactions only. No real payment is intended.
-                    </p>
                 </form>
             </section>
 
@@ -503,25 +460,8 @@
                     <div class="mode-icon">💳</div>
                     <span class="mode-label">LIVE MODE</span>
                 </div>
-
-                <h2 class="card-title">Live Payment</h2>
-                <p class="card-description">
-                    Create a real payment request in your production environment.
-                </p>
-
-                <div class="amount-box">
-                    <div>
-                        <div class="amount-label">Default amount</div>
-                        <div class="amount">₹10.00</div>
-                    </div>
-                    <span>INR</span>
-                </div>
-
                 <form action="{{ url('/request') }}" method="post">
                     @csrf
-
-                    <p class="section-label">PAYMENT DETAILS</p>
-
                     <div class="form-group">
                         <label>Refresh Token</label>
                         <input type="text" name="refresh_token" placeholder="Enter refresh token">
@@ -552,43 +492,32 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Amount (INR)</label>
-                            <input type="number" name="amount" value="10" min="1" step="0.01" required>
+                            <input type="number" name="amount" value="1" min="1" step="0.01" required>
                         </div>
 
                         <div class="form-group">
                             <label>Order ID</label>
-                            <input type="text" name="order_id" value="{{ Str::random(6) }}" required>
+                            <input type="text" name="order_id" value="ORD_{{ time() }}" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Callback URL</label>
-                        <input type="url" name="callback_url" value="https://apexonline.in/payment/callback" required>
+                        <input type="url" name="callback_url" value="{{ env('APP_URL') }}/callback" required>
                     </div>
 
                     <div class="form-group">
                         <label>Redirect URL</label>
-                        <input type="url" name="redirect_url" value="https://apexonline.in/payment/response" required>
+                        <input type="url" name="redirect_url" value="{{ env('APP_URL') }}/redirect" required>
                     </div>
 
                     <button type="submit" class="pay-button">
                         <span class="button-icon">↗</span>
                         Initiate Live Payment
                     </button>
-
-                    <p class="card-footer">
-                        Live mode may initiate a real financial transaction.
-                    </p>
                 </form>
             </section>
-
         </main>
-
-        <footer class="footer">
-            <p>Powered by <strong>PayFlow</strong> · Payment Management Portal</p>
-            <p>Keep your payment credentials secure at all times.</p>
-        </footer>
-
     </div>
 </body>
 
