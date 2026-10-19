@@ -1,10 +1,6 @@
 <?php
 
-namespace App\Classes;
-
-use Exception;
-
-class PaisaPay
+class GatewaySDK
 {
     private string $apiUrl;
     private string $token;
@@ -30,15 +26,20 @@ class PaisaPay
      * @param float $amount The amount to charge
      * @param string $userPhone The customer's mobile number
      * @param string $udf1 User defined field (optional)
+     * @param string $returnUrl URL where customer should be redirected after payment (optional)
      * @return string HTML form
      */
-    public function createOrderForm($amount, $userPhone, $udf1 = '')
+    public function createOrderForm($amount, $userPhone, $udf1 = '', $returnUrl = '')
     {
         $data = [
             'amount' => $amount,
             'mobile' => $userPhone,
             'udf1' => $udf1
         ];
+
+        if (!empty($returnUrl)) {
+            $data['return_url'] = $returnUrl;
+        }
 
         $json = json_encode($data);
 

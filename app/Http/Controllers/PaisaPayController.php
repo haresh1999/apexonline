@@ -36,18 +36,18 @@ class PaisaPayController extends Controller
         $amount = $tnx->amount;
         $userPhone = $tnx->payer_mobile;
         $orderId = $tnx->order_id;
+        $returnUrl = 'https://apexonline.in/payment/paisapay/callback?ref_id=' . $tnx->reference_id;
 
         // Generate and output the redirect form
-        echo $sdk->createOrderForm($amount, $userPhone, $orderId);
+        echo $sdk->createOrderForm($amount, $userPhone, $orderId, $returnUrl);
     }
 
     public function callback(Request $request)
     {
         $request->validate([
-            'udf1' => 'required',
-            'status' => 'required|in:SUCCESS,FAILED,PENDING',
-            'amount' => 'required|numeric',
-            'utr' => 'required'
+            'ref_id' => 'required',
+            'status' => 'required|in:success,failed,pending',
+            // 'utr' => 'required'
         ]);
 
         $input = $request->all();
@@ -55,7 +55,7 @@ class PaisaPayController extends Controller
         $transaction = Transaction::where([
             'env' => 'production',
             'gateway' => 'paisapay',
-            'order_id' => $request->udf1
+            'reference_id' => $request->ref_id,
         ])->first();
 
         if (!$transaction) {
@@ -66,12 +66,12 @@ class PaisaPayController extends Controller
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
-        if ($input['status'] === 'SUCCESS') {
+        if ($request->status == 'success') {
 
             $transaction->update([
                 'status' => 'completed',
                 'payment_response' => json_encode($input),
-                'payment_id' => $input['utr'] ?? null
+                'payment_id' => $input['utr'] ?? $transaction->order_id
             ]);
 
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
@@ -80,7 +80,7 @@ class PaisaPayController extends Controller
         $transaction->update([
             'status' => 'failed',
             'payment_response' => json_encode($input),
-            'payment_id' => $input['utr'] ?? null
+            'payment_id' => $input['utr'] ?? $transaction->order_id
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
