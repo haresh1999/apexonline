@@ -43,6 +43,8 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
+        dd($request->all());
+
         $request->validate([
             'udf1' => 'required',
             'status' => 'required|in:SUCCESS,FAILED,PENDING',
