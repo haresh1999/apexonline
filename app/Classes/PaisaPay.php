@@ -1,6 +1,10 @@
 <?php
 
-class GatewaySDK
+namespace App\Classes;
+
+use Exception;
+
+class PaisaPay
 {
     private string $apiUrl;
     private string $token;
