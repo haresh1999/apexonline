@@ -44,8 +44,13 @@ class PaisaPayController extends Controller
     public function callback(Request $request)
     {
         $request->validate([
-            'udf1' => 'required'
+            'udf1' => 'required',
+            'status' => 'required|in:SUCCESS,FAILED,PENDING',
+            'amount' => 'required|numeric',
+            'utr' => 'required'
         ]);
+
+        $input = $request->all();
 
         $transaction = Transaction::where([
             'env' => 'production',
@@ -61,28 +66,21 @@ class PaisaPayController extends Controller
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
-        $secretKey = env('PP_MERCHANT_SECRET');
-        $payload = str_replace(' ', '+', $request->payload); // Ensure Base64 is preserved
-        $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
-        $response = json_decode($decrypted, true);
+        if ($input['status'] === 'SUCCESS') {
 
-        if ($response) {
-            if ($response['status'] === 'SUCCESS') {
+            $transaction->update([
+                'status' => 'completed',
+                'payment_response' => json_encode($input),
+                'payment_id' => $input['utr'] ?? null
+            ]);
 
-                $transaction->update([
-                    'status' => 'completed',
-                    'payment_response' => json_encode($response),
-                    'payment_id' => $response['utr'] ?? null
-                ]);
-
-                return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
-            }
+            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
         $transaction->update([
             'status' => 'failed',
-            'payment_response' => json_encode($response),
-            'payment_id' => $response['utr'] ?? null
+            'payment_response' => json_encode($input),
+            'payment_id' => $input['utr'] ?? null
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
