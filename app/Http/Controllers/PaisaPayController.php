@@ -44,6 +44,8 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
+        dd($request->all());
+
         $request->validate([
             'ref_id' => 'required',
             'status' => 'required|in:success,failed,pending',
