@@ -6,6 +6,8 @@ use App\Classes\PaisaPay;
 use App\Models\Payout;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -61,7 +63,7 @@ class PaisaPayController extends Controller
         ])->first();
 
         if (!$transaction) {
-            return response()->json(['error' => 'Transaction not found'], 404);
+            return response()->json(['res.error' => 'Transaction not found'], 404);
         }
 
         if ($transaction->status == 'completed') {
@@ -179,103 +181,183 @@ class PaisaPayController extends Controller
             'payout_id' => 'required|integer|exists:payouts,id',
         ]);
 
-        $payout = Payout::where('id', $validated['payout_id'])
-            ->where('status', 'pending')
-            ->firstOrFail();
+        // Claim the payout so concurrent requests cannot initiate it twice.
+        $payout = DB::transaction(function () use ($validated) {
+            $payout = Payout::where('id', $validated['payout_id'])
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        $url = 'https://pay.paisapay.site/create_payout.php';
+            if ($payout->status !== 'pending') {
+                return null;
+            }
 
-        $postData = [
-            'amount' => $payout->amount,
-            'account_number' => $payout->account_number,
-            'ifsc_code' => $payout->ifsc_code,
-            'holder_name' => $payout->holder_name,
-            'bank_name' => $payout->bank_name,
+            // Save a stable provider order ID before making the API call.
+            if (empty($payout->order_id)) {
+                $payout->order_id = 'PAYOUT_' . $payout->id;
+                $payout->save();
+            }
+
+            return $payout;
+        });
+
+        if (!$payout) {
+            return back()->with(
+                'res.error',
+                'This payout is not pending or has already been submitted.'
+            );
+        }
+
+        $token = env('PP_MERCHANT_TOKEN');
+        $secretKey = env('PP_MERCHANT_SECRET');
+        $baseUrl = rtrim(env('PP_BASE_URL'), '/');
+
+        if (empty($token) || empty($secretKey) || strlen($secretKey) !== 32) {
+            Log::error('PaisaPay configuration is missing or invalid.');
+
+            return back()->with(
+                'res.error',
+                'Payout gateway configuration is invalid.'
+            );
+        }
+
+        if ((float) $payout->amount < 2000) {
+
+            return back()->with(
+                'res.error',
+                'The minimum PaisaPay payout amount is ₹2,000.'
+            );
+        }
+
+        $payloadData = [
+            'order_id'       => (string) $payout->order_id,
+            'amount'         => number_format((float) $payout->amount, 2, '.', ''),
+            'account_number' => (string) $payout->account_number,
+            'ifsc_code'      => strtoupper((string) $payout->ifsc_code),
+            'holder_name'    => (string) $payout->holder_name,
+            'bank_name'      => (string) $payout->bank_name,
         ];
 
-        $ch = curl_init($url);
+        // Encrypt JSON using AES-256-ECB and Base64-encode the result.
+        $jsonPayload = json_encode($payloadData);
 
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($postData),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/x-www-form-urlencoded',
-                'Accept: application/json',
-            ],
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-        ]);
+        if ($jsonPayload === false) {
+            return back()->with('res.error', 'Unable to prepare payout request.');
+        }
 
-        $response = curl_exec($ch);
-        $curlError = curl_error($ch);
-        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $encrypted = openssl_encrypt(
+            $jsonPayload,
+            'aes-256-ecb',
+            $secretKey,
+            OPENSSL_RAW_DATA
+        );
 
-        curl_close($ch);
-
-        // Handle connection errors or timeouts.
-        if ($response === false) {
-
-            Log::error('Payout API cURL error', [
+        if ($encrypted === false) {
+            Log::error('PaisaPay payload encryption failed.', [
                 'payout_id' => $payout->id,
-                'error' => $curlError,
+            ]);
+
+            return back()->with('res.error', 'Unable to encrypt payout request.');
+        }
+
+        $encryptedPayload = base64_encode($encrypted);
+
+        try {
+            $response = Http::asForm()
+                ->acceptJson()
+                ->connectTimeout(10)
+                ->timeout(30)
+                ->post($baseUrl . '/create_payout.php', [
+                    'token'   => $token,
+                    'payload' => $encryptedPayload,
+                ]);
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::warning('PaisaPay connection error; payout status is unknown.', [
+                'payout_id' => $payout->id,
+                'res.error' => $e->getMessage(),
+            ]);
+
+            // Do not automatically mark failed: the provider may have
+            // received the request even though the connection timed out.
+            return back()->with(
+                'res.error',
+                'Payout status could not be confirmed. Verify with PaisaPay before retrying.'
+            );
+        }
+
+        $result = $response->json();
+
+        if (!$response->successful() || !is_array($result)) {
+
+            Log::error('PaisaPay returned an invalid or unsuccessful response.', [
+                'payout_id' => $payout->id,
+                'http_status' => $response->status(),
+                'response' => $response->body(),
             ]);
 
             return back()->with(
                 'res.error',
-                'Unable to confirm payout status. Please verify with the provider before retrying.'
+                $result['message']
             );
         }
 
-        $result = json_decode($response, true);
+        // Confirm the response refers to this payout.
+        if (isset($result['order_id']) && (string) $result['order_id'] !== (string) $payout->order_id) {
 
-        // Handle invalid JSON or unsuccessful HTTP responses.
-        if (!is_array($result) || $httpCode < 200 || $httpCode >= 300) {
-
-            Log::error('Payout API error response', [
+            Log::error('PaisaPay order ID mismatch.', [
                 'payout_id' => $payout->id,
-                'http_code' => $httpCode,
-                'response' => $response,
+                'response_order_id' => $result['order_id'],
             ]);
 
             return back()->with(
                 'res.error',
-                'Invalid or unsuccessful payout API response. Please verify the transaction status.'
+                'Payout reference mismatch. Contact support before retrying.'
             );
         }
 
-        // Confirm the provider's actual status values before mapping them.
-        $apiStatus = strtolower((string) ($result['status'] ?? ''));
+        $apiStatus = strtoupper((string) ($result['status'] ?? ''));
+
+        // Store the raw response for auditing.
+        $payout->payment_response = json_encode($result);
+
+        if ($apiStatus === 'pending') {
+            $payout->status = 'pending';
+            $payout->save();
+
+            return back()->with(
+                'res.success',
+                'Payout request queued successfully. Awaiting final confirmation.'
+            );
+        }
 
         if ($apiStatus === 'success') {
+            $payout->status = 'success';
+            $payout->save();
 
-            $payout->update([
-                'status' => 'success',
-                'payment_response' => json_encode($result),
-            ]);
-
-            return back()->with('res.success', 'Payout processed successfully.');
+            return back()->with(
+                'res.success',
+                'Payout marked successful by the gateway.'
+            );
         }
 
         if ($apiStatus === 'failed') {
-            $payout->update([
-                'status' => 'failed',
-                'payment_response' => json_encode($result),
-            ]);
+            $payout->status = 'failed';
+            $payout->save();
 
-            return back()->with('res.error', 'Payout failed.');
+            return back()->with('res.error', 'Payout failed: ' .
+                ($result['message'] ?? 'Gateway rejected the request.'));
         }
 
-        // Pending or unknown status: preserve the pending state.
-        $payout->update([
-            'payment_response' => json_encode($result),
+        // Unknown response: do not assume success or failure.
+        $payout->save();
+
+        Log::warning('Unknown PaisaPay payout status.', [
+            'payout_id' => $payout->id,
+            'status' => $apiStatus,
         ]);
 
         return back()->with(
-            'res.warning',
-            'Payout status is pending or unconfirmed. Verify the transaction before retrying.'
+            'warning',
+            'Payout status is unconfirmed. Check the gateway before retrying.'
         );
     }
 }
