@@ -229,12 +229,12 @@ class PaisaPayController extends Controller
         }
 
         $payloadData = [
-            'order_id'       => (string) $payout->order_id,
-            'amount'         => number_format((float) $payout->amount, 2, '.', ''),
+            'order_id' => (string) $payout->order_id,
+            'amount' => number_format((float) $payout->amount, 2, '.', ''),
             'account_number' => (string) $payout->account_number,
-            'ifsc_code'      => strtoupper((string) $payout->ifsc_code),
-            'holder_name'    => (string) $payout->holder_name,
-            'bank_name'      => (string) $payout->bank_name,
+            'ifsc_code' => strtoupper((string) $payout->ifsc_code),
+            'holder_name' => (string) $payout->holder_name,
+            'bank_name' => (string) $payout->bank_name,
         ];
 
         // Encrypt JSON using AES-256-ECB and Base64-encode the result.
