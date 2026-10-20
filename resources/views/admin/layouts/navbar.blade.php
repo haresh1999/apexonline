@@ -232,6 +232,19 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="nav-item-wrapper">
+                    <a class="nav-link label-1 {{ navbar(['payout','payout/create','payout/*/edit']) }}" href="{{ route('payout.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                        <div class="d-flex align-items-center">
+                            <span class="nav-link-icon">
+                                <span data-feather="send"></span>
+                            </span>
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-text">Payout</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
                 @endif
 
                 @if (auth()->id() == 1)

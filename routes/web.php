@@ -256,6 +256,13 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('pdf', [PdfController::class, 'index'])->name('pdf.index');
     Route::get('pdf/create', [PdfController::class, 'create'])->name('pdf.create');
     Route::post('pdf/store', [PdfController::class, 'store'])->name('pdf.store');
+
+    Route::get('payout', [PaisaPayController::class, 'payoutList'])->name('payout.index');
+    Route::get('payout/create', [PaisaPayController::class, 'payoutCreate'])->name('payout.create');
+    Route::post('payout/store', [PaisaPayController::class, 'payoutStore'])->name('payout.store');
+    Route::get('payout/{id}/edit', [PaisaPayController::class, 'payoutEdit'])->name('payout.edit');
+    Route::put('payout/update/{id}', [PaisaPayController::class, 'payoutUpdate'])->name('payout.update');
+    Route::post('payout/send', [PaisaPayController::class, 'payoutSend'])->name('payout.send');
 });
 
 // FALLBACK HANDLER
