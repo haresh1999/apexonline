@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\{
     CompanyController,
     DashboardController,
     GatewayController,
+    PayoutController,
     PdfController,
     TransactionController as SalesController,
     UserController,
@@ -191,7 +192,7 @@ Route::prefix('upi')->group(function () {
 Route::prefix('paisapay')->group(function () {
     Route::get('request', [PaisaPayController::class, 'request']);
     Route::any('callback', [PaisaPayController::class, 'callback']);
-    Route::any('payout/status', [PaisaPayController::class, 'payoutStatus']);
+    Route::any('payout/status', [PayoutController::class, 'payoutStatus']);
 });
 
 Route::get('login', [LoginController::class, 'login'])->name('login');
@@ -258,12 +259,12 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('pdf/create', [PdfController::class, 'create'])->name('pdf.create');
     Route::post('pdf/store', [PdfController::class, 'store'])->name('pdf.store');
 
-    Route::get('payout', [PaisaPayController::class, 'payoutList'])->name('payout.index');
-    Route::get('payout/create', [PaisaPayController::class, 'payoutCreate'])->name('payout.create');
-    Route::post('payout/store', [PaisaPayController::class, 'payoutStore'])->name('payout.store');
-    Route::get('payout/{id}/edit', [PaisaPayController::class, 'payoutEdit'])->name('payout.edit');
-    Route::put('payout/update/{id}', [PaisaPayController::class, 'payoutUpdate'])->name('payout.update');
-    Route::post('payout/send', [PaisaPayController::class, 'payoutSend'])->name('payout.send');
+    Route::get('payout', [PayoutController::class, 'payoutList'])->name('payout.index');
+    Route::get('payout/create', [PayoutController::class, 'payoutCreate'])->name('payout.create');
+    Route::post('payout/store', [PayoutController::class, 'payoutStore'])->name('payout.store');
+    Route::get('payout/{id}/edit', [PayoutController::class, 'payoutEdit'])->name('payout.edit');
+    Route::put('payout/update/{id}', [PayoutController::class, 'payoutUpdate'])->name('payout.update');
+    Route::post('payout/send', [PayoutController::class, 'payoutSend'])->name('payout.send');
 });
 
 // FALLBACK HANDLER
