@@ -150,7 +150,8 @@ class PayoutController extends Controller
         $baseUrl = rtrim(env('PP_BASE_URL'), '/');
 
         $payloadData = [
-            'order_id' => (string) $payout->order_id,
+            // 'order_id' => (string) $payout->order_id,
+            'order_id' => 'PAYOUT_' . time(),
             'amount' => number_format((float) $payout->amount, 2, '.', ''),
             'account_number' => (string) $payout->account_number,
             'ifsc_code' => strtoupper((string) $payout->ifsc_code),

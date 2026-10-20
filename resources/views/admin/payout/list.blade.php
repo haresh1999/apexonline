@@ -109,7 +109,7 @@
                         </td>
                         <td>{{ Carbon\Carbon::parse($payout->created_at)->format('d-m-Y H:i A') }}</td>
                         <td>
-                            {{-- @if ($payout->status == 'pending' && $payout->response == null)
+                            {{-- @if ($payout->status == 'pending' && $payout->response == null) --}}
                             <form action="{{ route('payout.send') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="payout_id" value="{{ $payout->id }}" />
@@ -117,7 +117,7 @@
                                     <span class="fas fa-paper-plane"></span>
                                 </button>
                             </form>
-                            @endif --}}
+                            {{-- @endif --}}
                         </td>
                         <td>
                             {{-- @if ($payout->status == 'pending' && $payout->response == null)
