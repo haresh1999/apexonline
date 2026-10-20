@@ -64,18 +64,18 @@
             <table class="table fs-9 mb-0 text-center">
                 <thead>
                     <tr>
-                        <th class="p-4">ID</th>
-                        <th class="py-4 text-start">UUID</th>
-                        <th class="py-4 text-start">Order#</th>
-                        <th class="p-4">Amount</th>
-                        <th class="py-4 text-start">Account No.</th>
-                        <th class="py-4 text-start">IFSC</th>
-                        <th class="py-4 text-start">Holder Name</th>
-                        <th class="py-4 text-start">Bank</th>
-                        <th class="p-4">Status</th>
-                        <th class="p-4">Created At</th>
-                        <th class="p-4">Send</th>
-                        <th class="p-4">Edit</th>
+                        <th class="white-space-nowrap p-4">ID</th>
+                        <th class="white-space-nowrap py-4 text-start">UUID</th>
+                        <th class="white-space-nowrap py-4 text-start">Order#</th>
+                        <th class="white-space-nowrap p-4">Amount</th>
+                        <th class="white-space-nowrap py-4 text-start">Account No.</th>
+                        <th class="white-space-nowrap py-4 text-start">IFSC</th>
+                        <th class="white-space-nowrap py-4 text-start">Holder Name</th>
+                        <th class="white-space-nowrap py-4 text-start">Bank</th>
+                        <th class="white-space-nowrap p-4">Status</th>
+                        <th class="white-space-nowrap p-4">Created At</th>
+                        <th class="white-space-nowrap p-4">Send</th>
+                        <th class="white-space-nowrap p-4">Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,7 +109,7 @@
                         </td>
                         <td>{{ Carbon\Carbon::parse($payout->created_at)->format('d-m-Y H:i A') }}</td>
                         <td>
-                            @if ($payout->status == 'pending' && $payout->response == null)
+                            {{-- @if ($payout->status == 'pending' && $payout->response == null)
                             <form action="{{ route('payout.send') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="payout_id" value="{{ $payout->id }}" />
@@ -117,14 +117,14 @@
                                     <span class="fas fa-paper-plane"></span>
                                 </button>
                             </form>
-                            @endif
+                            @endif --}}
                         </td>
                         <td>
-                            @if ($payout->status == 'pending' && $payout->response == null)
+                            {{-- @if ($payout->status == 'pending' && $payout->response == null)
                             <a class="btn btn-info btn-sm" href="{{ route('payout.edit', $payout->id) }}" title="Edit Payout">
                                 <span class="fas fa-edit"></span>
                             </a>
-                            @endif
+                            @endif --}}
                         </td>
                     </tr>
                     @endforeach

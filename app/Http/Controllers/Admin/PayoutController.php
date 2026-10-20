@@ -68,9 +68,9 @@ class PayoutController extends Controller
         return $this->requestPayout($payout->id);
         // }
 
-        return redirect()
-            ->route('payout.index')
-            ->with('res.success', 'Payout request created successfully.');
+        // return redirect()
+        //     ->route('payout.index')
+        //     ->with('res.success', 'Payout request created successfully.');
     }
 
     public function payoutEdit(string $id)
@@ -89,21 +89,21 @@ class PayoutController extends Controller
             'ifsc_code' => ['required', 'string', 'size:11', 'regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i'],
             'holder_name' => 'required|string|max:255',
             'bank_name' => 'required|string|max:255',
-            'status' => ['required', 'in:0,1']
+            // 'status' => ['required', 'in:0,1']
         ]);
 
         $payout = Payout::where('status', 'pending')->findOrFail($id);
 
         $payout->update($input);
 
-        if ($request->status == 1) {
+        // if ($request->status == 1) {
 
-            return $this->requestPayout($payout->id);
-        }
+        return $this->requestPayout($payout->id);
+        // }
 
-        return redirect()
-            ->route('payout.index')
-            ->with('res.success', 'Payout request updated successfully.');
+        // return redirect()
+        //     ->route('payout.index')
+        // ->with('res.success', 'Payout request updated successfully.');
     }
 
     public function payoutSend(Request $request)
