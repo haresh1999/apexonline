@@ -261,6 +261,26 @@ class PayoutController extends Controller
 
     public function payoutStatus(Request $request)
     {
-        file_put_contents(public_path('payout.json'), json_encode($request->all()));
+        $request->validate([
+            'payload' => ['required'],
+            'token' => ['required']
+        ]);
+
+        $secretKey = env('PP_MERCHANT_SECRET');
+        $payload = $request->payload;
+        $payload = str_replace(' ', '+', $payload); // Ensure Base64 is preserved
+
+        $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
+        $callbackData = json_decode($decrypted, true);
+
+        if ($callbackData) {
+
+            if (strtolower($callbackData['status']) === 'success') {
+                // Update user balance in your system
+            }
+            echo "success"; // Important: Acknowledge the webhook
+        }
+
+        echo "failed"; // Important: Acknowledge the webhook
     }
 }
