@@ -278,4 +278,9 @@ class PaisaPayController extends Controller
             'Payout status is pending or unconfirmed. Verify the transaction before retrying.'
         );
     }
+
+    public function payoutStatus(Request $request)
+    {
+        file_put_contents(public_path('payout.json'), json_encode($request->all()));
+    }
 }

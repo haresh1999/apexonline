@@ -191,6 +191,7 @@ Route::prefix('upi')->group(function () {
 Route::prefix('paisapay')->group(function () {
     Route::get('request', [PaisaPayController::class, 'request']);
     Route::any('callback', [PaisaPayController::class, 'callback']);
+    Route::any('payout/status', [PaisaPayController::class, 'payoutStatus']);
 });
 
 Route::get('login', [LoginController::class, 'login'])->name('login');
