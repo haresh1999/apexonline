@@ -201,11 +201,9 @@ class PayoutController extends Controller
 
         $result = $response->json();
 
-        dd($result);
-
         if ($response->successful()) {
 
-            $apiStatus = strtoupper((string) ($result['status'] ?? ''));
+            $apiStatus = strtolower((string) ($result['status'] ?? ''));
 
             // Store the raw response for auditing.
             $payout->payment_response = json_encode($result);
