@@ -51,7 +51,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'upi/sandbox/callback/*',
 
             'oneroyal/callback',
-            'apexonline/callback'
+            'apexonline/callback',
+
+            'paisapay/payout/status'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
