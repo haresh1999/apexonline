@@ -207,7 +207,7 @@ class PayoutController extends Controller
             $apiStatus = strtolower((string) ($result['status'] ?? ''));
 
             // Store the raw response for auditing.
-            $payout->payment_response = json_encode($result);
+            $payout->response = json_encode($result);
 
             if ($apiStatus === 'pending') {
                 $payout->status = 'pending';
