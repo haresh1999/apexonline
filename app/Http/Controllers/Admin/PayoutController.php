@@ -54,7 +54,7 @@ class PayoutController extends Controller
             'ifsc_code' => ['required', 'string', 'size:11', 'regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i'],
             'holder_name' => 'required|string|max:255',
             'bank_name' => 'required|string|max:255',
-            'status' => ['required', 'in:0,1']
+            // 'status' => ['required', 'in:0,1']
         ]);
 
         $input['order_id'] = 'PAYOUT_' . time();
@@ -63,10 +63,10 @@ class PayoutController extends Controller
 
         $payout = Payout::create($input);
 
-        if ($request->status == 1) {
+        // if ($request->status == 1) {
 
-            return $this->requestPayout($payout->id);
-        }
+        return $this->requestPayout($payout->id);
+        // }
 
         return redirect()
             ->route('payout.index')
@@ -200,6 +200,8 @@ class PayoutController extends Controller
         }
 
         $result = $response->json();
+
+        dd($result);
 
         if ($response->successful()) {
 
