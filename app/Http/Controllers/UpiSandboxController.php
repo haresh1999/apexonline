@@ -233,7 +233,7 @@ class UpiSandboxController extends Controller
         $result['status'] = $data[10] ?? '';
         $result['responseCode'] = $data[11] ?? '';
         $result['responseMsg'] = $data[12] ?? '';
-        
+
         if ($result['merchantId'] !== env('UPI_SBX_MERCHANT_ID')) {
 
             return response()->json([
@@ -246,7 +246,7 @@ class UpiSandboxController extends Controller
             $tnx->update([
                 'status' => 'completed',
                 'payment_response' => json_encode($result),
-                'payment_id' => $result['agRef']
+                'payment_id' => $result['agRef'] ?? null
             ]);
 
             return redirect()->to('sandbox/redirect?reference_id=' . $tnx->reference_id);
@@ -255,7 +255,7 @@ class UpiSandboxController extends Controller
         $tnx->update([
             'status' => 'failed',
             'payment_response' => json_encode($result),
-            'payment_id' => $result['agRef']
+            'payment_id' => $result['agRef'] ?? null
         ]);
 
         return redirect()->to('sandbox/redirect?reference_id=' . $tnx->reference_id);
