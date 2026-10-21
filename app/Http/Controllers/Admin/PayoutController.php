@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PayoutExport;
+use App\Exports\PayoutImport;
 use App\Http\Controllers\Controller;
 use App\Models\BankInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Payout;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PayoutController extends Controller
 {
@@ -60,9 +63,6 @@ class PayoutController extends Controller
 
         $bankInfo = BankInfo::where('id', $request->bank_id)->first();
 
-        $input['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
-        $input['uuid'] = str()->uuid();
-        $input['status'] = 'pending';
         $input['account_number'] = $bankInfo->account_number;
         $input['ifsc_code'] = $bankInfo->ifsc_code;
         $input['holder_name'] = $bankInfo->holder_name;
@@ -73,8 +73,12 @@ class PayoutController extends Controller
         return redirect()->route('payout.index')->with($res['name'], $res['message']);
     }
 
-    protected function requestPayout(array $payoutData)
+    public function requestPayout(array $payoutData)
     {
+        $payoutData['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
+        $payoutData['uuid'] = str()->uuid();
+        $payoutData['status'] = 'pending';
+
         $payout = Payout::create($payoutData);
 
         $token = env('PP_MERCHANT_TOKEN');
@@ -221,5 +225,27 @@ class PayoutController extends Controller
         }
 
         echo $status;
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:10240',
+        ]);
+
+        try {
+
+            Excel::import(new PayoutImport(), $request->file);
+
+            return redirect()->route('payout.index')->with('res.success', 'Payouts imported successfully.');
+        } catch (\Throwable $th) {
+
+            return redirect()->route('payout.index')->with('res.error', 'Failed to import payouts. Please check the file format and try again.');
+        }
+    }
+
+    public function export()
+    {
+        return Excel::download(new PayoutExport(), 'payout.xlsx');
     }
 }

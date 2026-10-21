@@ -19,18 +19,27 @@
             <h2 class="mb-0">Bank Info List</h2>
         </div>
     </div>
+    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ route('bank.index') }}">
+                <span>All </span>
+                <span class="text-body-tertiary fw-semibold">({{$total}})</span>
+            </a>
+        </li>
+    </ul>
+
     <div class="mb-4">
         <form class="position-relative" action="{{ Request::fullUrl() }}" method="get">
-            <div class="d-flex flex-wrap gap-2 justify-content-between">
-                <div>
-                    <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('bank.index') }}">
-                                <span>All </span>
-                                <span class="text-body-tertiary fw-semibold">({{$total}})</span>
-                            </a>
-                        </li>
-                    </ul>
+            <div class="d-flex flex-wrap gap-3">
+                <div class="search-box">
+                    <input class="form-control search-input search" type="search" name="search" placeholder="Search anything..." value="{{ Request::get('search') }}" aria-label="Search" />
+                    <span class="fas fa-search search-box-icon"></span>
+                </div>
+                <div class="scrollbar overflow-hidden-y">
+                    <div class="btn-group position-static gap-2" role="group">
+                        <button type="submit" class="rounded btn btn-info flex-shrink-0">Filter</button>
+                        <a href="{{ route('bank.index') }}" class="rounded btn btn-warning flex-shrink-0">Reset</a>
+                    </div>
                 </div>
                 <div class="ms-xxl-auto">
                     <a class="btn btn-primary" href="{{ route('bank.create') }}">

@@ -266,6 +266,9 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('payout/{id}/edit', [PayoutController::class, 'edit'])->name('payout.edit');
     Route::put('payout/update/{id}', [PayoutController::class, 'update'])->name('payout.update');
 
+    Route::post('payout/import', [PayoutController::class, 'import'])->name('payout.import');
+    Route::post('payout/export', [PayoutController::class, 'export'])->name('payout.export');
+
     Route::get('bank', [BankController::class, 'list'])->name('bank.index');
     Route::get('bank/create', [BankController::class, 'create'])->name('bank.create');
     Route::post('bank/store', [BankController::class, 'store'])->name('bank.store');
