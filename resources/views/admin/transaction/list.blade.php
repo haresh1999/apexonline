@@ -210,7 +210,7 @@
                                     </h6>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-start">
-                                    {{$tnx->payment_id}}
+                                    {{$tnx->payment_id ?? '---'}}
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if(in_array($tnx->status, ['completed']))
