@@ -83,7 +83,8 @@ class PaisaPayController extends Controller
             $transaction->update([
                 'status' => 'completed',
                 'payment_response' => json_encode($response),
-                'payment_id' => $input['utr'] ?? null
+                'payment_id' => $input['utr'] ?? null,
+                'pp_order_id' => $input['order_id']
             ]);
 
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
@@ -92,7 +93,8 @@ class PaisaPayController extends Controller
         $transaction->update([
             'status' => 'failed',
             'payment_response' => json_encode($response),
-            'payment_id' => $input['utr'] ?? null
+            'payment_id' => $input['utr'] ?? null,
+            'pp_order_id' => $input['order_id']
         ]);
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
