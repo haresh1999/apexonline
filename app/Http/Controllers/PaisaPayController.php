@@ -47,7 +47,10 @@ class PaisaPayController extends Controller
         $request->validate([
             'ref_id' => 'required',
             'status' => 'required|in:success,failed,pending',
-            // 'utr' => 'required'
+            'utr' => 'required',
+            'payload' => 'required',
+            'order_id' => 'required',
+            'amount' => 'required'
         ]);
 
         $input = $request->all();
@@ -66,11 +69,20 @@ class PaisaPayController extends Controller
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
         }
 
-        if ($request->status == 'success') {
+        $secretKey = env('PP_MERCHANT_SECRET');
+        $payload = $request->payload;
+        $payload = str_replace(' ', '+', $payload); // Ensure Base64 is preserved
+
+        $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
+        $response = json_decode($decrypted, true);
+
+        $status = strtolower($input['status']);
+
+        if ($status == 'success') {
 
             $transaction->update([
                 'status' => 'completed',
-                'payment_response' => json_encode($input),
+                'payment_response' => json_encode($response),
                 'payment_id' => $input['utr'] ?? $transaction->order_id
             ]);
 
@@ -79,7 +91,7 @@ class PaisaPayController extends Controller
 
         $transaction->update([
             'status' => 'failed',
-            'payment_response' => json_encode($input),
+            'payment_response' => json_encode($response),
             'payment_id' => $input['utr'] ?? $transaction->order_id
         ]);
 
