@@ -206,7 +206,7 @@
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-start">
                                     <h6 class="mb-0">
-                                        <a href="{{ route('tnx.show',$tnx->id) }}">{{ $tnx->mr_order_id }}</a>
+                                        <a href="{{ route('tnx.show',$tnx->id) }}">{{ Str::upper($tnx->mr_order_id) }}</a>
                                     </h6>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-start">
