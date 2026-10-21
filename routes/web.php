@@ -265,7 +265,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('payout/store', [PayoutController::class, 'store'])->name('payout.store');
     Route::get('payout/{id}/edit', [PayoutController::class, 'edit'])->name('payout.edit');
     Route::put('payout/update/{id}', [PayoutController::class, 'update'])->name('payout.update');
-
+    Route::post('payout/send', [PayoutController::class, 'send'])->name('payout.send');
     Route::post('payout/import', [PayoutController::class, 'import'])->name('payout.import');
     Route::post('payout/export', [PayoutController::class, 'export'])->name('payout.export');
 

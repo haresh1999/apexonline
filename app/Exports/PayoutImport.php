@@ -4,7 +4,7 @@ namespace App\Exports;
 
 use App\Http\Controllers\Admin\PayoutController;
 use App\Models\BankInfo;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\Payout;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
@@ -31,13 +31,14 @@ class PayoutImport implements ToModel, WithStartRow
                 ]);
             }
 
-            $payoutController = new PayoutController();
-
-            $payoutController->requestPayout([
+            Payout::create([
                 'account_number' => $bank->account_number,
                 'ifsc_code' => $bank->ifsc_code,
                 'holder_name' => $bank->holder_name,
                 'bank_name' => $bank->bank_name,
+                'order_id' => 'payout_' . (bin2hex(random_bytes(8))),
+                'uuid' => str()->uuid(),
+                'status' => 'pending',
                 'amount' => $row[4]
             ]);
         }

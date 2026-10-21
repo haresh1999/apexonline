@@ -67,20 +67,30 @@ class PayoutController extends Controller
         $input['ifsc_code'] = $bankInfo->ifsc_code;
         $input['holder_name'] = $bankInfo->holder_name;
         $input['bank_name'] = $bankInfo->bank_name;
+        $input['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
+        $input['uuid'] = str()->uuid();
+        $input['status'] = 'pending';
 
-        $res = $this->requestPayout($input);
+        Payout::create($input);
+
+        return redirect()->route('payout.index')->with('res.success', 'Payout created successfully.');
+    }
+
+    public function send(Request $request)
+    {
+        $request->validate([
+            'payout_id' => ['required', 'integer', 'exists:payouts,id']
+        ]);
+
+        $payout = Payout::find($request->payout_id);
+
+        $res = $this->requestPayout($payout);
 
         return redirect()->route('payout.index')->with($res['name'], $res['message']);
     }
 
-    public function requestPayout(array $payoutData)
+    public function requestPayout(object $payout)
     {
-        $payoutData['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
-        $payoutData['uuid'] = str()->uuid();
-        $payoutData['status'] = 'pending';
-
-        $payout = Payout::create($payoutData);
-
         $token = env('PP_MERCHANT_TOKEN');
         $secretKey = env('PP_MERCHANT_SECRET');
         $baseUrl = rtrim(env('PP_BASE_URL'), '/');

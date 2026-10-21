@@ -81,6 +81,7 @@
                     <th class="white-space-nowrap py-4 text-start">Bank</th>
                     <th class="white-space-nowrap p-4">Status</th>
                     <th class="white-space-nowrap p-4">Created At</th>
+                    <th class="white-space-nowrap p-4">Send Payment</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,6 +114,19 @@
                         @endif
                     </td>
                     <td>{{ Carbon\Carbon::parse($payout->created_at)->format('d-m-Y H:i A') }}</td>
+                    <td>
+                        @if ($payout->status == 'pending' && $payout->response == null)
+                        <form action="{{ route('payout.send') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="payout_id" value="{{ $payout->id }}" />
+                            <button class="btn btn-secondary btn-sm" type="submit">
+                                <span class="fas fa-paper-plane"></span>
+                            </button>
+                        </form>
+                        @else
+                        ---
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -125,7 +139,6 @@
         </div>
     </div>
     @endif
-</div>
 </div>
 
 <div class="modal fade" id="importPayoutModal" tabindex="-1" aria-labelledby="importPayoutModalLabel" aria-hidden="true">
