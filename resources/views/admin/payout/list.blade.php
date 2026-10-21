@@ -74,8 +74,6 @@
                         <th class="white-space-nowrap py-4 text-start">Bank</th>
                         <th class="white-space-nowrap p-4">Status</th>
                         <th class="white-space-nowrap p-4">Created At</th>
-                        <th class="white-space-nowrap p-4">Send</th>
-                        <th class="white-space-nowrap p-4">Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,7 +81,7 @@
                     <tr class="align-middle">
                         <td>{{ $payout->id }}</td>
                         <td class="text-start">{{ $payout->uuid }}</td>
-                        <td class="text-start">{{ $payout->order_id }}</td>
+                        <td class="text-start">{{ strtoupper($payout->order_id) }}</td>
                         <td>{{ $payout->amount }}</td>
                         <td class="text-start">{{ $payout->account_number }}</td>
                         <td class="text-start">{{ $payout->ifsc_code }}</td>
@@ -108,24 +106,6 @@
                             @endif
                         </td>
                         <td>{{ Carbon\Carbon::parse($payout->created_at)->format('d-m-Y H:i A') }}</td>
-                        <td>
-                            {{-- @if ($payout->status == 'pending' && $payout->response == null) --}}
-                            <form action="{{ route('payout.send') }}" method="post">
-                                @csrf
-                                <input type="hidden" name="payout_id" value="{{ $payout->id }}" />
-                                <button type="submit" class="btn btn-success btn-sm">
-                                    <span class="fas fa-paper-plane"></span>
-                                </button>
-                            </form>
-                            {{-- @endif --}}
-                        </td>
-                        <td>
-                            {{-- @if ($payout->status == 'pending' && $payout->response == null)
-                            <a class="btn btn-info btn-sm" href="{{ route('payout.edit', $payout->id) }}" title="Edit Payout">
-                                <span class="fas fa-edit"></span>
-                            </a>
-                            @endif --}}
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>

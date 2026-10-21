@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankInfo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Payout;
 
 class PayoutController extends Controller
 {
-    public function payoutList(Request $request)
+    public function list(Request $request)
     {
         $payouts = Payout::when($request->filled('search'), function ($q) {
             $q->where('amount', 'like', 'like', "%" . request('search') . "%")
@@ -40,118 +40,49 @@ class PayoutController extends Controller
         ));
     }
 
-    public function payoutCreate()
+    public function create(BankInfo $bankInfo)
     {
-        return view('admin.payout.create');
+        $banks = [];
+
+        if (! $bankInfo->account_number) {
+
+            $banks = BankInfo::all();
+        }
+
+        return view('admin.payout.create', compact('bankInfo', 'banks'));
     }
 
-    public function payoutStore(Request $request)
+    public function store(Request $request)
     {
         $input = $request->validate([
             'amount' => 'required|numeric|min:2000',
-            'account_number' => 'required|string|max:30',
-            'confirm_account_number' => 'required|string|max:30|same:account_number',
-            'ifsc_code' => ['required', 'string', 'size:11', 'regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i'],
-            'holder_name' => 'required|string|max:255',
-            'bank_name' => 'required|string|max:255',
-            // 'status' => ['required', 'in:0,1']
         ]);
 
-        $input['order_id'] = 'PAYOUT_' . time();
+        $bankInfo = BankInfo::where('id', $request->bank_id)->first();
+
+        $input['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
         $input['uuid'] = str()->uuid();
         $input['status'] = 'pending';
+        $input['account_number'] = $bankInfo->account_number;
+        $input['ifsc_code'] = $bankInfo->ifsc_code;
+        $input['holder_name'] = $bankInfo->holder_name;
+        $input['bank_name'] = $bankInfo->bank_name;
 
-        $payout = Payout::create($input);
+        $res = $this->requestPayout($input);
 
-        // if ($request->status == 1) {
-
-        return $this->requestPayout($payout->id);
-        // }
-
-        // return redirect()
-        //     ->route('payout.index')
-        //     ->with('res.success', 'Payout request created successfully.');
+        return redirect()->route('payout.index')->with($res['name'], $res['message']);
     }
 
-    public function payoutEdit(string $id)
+    protected function requestPayout(array $payoutData)
     {
-        $payout = Payout::where('status', 'pending')->findOrFail($id);
-
-        return view('admin.payout.edit', compact('payout'));
-    }
-
-    public function payoutUpdate(Request $request, string $id)
-    {
-        $input = $request->validate([
-            'amount' => 'required|numeric|min:2000',
-            'account_number' => 'required|string|max:30',
-            'confirm_account_number' => 'required|string|max:30|same:account_number',
-            'ifsc_code' => ['required', 'string', 'size:11', 'regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i'],
-            'holder_name' => 'required|string|max:255',
-            'bank_name' => 'required|string|max:255',
-            // 'status' => ['required', 'in:0,1']
-        ]);
-
-        $payout = Payout::where('status', 'pending')->findOrFail($id);
-
-        $payout->update($input);
-
-        // if ($request->status == 1) {
-
-        return $this->requestPayout($payout->id);
-        // }
-
-        // return redirect()
-        //     ->route('payout.index')
-        // ->with('res.success', 'Payout request updated successfully.');
-    }
-
-    public function payoutSend(Request $request)
-    {
-        $validated = $request->validate([
-            'payout_id' => 'required|integer|exists:payouts,id',
-        ]);
-
-        $payout_id = $validated['payout_id'];
-
-        return $this->requestPayout($payout_id);
-    }
-
-    protected function requestPayout(string $payout_id)
-    {
-        // Claim the payout so concurrent requests cannot initiate it twice.
-        $payout = DB::transaction(function () use ($payout_id) {
-            $payout = Payout::where('id', $payout_id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($payout->status !== 'pending') {
-                return null;
-            }
-
-            // Save a stable provider order ID before making the API call.
-            if (empty($payout->order_id)) {
-                $payout->order_id = 'PAYOUT_' . $payout->id;
-                $payout->save();
-            }
-
-            return $payout;
-        });
-
-        if (!$payout) {
-            return back()->with(
-                'res.error',
-                'This payout is not pending or has already been submitted.'
-            );
-        }
+        $payout = Payout::create($payoutData);
 
         $token = env('PP_MERCHANT_TOKEN');
         $secretKey = env('PP_MERCHANT_SECRET');
         $baseUrl = rtrim(env('PP_BASE_URL'), '/');
 
         $payloadData = [
-            // 'order_id' => (string) $payout->order_id,
-            'order_id' => 'PAYOUT_' . time(),
+            'order_id' => (string) $payout->order_id,
             'amount' => number_format((float) $payout->amount, 2, '.', ''),
             'account_number' => (string) $payout->account_number,
             'ifsc_code' => strtoupper((string) $payout->ifsc_code),
@@ -172,7 +103,10 @@ class PayoutController extends Controller
                 'payout_id' => $payout->id,
             ]);
 
-            return back()->with('res.error', 'Unable to encrypt payout request.');
+            return [
+                'name' => 'res.error',
+                'message' => 'Unable to encrypt payout request.'
+            ];
         }
 
         $encryptedPayload = base64_encode($encrypted);
@@ -194,10 +128,10 @@ class PayoutController extends Controller
 
             // Do not automatically mark failed: the provider may have
             // received the request even though the connection timed out.
-            return back()->with(
-                'res.error',
-                'Payout status could not be confirmed. Verify with PaisaPay before retrying.'
-            );
+            return [
+                'name' => 'res.error',
+                'message' => 'Payout status could not be confirmed. Verify with PaisaPay before retrying.'
+            ];
         }
 
         $result = $response->json();
@@ -213,38 +147,39 @@ class PayoutController extends Controller
                 $payout->status = 'pending';
                 $payout->save();
 
-                return back()->with(
-                    'res.success',
-                    'Payout request queued successfully. Awaiting final confirmation.'
-                );
+                return [
+                    'name' => 'res.success',
+                    'message' => 'Payout request queued successfully. Awaiting final confirmation.'
+                ];
             }
 
             if ($apiStatus === 'success') {
                 $payout->status = 'success';
                 $payout->save();
 
-                return back()->with(
-                    'res.success',
-                    'Payout marked successful by the gateway.'
-                );
+                return [
+                    'name' => 'res.success',
+                    'message' => 'Payout marked successful by the gateway.'
+                ];
             }
 
             if ($apiStatus === 'failed') {
                 $payout->status = 'failed';
                 $payout->save();
 
-                return back()->with('res.error', 'Payout failed: ' .
-                    ($result['message'] ?? 'Gateway rejected the request.'));
+                return [
+                    'name' => 'res.error',
+                    'message' => 'Payout failed: ' . ($result['message'] ?? 'Gateway rejected the request.')
+                ];
             }
 
             // Unknown response: do not assume success or failure.
             $payout->save();
 
-
-            return back()->with(
-                'res.error',
-                $result['message']
-            );
+            return [
+                'name' => 'res.error',
+                'message' => $result['message']
+            ];
         }
 
         Log::error('PaisaPay returned an invalid or unsuccessful response.', [
@@ -253,13 +188,13 @@ class PayoutController extends Controller
             'response' => $response->body(),
         ]);
 
-        return back()->with(
-            'res.warning',
-            'Payout status is unconfirmed. Check the gateway before retrying.'
-        );
+        return [
+            'name' => 'res.warning',
+            'message' => 'Payout status is unconfirmed. Check the gateway before retrying.'
+        ];
     }
 
-    public function payoutStatus(Request $request)
+    public function status(Request $request)
     {
         $request->validate([
             'payload' => ['required'],
@@ -273,14 +208,18 @@ class PayoutController extends Controller
         $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
         $callbackData = json_decode($decrypted, true);
 
-        if ($callbackData) {
+        $status = strtolower($callbackData['status']);
 
-            if (strtolower($callbackData['status']) === 'success') {
-                // Update user balance in your system
-            }
-            echo "success"; // Important: Acknowledge the webhook
+        $payout = Payout::where('order_id', $callbackData['order_id'])->first();
+
+        if ($payout && $callbackData) {
+
+            $payout->update([
+                'status' => $status,
+                'response' => $callbackData
+            ]);
         }
 
-        echo "failed"; // Important: Acknowledge the webhook
+        echo $status;
     }
 }

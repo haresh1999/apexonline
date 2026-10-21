@@ -30,6 +30,7 @@ use App\Http\Controllers\{
 };
 
 use App\Http\Controllers\Admin\{
+    BankController,
     BtnGatewayController,
     LoginController,
     CommonController,
@@ -192,7 +193,7 @@ Route::prefix('upi')->group(function () {
 Route::prefix('paisapay')->group(function () {
     Route::get('request', [PaisaPayController::class, 'request']);
     Route::any('callback', [PaisaPayController::class, 'callback']);
-    Route::post('payout/status', [PayoutController::class, 'payoutStatus']);
+    Route::get('payout/status', [PayoutController::class, 'status']);
 });
 
 Route::get('login', [LoginController::class, 'login'])->name('login');
@@ -259,12 +260,18 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('pdf/create', [PdfController::class, 'create'])->name('pdf.create');
     Route::post('pdf/store', [PdfController::class, 'store'])->name('pdf.store');
 
-    Route::get('payout', [PayoutController::class, 'payoutList'])->name('payout.index');
-    Route::get('payout/create', [PayoutController::class, 'payoutCreate'])->name('payout.create');
-    Route::post('payout/store', [PayoutController::class, 'payoutStore'])->name('payout.store');
-    Route::get('payout/{id}/edit', [PayoutController::class, 'payoutEdit'])->name('payout.edit');
-    Route::put('payout/update/{id}', [PayoutController::class, 'payoutUpdate'])->name('payout.update');
-    Route::post('payout/send', [PayoutController::class, 'payoutSend'])->name('payout.send');
+    Route::get('payout', [PayoutController::class, 'list'])->name('payout.index');
+    Route::get('payout/create/{bankInfo?}', [PayoutController::class, 'create'])->name('payout.create');
+    Route::post('payout/store', [PayoutController::class, 'store'])->name('payout.store');
+    Route::get('payout/{id}/edit', [PayoutController::class, 'edit'])->name('payout.edit');
+    Route::put('payout/update/{id}', [PayoutController::class, 'update'])->name('payout.update');
+
+    Route::get('bank', [BankController::class, 'list'])->name('bank.index');
+    Route::get('bank/create', [BankController::class, 'create'])->name('bank.create');
+    Route::post('bank/store', [BankController::class, 'store'])->name('bank.store');
+    Route::get('bank/{bankInfo}/edit', [BankController::class, 'edit'])->name('bank.edit');
+    Route::put('bank/update/{bankInfo}', [BankController::class, 'update'])->name('bank.update');
+    Route::delete('bank/destroy/{bankInfo}', [BankController::class, 'destroy'])->name('bank.destroy');
 });
 
 // FALLBACK HANDLER

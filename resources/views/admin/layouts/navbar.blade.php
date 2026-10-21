@@ -232,19 +232,39 @@
                         </ul>
                     </div>
                 </div>
+                @endif
 
-                <div class="nav-item-wrapper">
-                    <a class="nav-link label-1 {{ navbar(['payout','payout/create','payout/*/edit']) }}" href="{{ route('payout.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
-                        <div class="d-flex align-items-center">
-                            <span class="nav-link-icon">
-                                <span data-feather="send"></span>
-                            </span>
+                @if (auth()->id() == 1)
+                <li class="nav-item">
+                    <p class="navbar-vertical-label"><b> Bank & Payout</b></p>
+                    <hr class="navbar-vertical-line" />
+
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar(['bank','bank/create','bank/*/edit']) }}" href="{{ route('bank.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
                             <div class="d-flex align-items-center">
-                                <span class="nav-link-text">Payout</span>
+                                <span class="nav-link-icon">
+                                    <span data-feather="home"></span>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-text">Bank</span>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
+
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar(['payout','payout/create/*','payout/create']) }}" href="{{ route('payout.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="send"></span>
+                                </span>
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-text">Payout</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </li>
                 @endif
 
                 @if (auth()->id() == 1)
