@@ -268,6 +268,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('payout/send', [PayoutController::class, 'send'])->name('payout.send');
     Route::post('payout/import', [PayoutController::class, 'import'])->name('payout.import');
     Route::post('payout/export', [PayoutController::class, 'export'])->name('payout.export');
+    Route::get('payout/slip/{payout}', [PayoutController::class, 'slip'])->name('payout.slip');
 
     Route::get('bank', [BankController::class, 'list'])->name('bank.index');
     Route::get('bank/create', [BankController::class, 'create'])->name('bank.create');

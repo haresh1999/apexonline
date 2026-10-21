@@ -72,6 +72,7 @@
             <thead>
                 <tr>
                     <th class="white-space-nowrap p-4">ID</th>
+                    <th class="white-space-nowrap py-4 text-start">Slip</th>
                     <th class="white-space-nowrap py-4 text-start">UUID</th>
                     <th class="white-space-nowrap py-4 text-start">Order#</th>
                     <th class="white-space-nowrap p-4">Amount</th>
@@ -88,6 +89,13 @@
                 @foreach ($payouts as $payout)
                 <tr class="align-middle">
                     <td>{{ $payout->id }}</td>
+                    <td>
+                        @if ($payout->status == 'success')
+                        <a target="_blank" href="{{ route('payout.slip',$payout->id) }}" class="me-2 text-success">
+                            <span class="fas fa-file-pdf"></span>
+                        </a>
+                        @endif
+                    </td>
                     <td class="text-start">{{ $payout->uuid }}</td>
                     <td class="text-start">{{ strtoupper($payout->order_id) }}</td>
                     <td>{{ $payout->amount }}</td>

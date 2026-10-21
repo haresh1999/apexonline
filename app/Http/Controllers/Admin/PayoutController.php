@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Payout;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PayoutController extends Controller
@@ -257,5 +258,14 @@ class PayoutController extends Controller
     public function export()
     {
         return Excel::download(new PayoutExport(), 'payout.xlsx');
+    }
+
+    public function slip(Payout $payout)
+    {
+        $pdf = Pdf::loadView('admin.payout.slip', compact('payout'))->setPaper([0, 0, 255, 485], 'portrait');
+
+        return $pdf->stream('receipt.pdf');
+
+        // return view('admin.payout.slip');
     }
 }
