@@ -82,7 +82,7 @@ class PaisaPayController extends Controller
 
             $transaction->update([
                 'status' => 'completed',
-                'payment_response' => json_encode($input),
+                'payment_response' => json_encode($response),
                 'payment_id' => $input['utr'] ?? null
             ]);
 
@@ -91,7 +91,7 @@ class PaisaPayController extends Controller
 
         $transaction->update([
             'status' => 'failed',
-            'payment_response' => json_encode($input),
+            'payment_response' => json_encode($response),
             'payment_id' => $input['utr'] ?? null
         ]);
 
