@@ -17,26 +17,29 @@ class PayoutImport implements ToModel, WithStartRow
 
     public function model(array $row)
     {
-        $bank = BankInfo::where('account_number', $row[0])->first();
+        if ($row[4] >= 2000) {
 
-        if (!$bank) {
+            $bank = BankInfo::where('account_number', $row[0])->first();
 
-            $bank = BankInfo::create([
-                'account_number' => $row[0],
-                'ifsc_code' => $row[1],
-                'holder_name' => $row[2],
-                'bank_name' => $row[3],
+            if (!$bank) {
+
+                $bank = BankInfo::create([
+                    'account_number' => $row[0],
+                    'ifsc_code' => $row[1],
+                    'holder_name' => $row[2],
+                    'bank_name' => $row[3],
+                ]);
+            }
+
+            $payoutController = new PayoutController();
+
+            $payoutController->requestPayout([
+                'account_number' => $bank->account_number,
+                'ifsc_code' => $bank->ifsc_code,
+                'holder_name' => $bank->holder_name,
+                'bank_name' => $bank->bank_name,
+                'amount' => $row[4]
             ]);
         }
-
-        $payoutController = new PayoutController();
-
-        $payoutController->requestPayout([
-            'account_number' => $bank->account_number,
-            'ifsc_code' => $bank->ifsc_code,
-            'holder_name' => $bank->holder_name,
-            'bank_name' => $bank->bank_name,
-            'amount' => $row[4]
-        ]);
     }
 }
