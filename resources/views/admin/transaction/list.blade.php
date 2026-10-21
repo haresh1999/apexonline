@@ -182,6 +182,7 @@
                             <tr>
                                 <th class="white-space-nowrap align-middle py-4 text-start">NAME</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">ORDER</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">UTR</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">AMOUNT</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">PDF</th>
@@ -207,6 +208,9 @@
                                     <h6 class="mb-0">
                                         <a href="{{ route('tnx.show',$tnx->id) }}">{{ $tnx->mr_order_id }}</a>
                                     </h6>
+                                </td>
+                                <td class="align-middle white-space-nowrap py-3 text-start">
+                                    {{$tnx->payment_id}}
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if(in_array($tnx->status, ['completed']))
