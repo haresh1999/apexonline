@@ -95,7 +95,7 @@ class TransactionController extends Controller
 
                 return response()->json([
                     'status' => false,
-                    'message' => 'Minimum order amount must be 100Rs.',
+                    'message' => 'Minimum order amount must be Rs.100',
                     'errors' => $validator->errors()
                 ], 422);
             }
