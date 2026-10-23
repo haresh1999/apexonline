@@ -45,10 +45,6 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
-        Log::error('PaisaPay returned.', [
-            'response' => json_encode($request->all()),
-        ]);
-
         $request->validate([
             'ref_id' => 'required',
             'status' => 'required|in:success,failed,pending',
