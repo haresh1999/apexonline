@@ -37,7 +37,7 @@ class PaisaPayController extends Controller
         $amount = $tnx->amount;
         $userPhone = $tnx->payer_mobile;
         $orderId = $tnx->order_id;
-        $returnUrl = 'https://apexonline.in/payment/paisapay/callback?ref_id=' . $tnx->reference_id;
+        $returnUrl = 'https://apexonline.in/payment/paisapay/callback?reference_id=' . $tnx->reference_id;
 
         // Generate and output the redirect form
         echo $sdk->createOrderForm($amount, $userPhone, $orderId, $returnUrl);
@@ -46,7 +46,7 @@ class PaisaPayController extends Controller
     public function callback(Request $request)
     {
         $request->validate([
-            'ref_id' => 'required',
+            'reference_id' => 'required',
             'status' => 'required|in:success,failed,pending',
             'utr' => 'required',
             'payload' => 'required',
@@ -59,7 +59,7 @@ class PaisaPayController extends Controller
         $transaction = Transaction::where([
             'env' => 'production',
             'gateway' => 'paisapay',
-            'reference_id' => $request->ref_id,
+            'reference_id' => $request->reference_id,
         ])->first();
 
         if (!$transaction) {
