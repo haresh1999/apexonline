@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Classes\PaisaPay;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -44,6 +45,10 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
+        Log::error('PaisaPay returned.', [
+            'response' => json_encode($request->all()),
+        ]);
+
         $request->validate([
             'ref_id' => 'required',
             'status' => 'required|in:success,failed,pending',
