@@ -73,6 +73,7 @@
                 <tr>
                     <th class="white-space-nowrap p-4">ID</th>
                     <th class="white-space-nowrap py-4 text-start">Slip</th>
+                    <th class="white-space-nowrap py-4 text-start">Company</th>
                     <th class="white-space-nowrap py-4 text-start">UUID</th>
                     <th class="white-space-nowrap py-4 text-start">Order#</th>
                     <th class="white-space-nowrap p-4">Amount</th>
@@ -96,13 +97,14 @@
                         </a>
                         @endif
                     </td>
-                    <td class="text-start">{{ $payout->uuid }}</td>
-                    <td class="text-start">{{ strtoupper($payout->order_id) }}</td>
+                    <td class="text-start">{{ $payout->user->name }}</td>
+                    <td class="white-space-nowrap text-start">{{ $payout->uuid }}</td>
+                    <td class="white-space-nowrap text-start">{{ strtoupper($payout->order_id) }}</td>
                     <td>{{ $payout->amount }}</td>
-                    <td class="text-start">{{ $payout->account_number }}</td>
-                    <td class="text-start">{{ $payout->ifsc_code }}</td>
-                    <td class="text-start">{{ $payout->holder_name }}</td>
-                    <td class="text-start">{{ $payout->bank_name }}</td>
+                    <td class="white-space-nowrap text-start">{{ $payout->account_number }}</td>
+                    <td class="white-space-nowrap text-start">{{ $payout->ifsc_code }}</td>
+                    <td class="white-space-nowrap text-start">{{ $payout->holder_name }}</td>
+                    <td class="white-space-nowrap text-start">{{ $payout->bank_name }}</td>
                     <td>
                         @if($payout->status == 'success')
                         <span class="badge badge-phoenix fs-10 badge-phoenix-success">

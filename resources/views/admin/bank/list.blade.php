@@ -56,6 +56,7 @@
                 <thead>
                     <tr>
                         <th class="white-space-nowrap p-4">ID</th>
+                        <th class="white-space-nowrap py-4 text-start">Company</th>
                         <th class="white-space-nowrap py-4 text-start">Account No.</th>
                         <th class="white-space-nowrap py-4 text-start">IFSC</th>
                         <th class="white-space-nowrap py-4 text-start">Holder Name</th>
@@ -69,6 +70,7 @@
                     @foreach ($banks as $key => $bank)
                     <tr class="align-middle">
                         <td>{{ ++$key }}</td>
+                        <td class="text-start">{{ $bank->user->name }}</td>
                         <td class="text-start">{{ $bank->account_number }}</td>
                         <td class="text-start">{{ $bank->ifsc_code }}</td>
                         <td class="text-start">{{ $bank->holder_name }}</td>

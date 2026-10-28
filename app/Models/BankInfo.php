@@ -11,5 +11,11 @@ class BankInfo extends Model
         'ifsc_code',
         'holder_name',
         'bank_name',
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

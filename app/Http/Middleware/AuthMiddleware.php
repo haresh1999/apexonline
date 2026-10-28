@@ -47,7 +47,7 @@ class AuthMiddleware
 
             $user = User::find($token->user_id);
 
-            $token->delete();
+            // $token->delete();
 
             if (is_null($user)) {
 
@@ -60,6 +60,14 @@ class AuthMiddleware
             config(['services.user' => $user->toArray(), 'services.env' => $env]);
 
             return $next($request);
+        }
+
+        if ($refreshToken == null) {
+
+            return response()->json([
+                'error' => 'Unauthorized',
+                'message' => 'Missing refresh token.'
+            ], 401);
         }
 
         return response()->json([

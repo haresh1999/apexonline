@@ -11,19 +11,23 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Payout;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PayoutController extends Controller
 {
     public function list(Request $request)
     {
-        $payouts = Payout::when($request->filled('search'), function ($q) {
-            $q->where('amount', 'like', 'like', "%" . request('search') . "%")
-                ->orWhere('account_number', 'like', "%" . request('search') . "%")
-                ->orWhere('ifsc_code', 'like', "%" . request('search') . "%")
-                ->orWhere('holder_name', 'like', "%" . request('search') . "%")
-                ->orWhere('bank_name', 'like', "%" . request('search') . "%");
-        })
+        $payouts = Payout::with('user')
+            ->when($request->filled('search'), function ($q) {
+                $q->where('amount', 'like', 'like', "%" . request('search') . "%")
+                    ->orWhere('account_number', 'like', "%" . request('search') . "%")
+                    ->orWhere('ifsc_code', 'like', "%" . request('search') . "%")
+                    ->orWhere('holder_name', 'like', "%" . request('search') . "%")
+                    ->orWhere('bank_name', 'like', "%" . request('search') . "%");
+            })
             ->when($request->filled('status'), function ($q) use ($request) {
                 $q->where('status', $request->status);
             })
@@ -50,7 +54,7 @@ class PayoutController extends Controller
 
         if (! $bankInfo->account_number) {
 
-            $banks = BankInfo::all();
+            $banks = BankInfo::where('user_id', Auth::id())->get();
         }
 
         return view('admin.payout.create', compact('bankInfo', 'banks'));
@@ -60,9 +64,10 @@ class PayoutController extends Controller
     {
         $input = $request->validate([
             'amount' => 'required|numeric|min:2000',
+            'bank_id' => ['required', 'integer', Rule::exists('bank_infos', 'id')->where('user_id', Auth::id())]
         ]);
 
-        $bankInfo = BankInfo::where('id', $request->bank_id)->first();
+        $bankInfo = BankInfo::where('user_id', Auth::id())->where('id', $request->bank_id)->firstOrFail();
 
         $input['account_number'] = $bankInfo->account_number;
         $input['ifsc_code'] = $bankInfo->ifsc_code;
@@ -71,6 +76,7 @@ class PayoutController extends Controller
         $input['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
         $input['uuid'] = str()->uuid();
         $input['status'] = 'pending';
+        $input['user_id'] = Auth::id();
 
         Payout::create($input);
 
@@ -92,6 +98,14 @@ class PayoutController extends Controller
 
     public function requestPayout(object $payout)
     {
+        $payout->status = 'success';
+        $payout->save();
+
+        return [
+            'name' => 'res.success',
+            'message' => 'Payout status updated successfully.'
+        ];
+
         $token = env('PP_MERCHANT_TOKEN');
         $secretKey = env('PP_MERCHANT_SECRET');
         $baseUrl = rtrim(env('PP_BASE_URL'), '/');
@@ -267,5 +281,45 @@ class PayoutController extends Controller
         return $pdf->stream('receipt.pdf');
 
         // return view('admin.payout.slip');
+    }
+
+    public function apiCreate(Request $request)
+    {
+        $user = config('services.user');
+
+        $validator = Validator::make($request->all(), [
+            'amount' => ['required', 'numeric', 'min:2000'],
+            'bank_id' => ['required', 'integer', Rule::exists('bank_infos', 'id')->where('user_id', $user['id'])]
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json([
+                'message' => $validator->errors(),
+                'status' => false
+            ], 404);
+        }
+
+        $input = $validator->validate();
+
+        $bankInfo = BankInfo::where('user_id', $user['id'])
+            ->where('id', $input['bank_id'])
+            ->first();
+
+        $input['account_number'] = $bankInfo->account_number;
+        $input['ifsc_code'] = $bankInfo->ifsc_code;
+        $input['holder_name'] = $bankInfo->holder_name;
+        $input['bank_name'] = $bankInfo->bank_name;
+        $input['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
+        $input['uuid'] = str()->uuid();
+        $input['status'] = 'pending';
+        $input['user_id'] = $user['id'];
+
+        Payout::create($input);
+
+        return response()->json([
+            'message' => 'Payout request send successfully.',
+            'status' => true
+        ], 200);
     }
 }
