@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Classes\PaisaPay;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -36,7 +37,7 @@ class PaisaPayController extends Controller
         $amount = $tnx->amount;
         $userPhone = $tnx->payer_mobile;
         $orderId = $tnx->order_id;
-        $returnUrl = 'https://apexonline.in/payment/paisapay/callback?ref_id=' . $tnx->reference_id;
+        $returnUrl = 'https://apexonline.in/payment/paisapay/callback?reference_id=' . $tnx->reference_id;
 
         // Generate and output the redirect form
         echo $sdk->createOrderForm($amount, $userPhone, $orderId, $returnUrl);
@@ -44,8 +45,12 @@ class PaisaPayController extends Controller
 
     public function callback(Request $request)
     {
+        Log::info('PaisaPay Payin Response.', [
+            'response' => json_encode($request->all()),
+        ]);
+
         $request->validate([
-            'ref_id' => 'required',
+            'reference_id' => 'required',
             'status' => 'required|in:success,failed,pending',
             'utr' => 'required',
             'payload' => 'required',
@@ -53,50 +58,64 @@ class PaisaPayController extends Controller
             'amount' => 'required'
         ]);
 
-        $input = $request->all();
+        try {
 
-        $transaction = Transaction::where([
-            'env' => 'production',
-            'gateway' => 'paisapay',
-            'reference_id' => $request->ref_id,
-        ])->first();
+            $input = $request->all();
 
-        if (!$transaction) {
-            return response()->json(['res.error' => 'Transaction not found'], 404);
-        }
+            $transaction = Transaction::where([
+                'env' => 'production',
+                'gateway' => 'paisapay',
+                'reference_id' => $request->reference_id,
+            ])->first();
 
-        if ($transaction->status == 'completed') {
-            return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
-        }
+            if (!$transaction) {
+                return response()->json(['res.error' => 'Transaction not found'], 404);
+            }
 
-        $secretKey = env('PP_MERCHANT_SECRET');
-        $payload = $request->payload;
-        $payload = str_replace(' ', '+', $payload); // Ensure Base64 is preserved
+            if ($transaction->status == 'completed') {
+                return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+            }
 
-        $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
-        $response = json_decode($decrypted, true);
+            $secretKey = env('PP_MERCHANT_SECRET');
+            $payload = $request->payload;
+            $payload = str_replace(' ', '+', $payload); // Ensure Base64 is preserved
 
-        $status = strtolower($input['status']);
+            $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
+            $response = json_decode($decrypted, true);
 
-        if ($status == 'success') {
+            $status = strtolower($input['status']);
+
+            if ($status == 'success') {
+
+                $transaction->update([
+                    'status' => 'completed',
+                    'payment_response' => json_encode($response),
+                    'payment_id' => $input['utr'] ?? null,
+                    'pp_order_id' => $input['order_id']
+                ]);
+
+                return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+            }
 
             $transaction->update([
-                'status' => 'completed',
+                'status' => 'failed',
                 'payment_response' => json_encode($response),
                 'payment_id' => $input['utr'] ?? null,
                 'pp_order_id' => $input['order_id']
             ]);
 
+            Log::info('PaisaPay Payin Success.', [
+                'response' => json_encode($request->all()),
+            ]);
+
             return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
+            //
+        } catch (\Throwable $th) {
+
+            Log::error('PaisaPay Payin Error.', [
+                'message' => $th->getMessage(),
+                'response' => json_encode($request->all()),
+            ]);
         }
-
-        $transaction->update([
-            'status' => 'failed',
-            'payment_response' => json_encode($response),
-            'payment_id' => $input['utr'] ?? null,
-            'pp_order_id' => $input['order_id']
-        ]);
-
-        return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
     }
 }

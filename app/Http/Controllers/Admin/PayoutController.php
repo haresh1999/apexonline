@@ -225,31 +225,48 @@ class PayoutController extends Controller
 
     public function status(Request $request)
     {
+        Log::info('PaisaPay Payout Response.', [
+            'response' => json_encode($request->all()),
+        ]);
+
         $request->validate([
             'payload' => ['required'],
             'token' => ['required']
         ]);
 
-        $secretKey = env('PP_MERCHANT_SECRET');
-        $payload = $request->payload;
-        $payload = str_replace(' ', '+', $payload); // Ensure Base64 is preserved
+        try {
 
-        $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
-        $callbackData = json_decode($decrypted, true);
+            $secretKey = env('PP_MERCHANT_SECRET');
+            $payload = $request->payload;
+            $payload = str_replace(' ', '+', $payload); // Ensure Base64 is preserved
 
-        $status = strtolower($callbackData['status']);
+            $decrypted = openssl_decrypt(base64_decode($payload), 'aes-256-ecb', $secretKey, OPENSSL_RAW_DATA);
+            $callbackData = json_decode($decrypted, true);
 
-        $payout = Payout::where('order_id', $callbackData['order_id'])->first();
+            $status = strtolower($callbackData['status']);
 
-        if ($payout && $callbackData) {
+            $payout = Payout::where('order_id', $callbackData['order_id'])->first();
 
-            $payout->update([
-                'status' => $status,
-                'response' => $callbackData
+            if ($payout && $callbackData) {
+
+                $payout->update([
+                    'status' => $status,
+                    'response' => $callbackData
+                ]);
+            }
+
+            Log::info('PaisaPay Payout Success.', [
+                'response' => json_encode($request->all()),
+            ]);
+
+            echo $status;
+        } catch (\Throwable $th) {
+
+            Log::error('PaisaPay Payout Error.', [
+                'message' => $th->getMessage(),
+                'response' => json_encode($request->all()),
             ]);
         }
-
-        echo $status;
     }
 
     public function import(Request $request)
