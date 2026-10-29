@@ -234,7 +234,6 @@
                 </div>
                 @endif
 
-                @if (auth()->id() == 1)
                 <li class="nav-item">
                     <p class="navbar-vertical-label"><b> Bank & Payout</b></p>
                     <hr class="navbar-vertical-line" />
@@ -265,7 +264,6 @@
                         </a>
                     </div>
                 </li>
-                @endif
 
                 @if (auth()->id() == 1)
                 <li class="nav-item">

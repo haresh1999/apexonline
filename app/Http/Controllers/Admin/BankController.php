@@ -19,10 +19,11 @@ class BankController extends Controller
                     ->orWhere('holder_name', 'like', "%" . request('search') . "%")
                     ->orWhere('bank_name', 'like', "%" . request('search') . "%");
             })
+            ->authUser()
             ->orderBy('id', 'desc')
             ->paginate(20);
 
-        $total = BankInfo::count();
+        $total = BankInfo::authUser()->count();
 
         return view('admin.bank.list', compact(
             'banks',

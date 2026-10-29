@@ -32,13 +32,14 @@ class PayoutController extends Controller
             ->when($request->filled('status'), function ($q) use ($request) {
                 $q->where('status', $request->status);
             })
+            ->authUser()
             ->orderBy('id', 'desc')
             ->paginate(20);
 
-        $total = Payout::count();
-        $pendingTotal = Payout::where('status', 'pending')->count();
-        $completedTotal = Payout::where('status', 'success')->count();
-        $failedTotal = Payout::where('status', 'failed')->count();
+        $total = Payout::authUser()->count();
+        $pendingTotal = Payout::authUser()->where('status', 'pending')->count();
+        $completedTotal = Payout::authUser()->where('status', 'success')->count();
+        $failedTotal = Payout::authUser()->where('status', 'failed')->count();
 
         return view('admin.payout.list', compact(
             'payouts',
@@ -55,7 +56,7 @@ class PayoutController extends Controller
 
         if (! $bankInfo->account_number) {
 
-            $banks = BankInfo::where('user_id', Auth::id())->get();
+            $banks = BankInfo::authUser()->get();
         }
 
         return view('admin.payout.create', compact('bankInfo', 'banks'));
@@ -90,7 +91,7 @@ class PayoutController extends Controller
             'payout_id' => ['required', 'integer', 'exists:payouts,id']
         ]);
 
-        $payout = Payout::find($request->payout_id);
+        $payout = Payout::authUser()->find($request->payout_id);
 
         $res = $this->requestPayout($payout);
 
