@@ -47,7 +47,7 @@ class AuthMiddleware
 
             $user = User::find($token->user_id);
 
-            // $token->delete();
+            $token->delete();
 
             if (is_null($user)) {
 
