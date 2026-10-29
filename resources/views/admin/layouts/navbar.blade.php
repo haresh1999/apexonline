@@ -180,7 +180,6 @@
                     </div>
                 </li>
 
-                @if(auth()->user()->user_id == null)
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
                         <a class="nav-link label-1 {{ navbar(['webhoook']) }}" href="{{ route('webhoook.index') }}" role="button" data-bs-toggle="" aria-expanded="false">
@@ -195,7 +194,6 @@
                         </a>
                     </div>
                 </li>
-                @endif
 
                 @if (auth()->id() == 1)
                 <div class="nav-item-wrapper">
