@@ -93,7 +93,7 @@ class BankController extends Controller
             return response()->json([
                 'message' => $validator->errors(),
                 'status' => false
-            ], 404);
+            ], 422);
         }
 
         $input = $validator->validate();

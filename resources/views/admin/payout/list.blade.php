@@ -74,7 +74,6 @@
                     <th class="white-space-nowrap p-4">ID</th>
                     <th class="white-space-nowrap py-4 text-start">Slip</th>
                     <th class="white-space-nowrap py-4 text-start">Company</th>
-                    <th class="white-space-nowrap py-4 text-start">UUID</th>
                     <th class="white-space-nowrap py-4 text-start">Order#</th>
                     <th class="white-space-nowrap p-4">Amount</th>
                     <th class="white-space-nowrap py-4 text-start">Account No.</th>
@@ -87,9 +86,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($payouts as $payout)
+                @foreach ($payouts as $key => $payout)
                 <tr class="align-middle">
-                    <td>{{ $payout->id }}</td>
+                    <td>{{ ++$key }}</td>
                     <td>
                         @if ($payout->status == 'success')
                         <a target="_blank" href="{{ route('payout.slip',$payout->id) }}" class="me-2 text-success">
@@ -98,7 +97,6 @@
                         @endif
                     </td>
                     <td class="text-start">{{ $payout->user->name }}</td>
-                    <td class="white-space-nowrap text-start">{{ $payout->uuid }}</td>
                     <td class="white-space-nowrap text-start">{{ strtoupper($payout->order_id) }}</td>
                     <td>{{ $payout->amount }}</td>
                     <td class="white-space-nowrap text-start">{{ $payout->account_number }}</td>
@@ -125,7 +123,7 @@
                     </td>
                     <td>{{ Carbon\Carbon::parse($payout->created_at)->format('d-m-Y H:i A') }}</td>
                     <td>
-                        @if ($payout->status == 'pending' && $payout->response == null)
+                        @if ($payout->status == 'pending')
                         <form action="{{ route('payout.send') }}" method="post">
                             @csrf
                             <input type="hidden" name="payout_id" value="{{ $payout->id }}" />
@@ -133,8 +131,6 @@
                                 <span class="fas fa-paper-plane"></span>
                             </button>
                         </form>
-                        @else
-                        ---
                         @endif
                     </td>
                 </tr>
