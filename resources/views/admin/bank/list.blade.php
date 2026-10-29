@@ -77,25 +77,25 @@
                         <td class="text-start">{{ $bank->bank_name }}</td>
                         <td>{{ Carbon\Carbon::parse($bank->created_at)->format('d-m-Y H:i A') }}</td>
                         <td>
+                            @if(getUserId() == $bank->user_id)
                             <a class="btn btn-secondary btn-sm" href="{{ route('payout.create', $bank->id) }}" title="Edit Payout">
                                 <span class="fas fa-paper-plane"></span>
                             </a>
+                            @endif
                         </td>
                         <td>
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                <form action="{{ route('bank.destroy',$bank->id) }}" method="post">
-                                    @method('DELETE')
-                                    @csrf
-                                    <a class="btn btn btn-info btn-sm" href="{{ route('bank.edit',$bank->id) }}">
-                                        <span class="fas fa-edit"></span>
-                                    </a>
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <span class="fas fa-trash-alt"></span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                            <form action="{{ route('bank.destroy',$bank->id) }}" method="post">
+                                @method('DELETE')
+                                @csrf
+                                <a class="btn btn btn-info btn-sm" href="{{ route('bank.edit',$bank->id) }}">
+                                    <span class="fas fa-edit"></span>
+                                </a>
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <span class="fas fa-trash-alt"></span>
+                                </button>
+                            </form>
 
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
