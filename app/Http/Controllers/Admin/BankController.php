@@ -47,7 +47,7 @@ class BankController extends Controller
             'bank_name' => 'required|string|max:255',
         ]);
 
-        $input['user_id'] = Auth::id();
+        $input['user_id'] = getUserId();
 
         BankInfo::create($input);
 

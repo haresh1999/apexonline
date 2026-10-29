@@ -66,10 +66,10 @@ class PayoutController extends Controller
     {
         $input = $request->validate([
             'amount' => 'required|numeric|min:2000',
-            'bank_id' => ['required', 'integer', Rule::exists('bank_infos', 'id')->where('user_id', Auth::id())]
+            'bank_id' => ['required', 'integer', Rule::exists('bank_infos', 'id')->where('user_id', getUserId())]
         ]);
 
-        $bankInfo = BankInfo::where('user_id', Auth::id())->where('id', $request->bank_id)->firstOrFail();
+        $bankInfo = BankInfo::authUser()->where('id', $request->bank_id)->firstOrFail();
 
         $input['account_number'] = $bankInfo->account_number;
         $input['ifsc_code'] = $bankInfo->ifsc_code;
@@ -78,7 +78,7 @@ class PayoutController extends Controller
         $input['order_id'] = 'payout_' . (bin2hex(random_bytes(8)));
         $input['uuid'] = str()->uuid();
         $input['status'] = 'pending';
-        $input['user_id'] = Auth::id();
+        $input['user_id'] = getUserId();
 
         Payout::create($input);
 
