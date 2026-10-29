@@ -100,41 +100,44 @@ class PayoutController extends Controller
 
     public function requestPayout(object $payout)
     {
+        if ($payout->response) {
+
+            $signatureData = [
+                'amount' => $payout->amount,
+                'account_number' => $payout->account_number,
+                'ifsc_code' => $payout->ifsc_code,
+                'holder_name' => $payout->holder_name,
+                'bank_name' => $payout->bank_name,
+            ];
+
+            ksort($signatureData);
+            $payloadQueryString = http_build_query($signatureData);
+            $secret = $payout->user->callback_secret;
+            $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
+            $response = json_decode($payout->response);
+            $callback_url = $response->callback_url;
+
+            $data = [
+                'amount' => $payout->amount,
+                'account_number' => $payout->account_number,
+                'ifsc_code' => $payout->ifsc_code,
+                'holder_name' => $payout->holder_name,
+                'bank_name' => $payout->bank_name,
+                'created_at' => Carbon::parse($payout->created_at)->format('Y-m-d h:i A'),
+                'updated_at' => Carbon::parse($payout->updated_at)->format('Y-m-d h:i A'),
+                'status' => $payout->status,
+                'order_id' => $payout->order_id,
+                'uuid' => $payout->uuid
+            ];
+
+            $response = Http::withHeaders([
+                'X-Provider-Signature' => $calculatedSignature,
+                'Content-Type' => 'application/json'
+            ])->post($callback_url, $data);
+        }
+
         $payout->status = 'success';
         $payout->save();
-
-        $signatureData = [
-            'amount' => $payout->amount,
-            'account_number' => $payout->account_number,
-            'ifsc_code' => $payout->ifsc_code,
-            'holder_name' => $payout->holder_name,
-            'bank_name' => $payout->bank_name,
-        ];
-
-        ksort($signatureData);
-        $payloadQueryString = http_build_query($signatureData);
-        $secret = $payout->user->callback_secret;
-        $calculatedSignature = hash_hmac('sha256', $payloadQueryString, $secret);
-        $response = json_decode($payout->response);
-        $callback_url = $response->callback_url;
-
-        $data = [
-            'amount' => $payout->amount,
-            'account_number' => $payout->account_number,
-            'ifsc_code' => $payout->ifsc_code,
-            'holder_name' => $payout->holder_name,
-            'bank_name' => $payout->bank_name,
-            'created_at' => Carbon::parse($payout->created_at)->format('Y-m-d h:i A'),
-            'updated_at' => Carbon::parse($payout->updated_at)->format('Y-m-d h:i A'),
-            'status' => $payout->status,
-            'order_id' => $payout->order_id,
-            'uuid' => $payout->uuid
-        ];
-
-        $response = Http::withHeaders([
-            'X-Provider-Signature' => $calculatedSignature,
-            'Content-Type' => 'application/json'
-        ])->post($callback_url, $data);
 
         return [
             'name' => 'res.success',
