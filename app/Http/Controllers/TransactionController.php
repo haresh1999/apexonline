@@ -90,15 +90,6 @@ class TransactionController extends Controller
 
                 $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
             }
-
-            if ($gateway == 'paisapay' && $input['amount'] < 100) {
-
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Minimum order amount must be Rs.100',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
         } else {
 
             if (is_null($user['default_gateway'])) {

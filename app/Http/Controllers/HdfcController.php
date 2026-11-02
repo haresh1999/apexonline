@@ -104,4 +104,56 @@ class HdfcController extends Controller
 
         return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
     }
+
+    public function vyaparQr(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'reference_id' => ['required', Rule::exists('transactions')->where(function ($q) {
+                $q->where('status', 'pending')->where('env', 'production');
+            })]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $input = $validator->validated();
+
+        $tnx = Transaction::where('reference_id', $input['reference_id'])->first();
+
+        return view('hdfc.vyapar_qr', compact('tnx'));
+    }
+
+    public function vyaparUtr(Request $request)
+    {
+        $request->validate([
+            'utr' => ['required', 'string', 'max:255'],
+            'reference_id' => ['required', 'string', 'exists:transactions'],
+            'tnx_id' => ['required', 'integer', 'exists:transactions,id']
+        ]);
+
+        $tnx = Transaction::where([
+            'env' => 'production',
+            'reference_id' => $request->reference_id,
+            'id' => $request->tnx_id,
+        ])->first();
+
+        if (! $tnx) {
+
+            return redirect()->back()->with(['error' => 'Transaction not found']);
+        }
+
+        $tnx->update([
+            'payment_response' => json_encode([
+                'utr' => $request->utr,
+                'time' => now()->toDateTimeString(),
+                'ip' => $request->ip(),
+                'amount' => $tnx->amount,
+            ]),
+            'payment_id' => $request->utr,
+            'status' => 'processing',
+        ]);
+
+        return redirect()->to('http://apexonline.in/pending.php?reference_id=' . $tnx->reference_id);
+    }
 }
