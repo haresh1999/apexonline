@@ -218,8 +218,13 @@
                                         <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
                                         <span class="ms-1" data-feather="check"></span>
                                     </span>
-                                    @elseif(in_array($tnx->status, ['pending','processing']))
+                                    @elseif(in_array($tnx->status, ['pending']))
                                     <span class="badge badge-phoenix fs-10 badge-phoenix-warning">
+                                        <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
+                                        <span class="ms-1" data-feather="alert-octagon"></span>
+                                    </span>
+                                    @elseif(in_array($tnx->status, ['processing']))
+                                    <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
                                         <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
                                         <span class="ms-1" data-feather="alert-octagon"></span>
                                     </span>
