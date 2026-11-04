@@ -62,6 +62,11 @@ class CompanyController extends Controller
             $input['whitelist_ip'] = json_encode(explode(', ', $input['whitelist_ip']));
         }
 
+        if ($input['is_limit'] == 0) {
+
+            unset($input['limit_count']);
+        }
+
         User::create($input);
 
         return redirect()
