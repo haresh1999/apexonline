@@ -91,7 +91,6 @@ class PaisaPayController extends Controller
                     'status' => 'completed',
                     'payment_response' => json_encode($response),
                     'payment_id' => $input['utr'] ?? null,
-                    'pp_order_id' => $input['order_id']
                 ]);
 
                 return redirect()->to('redirect?reference_id=' . $transaction->reference_id);
@@ -101,7 +100,6 @@ class PaisaPayController extends Controller
                 'status' => 'failed',
                 'payment_response' => json_encode($response),
                 'payment_id' => $input['utr'] ?? null,
-                'pp_order_id' => $input['order_id']
             ]);
 
             Log::info('PaisaPay Payin Success.', [

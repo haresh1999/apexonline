@@ -182,7 +182,7 @@
                             <tr>
                                 <th class="white-space-nowrap align-middle py-4 text-start">NAME</th>
                                 <th class="white-space-nowrap align-middle py-4 text-start">ORDER</th>
-                                <th class="white-space-nowrap align-middle py-4 text-start">PP ORDER#</th>
+                                <th class="white-space-nowrap align-middle py-4 text-start">UTR#</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">STATUS</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">AMOUNT</th>
                                 <th class="white-space-nowrap align-middle py-4 text-center">PDF</th>
@@ -210,7 +210,7 @@
                                     </h6>
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-start">
-                                    {{$tnx->pp_order_id ?? '---'}}
+                                    {{$tnx->payment_id ?? '---'}}
                                 </td>
                                 <td class="align-middle white-space-nowrap py-3 text-center">
                                     @if(in_array($tnx->status, ['completed']))
@@ -218,8 +218,13 @@
                                         <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
                                         <span class="ms-1" data-feather="check"></span>
                                     </span>
-                                    @elseif(in_array($tnx->status, ['pending','processing']))
+                                    @elseif(in_array($tnx->status, ['pending']))
                                     <span class="badge badge-phoenix fs-10 badge-phoenix-warning">
+                                        <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
+                                        <span class="ms-1" data-feather="alert-octagon"></span>
+                                    </span>
+                                    @elseif(in_array($tnx->status, ['processing']))
+                                    <span class="badge badge-phoenix fs-10 badge-phoenix-secondary">
                                         <span class="badge-label">{{ ucfirst($tnx->status) }}</span>
                                         <span class="ms-1" data-feather="alert-octagon"></span>
                                     </span>

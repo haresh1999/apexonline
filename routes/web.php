@@ -129,10 +129,16 @@ Route::prefix('hdfc')->group(function () {
     Route::get('request', [HdfcController::class, 'request']);
     Route::any('callback', [HdfcController::class, 'callback']);
 
+
     Route::prefix('sandbox')->group(function () {
         Route::get('request', [HdfcSandboxController::class, 'request']);
         Route::any('callback', [HdfcSandboxController::class, 'callback']);
     });
+});
+
+Route::prefix('vyapar')->group(function () {
+    Route::get('request', [HdfcController::class, 'vyaparQr']);
+    Route::patch('utr/submit', [HdfcController::class, 'vyaparUtr']);
 });
 
 // ZOHO
@@ -190,11 +196,11 @@ Route::prefix('upi')->group(function () {
     });
 });
 
-Route::prefix('paisapay')->group(function () {
-    Route::get('request', [PaisaPayController::class, 'request']);
-    Route::any('callback', [PaisaPayController::class, 'callback']);
-    Route::get('payout/status', [PayoutController::class, 'status']);
-});
+// Route::prefix('paisapay')->group(function () {
+//     Route::get('request', [PaisaPayController::class, 'request']);
+//     Route::any('callback', [PaisaPayController::class, 'callback']);
+//     Route::get('payout/status', [PayoutController::class, 'status']);
+// });
 
 Route::get('login', [LoginController::class, 'login'])->name('login');
 Route::post('login', [LoginController::class, 'loginSubmit'])->name('login.submit');
@@ -285,6 +291,6 @@ Route::get('internal-server-error', [CommonController::class, 'serverError'])->n
 Route::post('oneroyal/callback', [CommonController::class, 'oneroyalCallback']);
 Route::post('apexonline/callback', [CommonController::class, 'apexonlineCallback']);
 
-Route::view('testing', 'request_payment');
+Route::view('testing', 'testing');
 Route::any('return', [CommonController::class, 'redirectBack']);
 Route::post('callback', [CommonController::class, 'callBack']);

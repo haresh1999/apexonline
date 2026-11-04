@@ -25,7 +25,6 @@ class Transaction extends Model
         'callback_url',
         'reference_id',
         'mr_order_id',
-        'pp_order_id',
         'gateway_id',
         'payment_id',
         'esign_id',
