@@ -270,8 +270,8 @@
             <!-- Payment Slip Form -->
             <form action="{{ url('/uae-payment/submit') }}" method="POST" enctype="multipart/form-data" id="paymentForm" autocomplete="off">
                 @csrf
-                {{-- <input type="hidden" name="ref_id" value="{{ $tnx->reference_id }}" />
-                <input type="hidden" name="tnx_id" value="{{ $tnx->id }}" /> --}}
+                <input type="hidden" name="ref_id" value="{{ $tnx->reference_id }}" />
+                <input type="hidden" name="tnx_id" value="{{ $tnx->id }}" />
                 <!-- Add CSRF token here if using Laravel -->
                 <div class="upload-section">
                     <h5 class="fw-bold mb-2">Upload Payment Receipt</h5>
