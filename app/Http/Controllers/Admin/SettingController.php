@@ -44,7 +44,10 @@ class SettingController extends Controller
 
                 if (in_array($slug, ['app_favicon', 'app_logo'])) {
 
-                    deleteImage($setting[$slug]);
+                    if (isset($setting[$slug])) {
+
+                        deleteImage($setting[$slug]);
+                    }
 
                     $value = uploadFile($value, 'setting', $slug);
                 }
