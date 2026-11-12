@@ -189,7 +189,7 @@ function amountInWords($amount)
     return $convert($amount) . ' Rupees Only';
 }
 
-function uploadFile($image, $path, $name)
+function uploadFile(object $image, string $path, string $name)
 {
     $store_path = Storage::disk('public')->path($path);
 
@@ -205,13 +205,23 @@ function uploadFile($image, $path, $name)
     return $path . '/' . $image_name;
 }
 
-function getFile($path)
+function getFile(string $path)
 {
     if (Storage::disk('public')->exists($path)) {
 
         return asset('storage/' . $path);
     }
     return null;
+}
+
+function deleteImage(string $path)
+{
+    if (!is_null($path) && Storage::disk('public')->exists($path)) {
+
+        return Storage::disk('public')->delete($path);
+    }
+
+    return false;
 }
 
 function getCourse(float $amount): array

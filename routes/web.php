@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     CcavenueController,
     CcavenueSandboxController,
     CourseController,
+    PaymentController,
     HdfcController,
     HdfcSandboxController,
     InstaMojoController,
@@ -39,6 +40,7 @@ use App\Http\Controllers\Admin\{
     GatewayController,
     PayoutController,
     PdfController,
+    SettingController,
     TransactionController as SalesController,
     UserController,
 };
@@ -196,6 +198,10 @@ Route::prefix('upi')->group(function () {
     });
 });
 
+Route::prefix('uae-payment')->group(function () {
+    Route::get('request', [PaymentController::class, 'uaePayment']);
+    Route::post('submit', [PaymentController::class, 'uaePmtSubmit']);
+});
 // Route::prefix('paisapay')->group(function () {
 //     Route::get('request', [PaisaPayController::class, 'request']);
 //     Route::any('callback', [PaisaPayController::class, 'callback']);
@@ -282,6 +288,9 @@ Route::middleware('admin.auth')->group(function () {
     Route::get('bank/{bankInfo}/edit', [BankController::class, 'edit'])->name('bank.edit');
     Route::put('bank/update/{bankInfo}', [BankController::class, 'update'])->name('bank.update');
     Route::delete('bank/destroy/{bankInfo}', [BankController::class, 'destroy'])->name('bank.destroy');
+
+    Route::match(['get', 'post'], 'setting/app', [SettingController::class, 'app'])->name('setting.app');
+    Route::match(['get', 'post'], 'setting/bank', [SettingController::class, 'bank'])->name('setting.bank');
 });
 
 // FALLBACK HANDLER

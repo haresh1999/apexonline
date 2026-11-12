@@ -9,7 +9,8 @@
             <a class="navbar-brand me-1 me-sm-3" href="index.html">
                 <div class="d-flex align-items-center">
                     <div class="d-flex align-items-center">
-                        <img src="{{ asset('admin/assets/img/icons/logo.png') }}" alt="phoenix" width="27" />
+                        <img src="{{ getFile('setting/app-logo.png') }}" alt="phoenix" width="50" />
+                        {{-- <img src="{{ asset('admin/assets/img/icons/logo.png') }}" alt="phoenix" width="27" /> --}}
                         <h5 class="logo-text ms-2 d-none d-sm-block">{{ config('app.name') }}</h5>
                     </div>
                 </div>

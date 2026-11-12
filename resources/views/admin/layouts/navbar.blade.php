@@ -294,6 +294,35 @@
                         </a>
                     </div> --}}
                 </li>
+
+                <li class="nav-item">
+                    <p class="navbar-vertical-label"><b> Mater Settings</b></p>
+                    <hr class="navbar-vertical-line" />
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar('setting/app') }}" href="{{ route('setting.app') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="settings"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">App</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 {{ navbar(['setting/bank']) }}" href="{{ route('setting.bank') }}" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span data-feather="home"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Bank </span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
                 @endif
 
             </ul>

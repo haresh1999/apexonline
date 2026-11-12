@@ -54,6 +54,7 @@ class TransactionController extends Controller
             'payer_mobile' => ['required', 'digits:10'],
             'callback_url' => ['required', 'url'],
             'redirect_url' => ['required', 'url'],
+            'payment_for' => ['sometimes', 'required', 'in:uae'],
         ]);
 
         if ($validator->fails()) {
@@ -68,37 +69,43 @@ class TransactionController extends Controller
 
         $env = getAppEnv();
 
-        if ($env == 'production') {
+        if ($request->has('payment_for')) {
 
-            if (is_null($user['default_gateway'])) {
-
-                $pgGateway = Transaction::where('status', 'completed')
-                    ->where('env', 'production')
-                    ->latest('id')
-                    ->value('gateway');
-
-                $gateways = Gateway::where('status', 1)->pluck('slug')->toArray();
-
-                $methods = [];
-
-                foreach ($gateways as $key => $gateway) {
-                    $methods[$gateway] = $gateways[$key + 1] ?? $gateways[0];
-                }
-
-                $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
-            } else {
-
-                $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
-            }
+            $gateway = 'uae-payment';
         } else {
 
-            if (is_null($user['default_gateway'])) {
+            if ($env == 'production') {
 
-                $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
+                if (is_null($user['default_gateway'])) {
 
-                $gateway = $gateways[array_rand($gateways)];
+                    $pgGateway = Transaction::where('status', 'completed')
+                        ->where('env', 'production')
+                        ->latest('id')
+                        ->value('gateway');
+
+                    $gateways = Gateway::where('status', 1)->pluck('slug')->toArray();
+
+                    $methods = [];
+
+                    foreach ($gateways as $key => $gateway) {
+                        $methods[$gateway] = $gateways[$key + 1] ?? $gateways[0];
+                    }
+
+                    $gateway = $methods[$pgGateway] ?? $gateways[array_rand($gateways)];
+                } else {
+
+                    $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
+                }
             } else {
-                $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
+
+                if (is_null($user['default_gateway'])) {
+
+                    $gateways = ['cashfree', 'phonepe', 'payu', 'sabpaisa'];
+
+                    $gateway = $gateways[array_rand($gateways)];
+                } else {
+                    $gateway = $user['default_gateway'][array_rand($user['default_gateway'])];
+                }
             }
         }
 
