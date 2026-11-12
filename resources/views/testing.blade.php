@@ -462,6 +462,7 @@
                 </div>
                 <form action="{{ url('/request') }}" method="post">
                     @csrf
+                    <input type="hidden" value="uae" name="payment_for" />
                     <div class="form-group">
                         <label>Refresh Token</label>
                         <input type="text" name="refresh_token" placeholder="Enter refresh token">
